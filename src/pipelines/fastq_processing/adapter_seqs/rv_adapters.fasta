@@ -1,0 +1,9 @@
+>polyA
+A{20}
+T{20}
+>QUALITY
+G{20}
+> Illumina TruSeq
+A{18}AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+> Illumina universal adapter
+AGATCGGAAGAG
