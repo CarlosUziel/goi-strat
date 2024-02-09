@@ -110,7 +110,7 @@ This repository is organized as follows:
   - `src/pipelines/degss_ppi_networks_clustering`: Clusters proteins in the PPI networks using **Node2Vec** embeddings and ensemble clustering.
   - `src/pipelines/differential_enrichment`: Runs differential enrichment analyses with **limma**, obtaining DEGSs in the process.
   - `src/pipelines/differential_expression`: Runs differential expression analyses with **DESeq2**, obtaining differentially expressed genes (DEGs) in the process.
-  - `src/pipelines/differential_methylation`: Runs differential methylation analyses with **minfi** (DNA microarrays) and **methylkit** (RRBS), obtaining differentially methylated genes (DMGs) in the process.
+  - `src/pipelines/differential_methylation`: Runs differential methylation analyses with **minfi** (DNA Methylation array) and **methylkit** (RRBS), obtaining differentially methylated genes (DMGs) in the process.
   - `src/pipelines/fastq_processing`: Processes raw FASTQ files (WCDT dataset only). It includes quality control with **fasqc** and **multiqc**, adapter trimming with **cutadapt** and/or **trim-galore** and mapping using **bismark**, also used to extract methylation values.
   - `src/pipelines/functional_analysis`: Runs functional analyses (i.e. GSEA, ORA) on many gene sets collections (e.g. MSigDB H and C1-C8, DO, GO, Reactome, KEGG, MKEGG and NCG), obtaining enriched gene sets in the process. Relevant R packages used here include **clusterProfiler**, **dose**, **enrichplot**, **pathview** and **AnnotationHub**.
   - `src/pipelines/integrative_analysis`: Combines enriched gene sets from different methods and datasets (i.e. Gene sets from D-GSVA, GSEA on DEGS and GSEA on DMGs).
