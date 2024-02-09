@@ -31,7 +31,7 @@
 
 This repository contains the implementation of `GoiStrat`: *A novel supervised approach to gene of interest based sample stratification and analysis to assess biological differences*. See [publication]() for details.
 
-The implementation was done mainly in Python, but it also heavily relies on wrappers of R packages.
+The implementation was done entirely in Python, using [*rpy2*](https://github.com/rpy2/rpy2) wrappers for all necessary R packages.
 
 ### Data
 
@@ -104,15 +104,15 @@ This repository is organized as follows:
 - `src/components`: Component classes used in various pipelines, mainly for functional analysis.
 - `src/data`: Helper functions for data processing.
 - `src/pipelines`: Multiple individual scripts, each representing a step in the workflow. See details below for each step (in alphabetical order):
-  - `src/pipelines/data`: Downloads data and its annotation. Some minor pre-processing steps are also included.
+  - `src/pipelines/data`: Downloads data, its annotations and applies some minor pre-processing steps. Relevant R packages used here include **DESeq2**, **msigdbr** and **TCGAbiolinks**.
   - `src/pipelines/degss_genes_stats`: Obtains gene statistics from differentially enriched gene sets (DEGSs).
-  - `src/pipelines/degss_ppi_networks`: Generates PPI networks from the genes within DEGSs.
-  - `src/pipelines/degss_ppi_networks_clustering`: Clusters proteins in the PPI networks using Node2Vec embeddings and ensemble clustering.
-  - `src/pipelines/differential_enrichment`: Runs differential enrichment analyses, obtaining DEGSs in the process.
-  - `src/pipelines/differential_expression`: Runs differential expression analyses, obtaining differentially expressed genes (DEGs) in the process.
-  - `src/pipelines/differential_methylation`: Runs differential methylation analyses, obtaining differentially methylated genes (DMGs) in the process.
-  - `src/pipelines/fastq_processing`: Processes raw FASTQ files (WCDT dataset only).
-  - `src/pipelines/functional_analysis`: Runs functional analyses (i.e. GSEA, ORA) on many gene sets collections, obtained enriched gene sets in the process.
+  - `src/pipelines/degss_ppi_networks`: Generates PPI networks from the genes within DEGSs. PPI relationships are extracted from *STRINGDB* using the R package **rbioapi**.
+  - `src/pipelines/degss_ppi_networks_clustering`: Clusters proteins in the PPI networks using **Node2Vec** embeddings and ensemble clustering.
+  - `src/pipelines/differential_enrichment`: Runs differential enrichment analyses with **limma**, obtaining DEGSs in the process.
+  - `src/pipelines/differential_expression`: Runs differential expression analyses with **DESeq2**, obtaining differentially expressed genes (DEGs) in the process.
+  - `src/pipelines/differential_methylation`: Runs differential methylation analyses with **minfi** (DNA microarrays) and **methylkit** (RRBS), obtaining differentially methylated genes (DMGs) in the process.
+  - `src/pipelines/fastq_processing`: Processes raw FASTQ files (WCDT dataset only). It includes quality control with **fasqc** and **multiqc**, adapter trimming with **cutadapt** and/or **trim-galore** and mapping using **bismark**, also used to extract methylation values.
+  - `src/pipelines/functional_analysis`: Runs functional analyses (i.e. GSEA, ORA) on many gene sets collections (e.g. MSigDB H and C1-C8, DO, GO, Reactome, KEGG, MKEGG and NCG), obtaining enriched gene sets in the process. Relevant R packages used here include **clusterProfiler**, **dose**, **enrichplot**, **pathview** and **AnnotationHub**.
   - `src/pipelines/integrative_analysis`: Combines enriched gene sets from different methods and datasets (i.e. Gene sets from D-GSVA, GSEA on DEGS and GSEA on DMGs).
 - `src/r_wrappers`: Python wrappers for all the underlying R packages used in the pipelines.
 - `slurm`: Utility functions to run scripts on a SLURM system.
