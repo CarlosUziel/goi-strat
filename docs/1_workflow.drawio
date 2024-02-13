@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e" scale="10" border="0">
     <diagram name="Page-1" id="WMyTI4VWCgRzHXp1mPb9">
-        <mxGraphModel dx="1352" dy="1001" grid="1" gridSize="5" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+        <mxGraphModel dx="1352" dy="625" grid="1" gridSize="5" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -29,7 +29,7 @@
                 <mxCell id="odDYbRYCYWoE1OATyWKR-2" value="&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;TCGA-PRAD / WCDT-MCRPC&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;&lt;br style=&quot;font-size: 14px;&quot;&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;RNA-Seq &amp;amp; DNA Methylation&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;(~600 paired samples)&lt;br style=&quot;font-size: 14px;&quot;&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=#eeeeee;strokeColor=#77767b;shadow=1;fontStyle=0;container=0;fontSize=14;" parent="U7u_f17gVRgXchmAX0Bn-1" vertex="1">
                     <mxGeometry x="19.999787234042557" y="300.00375" width="220" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="ll4MLsgl20_4qIF9zqpb-26" value="&lt;div style=&quot;font-size: 14px;&quot;&gt;Sample Stratification based on FOLH1 RNA Expression&lt;br style=&quot;font-size: 14px;&quot;&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#77767b;fontStyle=0;container=0;fontSize=14;" parent="U7u_f17gVRgXchmAX0Bn-1" vertex="1">
+                <mxCell id="ll4MLsgl20_4qIF9zqpb-26" value="&lt;div style=&quot;font-size: 14px;&quot;&gt;Sample Stratification based on &lt;i&gt;FOLH1&lt;/i&gt; RNA Expression&lt;br style=&quot;font-size: 14px;&quot;&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#77767b;fontStyle=0;container=0;fontSize=14;" parent="U7u_f17gVRgXchmAX0Bn-1" vertex="1">
                     <mxGeometry x="19.999787234042557" y="400.0037500000001" width="220" height="80" as="geometry"/>
                 </mxCell>
                 <mxCell id="ll4MLsgl20_4qIF9zqpb-27" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=block;endFill=1;" parent="U7u_f17gVRgXchmAX0Bn-1" source="odDYbRYCYWoE1OATyWKR-2" target="ll4MLsgl20_4qIF9zqpb-26" edge="1">
