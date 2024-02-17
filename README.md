@@ -82,7 +82,7 @@ This will take a while, have patience.
 3. Set `PYTHONPATH` variable (preferably in your `.bashrc` file or equivalent):
 
 ```bash
-export PYTHONPATH="/home/{user}/goi-strat/src":$PYTHONPATH"
+export PYTHONPATH="/home/{user}/goi-strat/src":$PYTHONPATH
 ```
 
 Now you are ready to start using the **goi-strat** workflow!
