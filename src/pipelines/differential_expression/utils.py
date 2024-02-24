@@ -432,9 +432,9 @@ def proc_diff_expr_results(
     for ((test, control), result), p_col, p_th, lfc_level, lfc_thr in product(
         results_anno.items(), p_cols, p_ths, lfc_levels, lfc_ths
     ):
-        results_filtered[
-            (test, control, p_col, p_th, lfc_level, lfc_thr)
-        ] = filter_deseq_results(result, p_col, p_th, lfc_level, lfc_thr)
+        results_filtered[(test, control, p_col, p_th, lfc_level, lfc_thr)] = (
+            filter_deseq_results(result, p_col, p_th, lfc_level, lfc_thr)
+        )
     for (
         test,
         control,
@@ -456,9 +456,9 @@ def proc_diff_expr_results(
     for ((test, control), result), p_col, p_th, lfc_level, lfc_thr in product(
         results_anno_unique.items(), p_cols, p_ths, lfc_levels, lfc_ths
     ):
-        results_filtered_unique[
-            (test, control, p_col, p_th, lfc_level, lfc_thr)
-        ] = filter_deseq_results(result, p_col, p_th, lfc_level, lfc_thr)
+        results_filtered_unique[(test, control, p_col, p_th, lfc_level, lfc_thr)] = (
+            filter_deseq_results(result, p_col, p_th, lfc_level, lfc_thr)
+        )
     for (
         test,
         control,

@@ -821,9 +821,9 @@ def goi_annotation_rna_seq(
             gene_expr_level=levels_col,
             percentile=percentile,
         )
-        annot_df.loc[
-            annot_df[sample_contrast_factor] == sample_cluster, levels_col
-        ] = annot_df_with_levels[levels_col]
+        annot_df.loc[annot_df[sample_contrast_factor] == sample_cluster, levels_col] = (
+            annot_df_with_levels[levels_col]
+        )
 
     # 4.1. Plot GOI VST counts
     for sample_cluster, percentile in product(contrast_conditions, percentiles):
@@ -968,9 +968,9 @@ def goi_annotation_meth_array(
     # 1.3. Match indices and assign gene levels
     indices = annot_df_rna.index.intersection(annot_df_meth.index)
 
-    annot_df_meth.loc[
-        indices, [f"{goi_symbol}_level_{p}" for p in percentiles]
-    ] = annot_df_rna.loc[indices, [f"{goi_symbol}_level_{p}" for p in percentiles]]
+    annot_df_meth.loc[indices, [f"{goi_symbol}_level_{p}" for p in percentiles]] = (
+        annot_df_rna.loc[indices, [f"{goi_symbol}_level_{p}" for p in percentiles]]
+    )
 
     # 2. Save results
     annot_df_meth.to_csv(

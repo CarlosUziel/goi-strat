@@ -815,9 +815,11 @@ def intersect_pathways_genes(
             {
                 f"{key}_genes": set(
                     pathways_df.set_index("Description")[
-                        "geneID"
-                        if "geneID" in pathways_df.columns
-                        else "core_enrichment"
+                        (
+                            "geneID"
+                            if "geneID" in pathways_df.columns
+                            else "core_enrichment"
+                        )
                     ]
                     .get(pathway, "")
                     .split("/")
@@ -1010,9 +1012,11 @@ def intersect_pathways_genes_shap(
             {
                 f"{key}_genes": set(
                     pathways_df.set_index("Description")[
-                        "geneID"
-                        if "geneID" in pathways_df.columns
-                        else "core_enrichment"
+                        (
+                            "geneID"
+                            if "geneID" in pathways_df.columns
+                            else "core_enrichment"
+                        )
                     ]
                     .get(pathway, "")
                     .split("/")
@@ -1531,9 +1535,11 @@ def intersect_wgcna_pathways(
                 f"{contrast}_GeneRatio_setSize": [
                     wgcna_modules[module_name]
                     .set_index("Description")[
-                        "GeneRatio"
-                        if "GeneRatio" in wgcna_modules[module_name].columns
-                        else "setSize"
+                        (
+                            "GeneRatio"
+                            if "GeneRatio" in wgcna_modules[module_name].columns
+                            else "setSize"
+                        )
                     ]
                     .get(pathway, "")
                     for pathway in modules_pathways_intersections["id"].values
@@ -1550,9 +1556,11 @@ def intersect_wgcna_pathways(
                 f"{contrast}_geneID": [
                     wgcna_modules[module_name]
                     .set_index("Description")[
-                        "geneID"
-                        if "geneID" in wgcna_modules[module_name].columns
-                        else "core_enrichment"
+                        (
+                            "geneID"
+                            if "geneID" in wgcna_modules[module_name].columns
+                            else "core_enrichment"
+                        )
                     ]
                     .get(pathway, "")
                     for pathway in modules_pathways_intersections["id"].values
@@ -2454,23 +2462,27 @@ def intersect_degss_degs(
     # 3. Calculate intersection between each gene set genes and contrasts DEGs
     for contrast in contrast_prefixes.keys():
         degss_intersections[f"{contrast}_degs_entrez"] = [
-            "/".join(
-                set(gene_set_genes.split("/")).intersection(
-                    set(degs_dfs[contrast]["ENTREZID"].astype(str))
+            (
+                "/".join(
+                    set(gene_set_genes.split("/")).intersection(
+                        set(degs_dfs[contrast]["ENTREZID"].astype(str))
+                    )
                 )
+                if isinstance(gene_set_genes, str)
+                else ""
             )
-            if isinstance(gene_set_genes, str)
-            else ""
             for gene_set_genes in degss_intersections["entrez_gene"]
         ]
         degss_intersections[f"{contrast}_degs_symbol"] = [
-            "/".join(
-                set(gene_set_genes.split("/")).intersection(
-                    set(degs_dfs[contrast]["SYMBOL"])
+            (
+                "/".join(
+                    set(gene_set_genes.split("/")).intersection(
+                        set(degs_dfs[contrast]["SYMBOL"])
+                    )
                 )
+                if isinstance(gene_set_genes, str)
+                else ""
             )
-            if isinstance(gene_set_genes, str)
-            else ""
             for gene_set_genes in degss_intersections["gene_symbol"]
         ]
 
@@ -2734,29 +2746,33 @@ def intersect_degss_degs_shap(
     # 3. Calculate intersection between each gene set genes and contrasts DEGs
     for contrast in contrast_prefixes.keys():
         degss_intersections[f"{contrast}_degs_entrez"] = [
-            "/".join(
-                set(gene_set_genes.split("/")).intersection(
-                    {
-                        *set(degs_shap_dfs[contrast]["ENTREZID"].astype(str)),
-                        *{gene[0] for gene in extra_genes},
-                    }
+            (
+                "/".join(
+                    set(gene_set_genes.split("/")).intersection(
+                        {
+                            *set(degs_shap_dfs[contrast]["ENTREZID"].astype(str)),
+                            *{gene[0] for gene in extra_genes},
+                        }
+                    )
                 )
+                if isinstance(gene_set_genes, str)
+                else ""
             )
-            if isinstance(gene_set_genes, str)
-            else ""
             for gene_set_genes in degss_intersections["entrez_gene"]
         ]
         degss_intersections[f"{contrast}_degs_symbol"] = [
-            "/".join(
-                set(gene_set_genes.split("/")).intersection(
-                    {
-                        *set(degs_shap_dfs[contrast]["SYMBOL"]),
-                        *{gene[1] for gene in extra_genes},
-                    }
+            (
+                "/".join(
+                    set(gene_set_genes.split("/")).intersection(
+                        {
+                            *set(degs_shap_dfs[contrast]["SYMBOL"]),
+                            *{gene[1] for gene in extra_genes},
+                        }
+                    )
                 )
+                if isinstance(gene_set_genes, str)
+                else ""
             )
-            if isinstance(gene_set_genes, str)
-            else ""
             for gene_set_genes in degss_intersections["gene_symbol"]
         ]
 
@@ -3066,23 +3082,27 @@ def intersect_degss_shap_degs(
     # 3. Calculate intersection between each gene set genes and contrasts DEGs
     for contrast in contrast_prefixes.keys():
         degss_intersections[f"{contrast}_degs_entrez"] = [
-            "/".join(
-                set(gene_set_genes.split("/")).intersection(
-                    set(degs_dfs[contrast]["ENTREZID"].astype(str))
+            (
+                "/".join(
+                    set(gene_set_genes.split("/")).intersection(
+                        set(degs_dfs[contrast]["ENTREZID"].astype(str))
+                    )
                 )
+                if isinstance(gene_set_genes, str)
+                else ""
             )
-            if isinstance(gene_set_genes, str)
-            else ""
             for gene_set_genes in degss_intersections["entrez_gene"]
         ]
         degss_intersections[f"{contrast}_degs_symbol"] = [
-            "/".join(
-                set(gene_set_genes.split("/")).intersection(
-                    set(degs_dfs[contrast]["SYMBOL"])
+            (
+                "/".join(
+                    set(gene_set_genes.split("/")).intersection(
+                        set(degs_dfs[contrast]["SYMBOL"])
+                    )
                 )
+                if isinstance(gene_set_genes, str)
+                else ""
             )
-            if isinstance(gene_set_genes, str)
-            else ""
             for gene_set_genes in degss_intersections["gene_symbol"]
         ]
 
@@ -3305,29 +3325,33 @@ def intersect_degss_shap_degs_shap(
     # 3. Calculate intersection between each gene set genes and contrasts DEGs
     for contrast in contrast_prefixes.keys():
         degss_intersections[f"{contrast}_degs_entrez"] = [
-            "/".join(
-                set(gene_set_genes.split("/")).intersection(
-                    {
-                        *set(degs_shap_dfs[contrast]["ENTREZID"].astype(str)),
-                        *{gene[0] for gene in extra_genes},
-                    }
+            (
+                "/".join(
+                    set(gene_set_genes.split("/")).intersection(
+                        {
+                            *set(degs_shap_dfs[contrast]["ENTREZID"].astype(str)),
+                            *{gene[0] for gene in extra_genes},
+                        }
+                    )
                 )
+                if isinstance(gene_set_genes, str)
+                else ""
             )
-            if isinstance(gene_set_genes, str)
-            else ""
             for gene_set_genes in degss_intersections["entrez_gene"]
         ]
         degss_intersections[f"{contrast}_degs_symbol"] = [
-            "/".join(
-                set(gene_set_genes.split("/")).intersection(
-                    {
-                        *set(degs_shap_dfs[contrast]["SYMBOL"].astype(str)),
-                        *{gene[1] for gene in extra_genes},
-                    }
+            (
+                "/".join(
+                    set(gene_set_genes.split("/")).intersection(
+                        {
+                            *set(degs_shap_dfs[contrast]["SYMBOL"].astype(str)),
+                            *{gene[1] for gene in extra_genes},
+                        }
+                    )
                 )
+                if isinstance(gene_set_genes, str)
+                else ""
             )
-            if isinstance(gene_set_genes, str)
-            else ""
             for gene_set_genes in degss_intersections["gene_symbol"]
         ]
 

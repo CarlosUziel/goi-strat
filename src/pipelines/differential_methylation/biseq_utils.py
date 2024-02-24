@@ -230,9 +230,9 @@ def differential_methylation_rrbs_regions(
 
             dm_df_filt = dm_df_filt[dm_df_filt["fdr"] < fdr_th]
 
-            diff_meth_results[
-                (fdr_th, mean_diff, mean_diff_level, dm_type)
-            ] = dm_df_filt
+            diff_meth_results[(fdr_th, mean_diff, mean_diff_level, dm_type)] = (
+                dm_df_filt
+            )
 
             fdr_th_str = str(fdr_th).replace(".", "_")
             mean_diff_str = str(mean_diff).replace(".", "_")
@@ -270,9 +270,9 @@ def differential_methylation_rrbs_regions(
             ignore_strand=True,
             quiet=False,
         )
-        diff_meth_results_ann[
-            (fdr_th, mean_diff, mean_diff_level, dm_type)
-        ] = diff_meth_res_ann
+        diff_meth_results_ann[(fdr_th, mean_diff, mean_diff_level, dm_type)] = (
+            diff_meth_res_ann
+        )
 
         # 5.3. Save to disk
         diff_meth_res_ann_df = rpy2_df_to_pd_df_manual(diff_meth_res_ann).replace(
