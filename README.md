@@ -1,5 +1,15 @@
 <div id="top"></div>
 
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <img src="docs/1_workflow.png" alt="Workflow diagram" width="700" height="350">
+
+  <h1 align="center">GoiStrat</h1>
+  <h4 align="center">Gene-of-interest-based sample stratification for the evaluation of functional differences</h4>
+
+</div>
+
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
@@ -29,7 +39,7 @@
 
 ## About The Project
 
-This repository contains the implementation of `GoiStrat`: *A novel supervised approach to gene of interest based sample stratification and analysis to assess biological differences*. See [publication]() for details.
+This repository contains the implementation of *GoiStrat - Gene-of-interest-based sample stratification for the evaluation of functional differences*. See [publication]() for details.
 
 The implementation was done entirely in Python, using [*rpy2*](https://github.com/rpy2/rpy2) wrappers for all necessary R packages.
 
@@ -41,7 +51,7 @@ This workflow was tested by applying it to *FOLH1* in prostate cancer. The data 
 - The Cancer Genome Atlas Prostate Adenocarcinoma (TCGA-PRAD) | [[Paper](https://pubmed.ncbi.nlm.nih.gov/26544944/)].
 - The West Coast Prostate Cancer Dream Team - Metastatic Castration Resistant Prostate Cancer (WCDT-MCRPC) | [[Paper 1](https://pubmed.ncbi.nlm.nih.gov/30033370/), [Paper 2](https://pubmed.ncbi.nlm.nih.gov/33077885/)].
 
-If you wish you reproduce the results shown in the paper, you must obtain the appropriate permissions from the owners of the data. Downloading and processing of the data is also a pre-requisite. Helper functions and scripts under `src/pipelines/data` might prove useful.
+If you wish you reproduce the results shown in the paper, you must obtain the permissions from the owners of the data when required. Downloading and processing of the data is also a pre-requisite. Helper functions and scripts under `src/pipelines/data` were used for such purposes.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -85,7 +95,7 @@ This will take a while, have patience.
 export PYTHONPATH="/home/{user}/goi-strat/src":$PYTHONPATH
 ```
 
-Now you are ready to start using the **goi-strat** workflow!
+Now you are ready to start using the **GoiStrat** workflow!
 
 <!-- USAGE EXAMPLES -->
 
@@ -93,7 +103,7 @@ Now you are ready to start using the **goi-strat** workflow!
 
 While this library contains plenty of ready-to-use scripts to build complete pipelines, it also provides multiple utility functions that can be used individually as per user needs. A special effort has been put into making the design of the library highly modular and flexible for different use cases. Feel free to submerge yourself in the codebase.
 
-The entire workflow (except the processing of raw data) is described in `src/pipelines/psma_levels_workflow.sh`.
+The entire workflow (except the processing of FASTQ files) is described in `src/pipelines/psma_levels_workflow.sh`. If you need to process FASTQ files to obtain DNA methylation signatures, please refer to the scripts under `src/pipelines/fastq_processing`.
 
 ### File descriptions
 
@@ -111,7 +121,7 @@ This repository is organized as follows:
   - `src/pipelines/differential_enrichment`: Runs differential enrichment analyses with **limma**, obtaining DEGSs in the process.
   - `src/pipelines/differential_expression`: Runs differential expression analyses with **DESeq2**, obtaining differentially expressed genes (DEGs) in the process.
   - `src/pipelines/differential_methylation`: Runs differential methylation analyses with **minfi** (DNA Methylation array) and **methylkit** (RRBS), obtaining differentially methylated genes (DMGs) in the process.
-  - `src/pipelines/fastq_processing`: Processes raw FASTQ files (WCDT dataset only). It includes quality control with **fasqc** and **multiqc**, adapter trimming with **cutadapt** and/or **trim-galore** and mapping using **bismark**, also used to extract methylation values.
+  - `src/pipelines/fastq_processing`: Processes raw FASTQ files (WCDT-MCRPC dataset only). It includes quality control with **fasqc** and **multiqc**, adapter trimming with **cutadapt** and/or **trim-galore** and mapping using **bismark**, also used to extract methylation values. It is worth mentioning that while only the scripts to process WCDT-MCRPC are included, the `utils.py` file includes wrappers for many additional tools that might prove useful for other datasets, such as **STAR**, **bowtie2**, **samtools** and others.
   - `src/pipelines/functional_analysis`: Runs functional analyses (i.e. GSEA, ORA) on many gene sets collections (e.g. MSigDB H and C1-C8, DO, GO, Reactome, KEGG, MKEGG and NCG), obtaining enriched gene sets in the process. Relevant R packages used here include **clusterProfiler**, **dose**, **enrichplot**, **pathview** and **AnnotationHub**.
   - `src/pipelines/integrative_analysis`: Combines enriched gene sets from different methods and datasets (i.e. Gene sets from D-GSVA, GSEA on DEGS and GSEA on DMGs).
 - `src/r_wrappers`: Python wrappers for all the underlying R packages used in the pipelines.
