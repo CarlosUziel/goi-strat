@@ -76,20 +76,32 @@ Here's a step-by-step guide to setup the library:
 
 1. Clone this repository:
 
-```bash
-git clone https://github.com/CarlosUziel/goi-strat
-```
+  ```bash
+  git clone https://github.com/CarlosUziel/goi-strat
+  ```
 
-1. Install conda environment with all dependencies (using mamba):
+2. Install mamba:
 
 ```bash
 conda install -n base -c conda-forge mamba
+```
+
+3. Create virtual environment:
+
+*Option 1:*
+```bash
 bash goi-strat/setup_env.sh
+```
+
+*Option 2:*
+```bash
+mamba env create -f environment.yml # alternatively try environment_hist.yml
+mamba activate bioinfo
 ```
 
 This will take a while, have patience.
 
-3. Set `PYTHONPATH` variable (preferably in your `.bashrc` file or equivalent):
+4. Set `PYTHONPATH` variable (preferably in your `.bashrc` file or equivalent):
 
 ```bash
 export PYTHONPATH="/home/{user}/goi-strat/src":$PYTHONPATH
