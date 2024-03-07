@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 def get_ppi_network(
     genes_symbol: Iterable[str],
-    api_lock: Lock,
+    api_lock: Lock,  # type: ignore
     interaction_score: int = 500,
     network_type: str = "functional",
 ) -> nx.Graph:
@@ -96,7 +96,7 @@ def process_degss_ppi_network(
     k: int = 2,
     interaction_score: int = 500,
     network_type: str = "functional",
-    api_lock: Lock = Lock(),
+    api_lock: Lock = Lock(),  # type: ignore
 ) -> None:
     """Given multiple sets of differentially enriched gene sets (DEGSs), compute the PPI
     network of all involved genes.

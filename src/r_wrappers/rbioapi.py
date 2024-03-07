@@ -28,7 +28,7 @@ r_ggplot = importr("ggplot2")
 
 
 def string_map_ids(
-    symbol_genes: Iterable[str], species: int = 9606, api_lock: Lock = Lock(), **kwargs
+    symbol_genes: Iterable[str], species: int = 9606, api_lock: Lock = Lock(), **kwargs  # type: ignore
 ) -> pd.DataFrame:
     """This function Calls STRING's API to Convert a set of identifiers to STRING
     Identifiers. Although You can call STRING services with a variety of common
@@ -63,7 +63,7 @@ def string_network_image(
     image_format: str,
     save_path: Path,
     species: int = 9606,
-    api_lock: Lock = Lock(),
+    api_lock: Lock = Lock(),  # type: ignore
     **kwargs,
 ) -> None:
     """Depending on that you supplied a single protein ID or more than one protein ID,
@@ -106,7 +106,7 @@ def string_interactions_network(
     species: int = 9606,
     required_score: int = 500,
     network_type: str = "functional",
-    api_lock: Lock = Lock(),
+    api_lock: Lock = Lock(),  # type: ignore
     **kwargs,
 ) -> pd.DataFrame:
     """This function will retrieve Sting interaction pairs among your input protein ids,
