@@ -169,7 +169,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-[Carlos Uziel Pérez Malla](https://www.carlosuziel-pm.dev/)
+[Carlos Uziel Pérez Malla](https://perez-malla.com/)
 
 [GitHub](https://github.com/CarlosUziel) - [Google Scholar](https://scholar.google.es/citations?user=tEz_OeIAAAAJ&hl=es&oi=ao) - [LinkedIn](https://at.linkedin.com/in/carlos-uziel-p%C3%A9rez-malla-323aa5124) - [Twitter](https://twitter.com/perez_malla)
 
