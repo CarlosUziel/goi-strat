@@ -3,7 +3,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <img src="docs/1_workflow.png" alt="Workflow diagram" width="700" height="350">
+  <img src="docs/1_workflow.png" alt="Workflow diagram">
 
   <h1 align="center">GoiStrat</h1>
   <h4 align="center">Gene-of-interest-based sample stratification for the evaluation of functional differences</h4>
