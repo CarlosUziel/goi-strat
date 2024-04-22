@@ -93,6 +93,8 @@ conda install -n base -c conda-forge mamba
 bash goi-strat/setup_env.sh
 ```
 
+**Note**: Please keep in mind that `setup_env.sh` might include unnecessary dependencies, as this was a general environment we used for all our projects. You are invited to remove and add dependencies as you see fit.
+
 *Option 2:*
 ```bash
 mamba env create -f environment.yml # alternatively try environment_hist.yml
