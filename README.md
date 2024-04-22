@@ -39,7 +39,7 @@
 
 ## About The Project
 
-This repository contains the implementation of *GoiStrat - Gene-of-interest-based sample stratification for the evaluation of functional differences*. See [publication]() for details.
+This repository contains the implementation of *GoiStrat - Gene-of-interest-based sample stratification for the evaluation of functional differences*. See [publication](https://assets.researchsquare.com/files/rs-4075701/v1_covered_5cbc649f-2e86-4ab7-8ac3-cc7001fe3327.pdf) for details.
 
 The implementation was done entirely in Python, using [*rpy2*](https://github.com/rpy2/rpy2) wrappers for all necessary R packages.
 
@@ -185,8 +185,14 @@ This work was supported by grants provided by the FWF (National Science Foundati
 
 ## Citation
 
-If you have found the content of this repository useful, please consider citing this work:
+If you have found the content of this repository useful, please consider citing [this work](https://assets.researchsquare.com/files/rs-4075701/v1_covered_5cbc649f-2e86-4ab7-8ac3-cc7001fe3327.pdf):
 
-...
+```raw
+@article{malla2024goistrat,
+  title={GoiStrat-Gene-of-interest-based sample stratification for the evaluation of functional differences},
+  author={Malla, Carlos Uziel P{\'e}rez and Kalla, Jessica and Tiefenbacher, Andreas and Wasinger, Gabriel and Kluge, Kilian and Egger, Gerda and Sheibani-Tezerji, Raheleh},
+  year={2024}
+}
+```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
