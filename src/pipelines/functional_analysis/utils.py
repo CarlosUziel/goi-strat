@@ -4,7 +4,6 @@ from typing import Tuple
 import numpy as np
 import pandas as pd
 import rpy2.robjects as ro
-
 from components.functional_analysis.orgdb import OrgDB
 from components.functional_analysis.utils import run_all_gsea, run_all_ora
 from r_wrappers.utils import prepare_gene_list

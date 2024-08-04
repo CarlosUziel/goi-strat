@@ -12,9 +12,6 @@ from typing import Any, Dict, Iterable, List, Tuple
 import numpy as np
 import pandas as pd
 import rpy2.robjects as ro
-from rpy2.rinterface_lib.embedded import RRuntimeError
-
-from data.utils import parallelize_map
 from r_wrappers.annotatr import (
     annotate_regions,
     build_annotations,
@@ -65,7 +62,10 @@ from r_wrappers.utils import (
     rpy2_df_to_pd_df,
     save_rds,
 )
+from rpy2.rinterface_lib.embedded import RRuntimeError
 from utils import run_func_dict
+
+from data.utils import parallelize_map
 
 
 def quality_control(

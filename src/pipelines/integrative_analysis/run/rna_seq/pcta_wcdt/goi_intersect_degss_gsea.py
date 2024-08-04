@@ -9,15 +9,15 @@ from pathlib import Path
 from typing import Dict, Iterable, Tuple
 
 import pandas as pd
+from components.functional_analysis.orgdb import OrgDB
+from r_wrappers.utils import map_gene_id
 from rich import traceback
 from rpy2.rinterface_lib.callbacks import logger as rpy2_logger
 from tqdm.rich import tqdm
+from utils import run_func_dict
 
-from components.functional_analysis.orgdb import OrgDB
 from data.utils import parallelize_map
 from pipelines.integrative_analysis.utils import intersect_degss_gsea
-from r_wrappers.utils import map_gene_id
-from utils import run_func_dict
 
 _ = traceback.install()
 rpy2_logger.setLevel(logging.ERROR)
@@ -100,7 +100,7 @@ for contrast_comparison, contrast_comparison_filters in CONTRAST_COMPARISONS.ite
         # 1.2.2. Annotation of control samples
         contrast_level_control = "_".join(chain(*control_filters.values()))
 
-        # 1.3. Set experiment prefix and remove unnecesary samples
+        # 1.3. Set experiment prefix and remove unnecessary samples
         contrasts_levels = (contrast_level_test, contrast_level_control)
         exp_prefix_rna = (
             f"{SAMPLE_CONTRAST_FACTOR}_{sample_types_str}_"
