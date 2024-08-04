@@ -10,18 +10,9 @@ import pandas as pd
 import plotly.express as px
 import rpy2.robjects as ro
 import seaborn as sns
+from components.functional_analysis.orgdb import OrgDB
 from matplotlib import pyplot as plt
 from matplotlib.patches import Patch
-from rpy2.robjects.packages import importr
-from sklearn.cluster import KMeans
-from sklearn.decomposition import PCA
-from tqdm.rich import tqdm
-
-from components.functional_analysis.orgdb import OrgDB
-from data.io import copy_file, intersect_raw_counts, rename_genes, subset_star_counts
-from data.ml import get_gene_set_expression_data
-from data.utils import gene_expression_levels, parallelize_star
-from data.visualization import gene_expression_plot
 from r_wrappers.deseq2 import filter_dds, get_deseq_dataset_htseq, vst_transform
 from r_wrappers.msigdb import get_msigb_gene_sets, get_msigdbr
 from r_wrappers.tcgabiolinks import (
@@ -36,6 +27,15 @@ from r_wrappers.utils import (
     rpy2_df_to_pd_df_manual,
     save_rds,
 )
+from rpy2.robjects.packages import importr
+from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
+from tqdm.rich import tqdm
+
+from data.io import copy_file, intersect_raw_counts, rename_genes, subset_star_counts
+from data.ml import get_gene_set_expression_data
+from data.utils import gene_expression_levels, parallelize_star
+from data.visualization import gene_expression_plot
 
 
 def tcga_rna_seq(project_name: str, data_path: Path, counts_path: Path) -> None:
@@ -76,8 +76,15 @@ def tcga_rna_seq(project_name: str, data_path: Path, counts_path: Path) -> None:
     samples_annotation["release_year"] = [
         x.split("-")[0] for x in query_results["updated_datetime"]
     ]
-    samples_annotation_file = data_path.joinpath("samples_annotation.csv")
-    samples_annotation.to_csv(samples_annotation_file, index=False)
+
+    # 1.3. Remove duplicated rows and columns
+    samples_annotation = samples_annotation.loc[
+        ~samples_annotation.duplicated(keep="first"),
+        ~samples_annotation.columns.duplicated(keep="first"),
+    ]
+
+    # 1.4. Save sample annotation to disk
+    samples_annotation.to_csv(data_path.joinpath("samples_annotation.csv"), index=False)
 
     # 2. Download data
     gdc_download(query=query, directory=str(data_path))
@@ -113,6 +120,14 @@ def tcga_rna_seq(project_name: str, data_path: Path, counts_path: Path) -> None:
         ],
         axis=1,
     )
+
+    # 3.1. Remove duplicated rows and columns
+    counts_df = counts_df.loc[
+        ~counts_df.index.duplicated(keep="first"),
+        ~counts_df.columns.duplicated(keep="first"),
+    ]
+
+    # 3.2. Save raw counts to disk
     counts_df.to_csv(data_path.joinpath("raw_counts.csv"))
 
     # 4. Prepare data and save to disk
@@ -127,8 +142,9 @@ def tcga_rna_seq(project_name: str, data_path: Path, counts_path: Path) -> None:
 
     # 4.1. Save clinical data to disk
     col_data = data.do_slot("colData")
-    save_path = data_path.joinpath("clinical_data.csv")
-    rpy2_df_to_pd_df_manual(col_data).set_index("barcode").to_csv(save_path)
+    rpy2_df_to_pd_df_manual(col_data).set_index("barcode").to_csv(
+        data_path.joinpath("clinical_data.csv")
+    )
 
 
 def tcga_prad_meth_array(data_path: Path, idat_path: Path) -> None:
@@ -776,75 +792,62 @@ def su2c_pcf_clusters(
     )
 
 
-def goi_annotation_rna_seq(
-    vst_df: pd.DataFrame,
+def goi_perc_annotation_rna_seq(
     annot_df: pd.DataFrame,
+    vst_df: pd.DataFrame,
     plots_path: Path,
     data_path: Path,
-    goi_ensembl: str,
+    new_annot_file: Path,
     goi_symbol: str,
     sample_contrast_factor: str,
-    contrast_conditions: Iterable[str],
-    goi_levels_colors: Dict[str, str],
+    contrast_levels: Iterable[str],
+    contrast_levels_colors: Dict[str, str],
     percentiles: Tuple = (10, 20, 30),
     pca_top_n: int = 1000,
 ) -> None:
     """
-    Gene of interest (GOI) annotation (per sample type) of RNASeq samples.
+    Gene of interest (GOI) percentile annotation (per sample type) of RNASeq samples.
 
     Args:
-        vst_df: Dataframe of VST-normalized gene counts.
         annot_df: Dataframe of sample annotations.
+        vst_df: Dataframe of VST transformed gene counts.
         plots_path: Directory to store intermediate plots.
         data_path: Root data directory.
+        new_annot_file: New annotation file with GOI expression levels.
         goi_ensembl: GOI gene ENSEMBL ID.
         goi_symbol: GOI gene SYMBOL ID.
-        sample_contrast_factor: Annotated field used for group splittings (contrast).
-        contrast_conditions: Contrast levels to be split.
-        goi_levels_colors: Color palette for GOI contrast levels.
-        percentiles: Percentiles used to divide ranked list of samples. A 0.1 value
+        sample_contrast_factor: Annotated field used for group splits (contrast).
+        contrast_levels: Contrast levels to be split.
+        contrast_levels_colors: Color palette used for plotting.
+        percentiles: Percentiles used to divide ranked list of samples. A value of 10
             means that 10% of the bottom and top samples (ranked by GOI expression) will
             be assigned to low and high groups, respectively. The rest will be assigned
             to the mid group.
         pca_top_n: How many features to use when calculating PCA before plotting.
     """
-    # 1. Remove existing (if any) GOI metadata
-    annot_df.drop(
-        columns=[c for c in annot_df.columns if goi_symbol.lower() in c.lower()],
-        inplace=True,
-    )
-
-    # 2. Only keep shared samples
-    common_samples = annot_df.index.intersection(vst_df.columns)
-    annot_df = annot_df.loc[common_samples, :]
-    vst_df = vst_df.loc[:, common_samples]
-
-    # 3. Add GOI VST values to annotation file
-    annot_df.loc[vst_df.columns, f"{goi_symbol}_VST"] = vst_df.loc[goi_ensembl]
-
-    # 4. Use GOI counts to determine expression levels (i.e., high, mid and low)
-    for sample_cluster, percentile in product(contrast_conditions, percentiles):
+    # 1. Use GOI counts to determine expression levels (i.e., high, mid and low)
+    for contrast_level, percentile in product(contrast_levels, percentiles):
         levels_col = f"{goi_symbol}_level_{percentile}"
         annot_df_with_levels = gene_expression_levels(
-            expr_df=annot_df[annot_df[sample_contrast_factor] == sample_cluster],
+            expr_df=annot_df[annot_df[sample_contrast_factor] == contrast_level],
             gene_expr_col=f"{goi_symbol}_VST",
             gene_expr_level=levels_col,
             percentile=percentile,
         )
-        annot_df.loc[annot_df[sample_contrast_factor] == sample_cluster, levels_col] = (
+        annot_df.loc[annot_df[sample_contrast_factor] == contrast_level, levels_col] = (
             annot_df_with_levels[levels_col]
         )
 
-    # 4.1. Plot GOI VST counts
-    for sample_cluster, percentile in product(contrast_conditions, percentiles):
+    # 1.1. Plot GOI VST counts
+    for contrast_level, percentile in product(contrast_levels, percentiles):
         levels_col = f"{goi_symbol}_level_{percentile}"
-        title = f"{goi_symbol} - {sample_cluster} Samples"
+        title = f"{goi_symbol} - {contrast_level} Samples"
 
         save_path = plots_path.joinpath(
-            f"{sample_cluster}_{levels_col}_expression_plot.pdf"
+            f"{contrast_level}_{levels_col}_expression_plot.pdf"
         )
         _ = gene_expression_plot(
-            annot_df[annot_df[sample_contrast_factor] == sample_cluster],
+            annot_df[annot_df[sample_contrast_factor] == contrast_level],
             save_path,
             title,
             gene_expr_col=f"{goi_symbol}_VST",
@@ -852,23 +855,22 @@ def goi_annotation_rna_seq(
         )
 
         save_path = plots_path.joinpath(
-            f"{sample_cluster}_{levels_col}_expression_plot.html"
+            f"{contrast_level}_{levels_col}_expression_plot.html"
         )
         _ = gene_expression_plot(
-            annot_df[annot_df[sample_contrast_factor] == sample_cluster],
+            annot_df[annot_df[sample_contrast_factor] == contrast_level],
             save_path,
             title,
             gene_expr_col=f"{goi_symbol}_VST",
             gene_expr_level=levels_col,
         )
 
-    # 4.2. PCA plot of each sample cluster (top most variable genes)
-    for sample_cluster in contrast_conditions:
+    # 1.2. PCA plot of each sample cluster (top most variable genes)
+    for contrast_level in contrast_levels:
         vst_pca_df = vst_df.loc[
-            :, annot_df[annot_df[sample_contrast_factor] == sample_cluster].index
+            :, annot_df[annot_df[sample_contrast_factor] == contrast_level].index
         ]
         pca = PCA(n_components=2, random_state=8080)
-        # todo: compute PCA of only top genes
         top_genes = vst_pca_df.std(axis=1).sort_values(ascending=False)[:pca_top_n]
         components = pca.fit_transform(vst_pca_df.loc[top_genes.index].transpose())
         ratios = pca.explained_variance_ratio_ * 100
@@ -876,6 +878,7 @@ def goi_annotation_rna_seq(
         for percentile in percentiles:
             levels_col = f"{goi_symbol}_level_{percentile}"
             labels = annot_df.loc[vst_pca_df.columns, levels_col]
+
             fig = px.scatter(
                 components,
                 x=0,
@@ -885,26 +888,26 @@ def goi_annotation_rna_seq(
                     "1": f"PC 2 ({ratios[1]:.2f}%)",
                 },
                 color=labels,
-                color_discrete_map=goi_levels_colors,
+                color_discrete_map=contrast_levels_colors,
                 hover_name=vst_pca_df.columns,
                 title=(
                     f"{goi_symbol} (p={percentile}) expression levels for"
-                    f" {sample_cluster} (VST)"
+                    f" {contrast_level} (VST)"
                 ),
             )
             fig.write_image(
                 plots_path.joinpath(
-                    f"{sample_cluster}_{levels_col}_top_{pca_top_n}_pca_vst.pdf"
+                    f"{contrast_level}_{levels_col}_top_{pca_top_n}_pca_vst.pdf"
                 )
             )
             fig.write_html(
                 plots_path.joinpath(
-                    f"{sample_cluster}_{levels_col}_top_{pca_top_n}_pca_vst.html"
+                    f"{contrast_level}_{levels_col}_top_{pca_top_n}_pca_vst.html"
                 )
             )
             plt.clf()
 
-    # 5. GOI expression distribution among sample types
+    # 2. GOI expression distribution among sample types
     plt.figure(facecolor="white", figsize=(8, 8), dpi=200)
     plt.xticks(fontsize=8)
     sns.boxplot(
@@ -921,9 +924,10 @@ def goi_annotation_rna_seq(
         plots_path.joinpath(f"{sample_contrast_factor}_{goi_symbol}_distribution.html")
     )
 
-    # 6. Save GOI annotation file
-    save_path = data_path.joinpath(f"samples_annotation_{goi_symbol}.csv")
-    annot_df.sort_values(sample_contrast_factor, ascending=False).to_csv(save_path)
+    # 3. Save GOI annotation file
+    annot_df.sort_values(sample_contrast_factor, ascending=False).to_csv(
+        data_path.joinpath(new_annot_file)
+    )
 
 
 def goi_annotation_meth_array(
