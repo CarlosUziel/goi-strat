@@ -10,18 +10,9 @@ import pandas as pd
 import plotly.express as px
 import rpy2.robjects as ro
 import seaborn as sns
+from components.functional_analysis.orgdb import OrgDB
 from matplotlib import pyplot as plt
 from matplotlib.patches import Patch
-from rpy2.robjects.packages import importr
-from sklearn.cluster import KMeans
-from sklearn.decomposition import PCA
-from tqdm.rich import tqdm
-
-from components.functional_analysis.orgdb import OrgDB
-from data.io import copy_file, intersect_raw_counts, rename_genes, subset_star_counts
-from data.ml import get_gene_set_expression_data
-from data.utils import gene_expression_levels, parallelize_star
-from data.visualization import gene_expression_plot
 from r_wrappers.deseq2 import filter_dds, get_deseq_dataset_htseq, vst_transform
 from r_wrappers.msigdb import get_msigb_gene_sets, get_msigdbr
 from r_wrappers.tcgabiolinks import (
@@ -36,20 +27,29 @@ from r_wrappers.utils import (
     rpy2_df_to_pd_df_manual,
     save_rds,
 )
+from rpy2.robjects.packages import importr
+from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
+from tqdm.rich import tqdm
+
+from data.io import copy_file, intersect_raw_counts, rename_genes, subset_star_counts
+from data.ml import get_gene_set_expression_data
+from data.utils import gene_expression_levels, parallelize_star
+from data.visualization import gene_expression_plot
 
 
-def tcga_prad_rna_seq(data_path: Path, counts_path: Path) -> None:
+def tcga_rna_seq(project_name: str, data_path: Path, counts_path: Path) -> None:
     """
-    Download and process RNASeq data of the TCGA-PRAD dataset.
+    Download and process RNASeq data of the a TCGA dataset.
 
     Args:
-        data_path: Root data directory to store TCGA-PRAD dataset.
+        data_path: Root data directory to store a TCGA dataset.
         counts_path: Directory to store count files.
     """
 
     # 1. GDC Query
     query = gdc_query(
-        project="TCGA-PRAD",
+        project=project_name,
         data_category="Transcriptome Profiling",
         data_type="Gene Expression Quantification",
         workflow_type="STAR - Counts",
@@ -76,7 +76,7 @@ def tcga_prad_rna_seq(data_path: Path, counts_path: Path) -> None:
     samples_annotation["release_year"] = [
         x.split("-")[0] for x in query_results["updated_datetime"]
     ]
-    samples_annotation_file = data_path.joinpath("samples_annotation_tcga_prad.csv")
+    samples_annotation_file = data_path.joinpath("samples_annotation.csv")
     samples_annotation.to_csv(samples_annotation_file, index=False)
 
     # 2. Download data
@@ -105,7 +105,17 @@ def tcga_prad_rna_seq(data_path: Path, counts_path: Path) -> None:
         rename_genes, [(path,) for path in counts_path.glob("*.tsv")], method="fork"
     )
 
-    # 3. Prepare data and save to disk
+    # 3. Create raw counts dataset from counts files
+    counts_df = pd.concat(
+        [
+            pd.read_csv(f, sep="\t", index_col=0, names=[None, f.stem])
+            for f in counts_path.glob("*.tsv")
+        ],
+        axis=1,
+    )
+    counts_df.to_csv(data_path.joinpath("raw_counts.csv"))
+
+    # 4. Prepare data and save to disk
     save_path = data_path.joinpath("data.RDS")
     data = gdc_prepare(
         query=query,
@@ -115,7 +125,7 @@ def tcga_prad_rna_seq(data_path: Path, counts_path: Path) -> None:
         summarizedExperiment=True,
     )
 
-    # 3.1. Save clinical data to disk
+    # 4.1. Save clinical data to disk
     col_data = data.do_slot("colData")
     save_path = data_path.joinpath("clinical_data.csv")
     rpy2_df_to_pd_df_manual(col_data).set_index("barcode").to_csv(save_path)
@@ -1084,13 +1094,14 @@ def get_optimal_gsva_splits(
         for msigdb_cat, msigdb_cats_meta_path in msigdb_cats_meta_paths.items()
     }
 
-    # 1. Summarize results
+    # 1. Summarize results per sample group and MSigDB category
     sample_groups_summary = defaultdict(lambda: defaultdict(dict))
     for (contrast_level, low_n, mid_n, high_n), msigdb_cat in tqdm(
         list(product(group_counts, msigdb_cats))
     ):
         exp_prefix = f"{contrast_level}_{goi_level_prefix}_high_{high_n}+low_{low_n}_"
 
+        # 1.1. Load D-GSVA results
         all_results_df = pd.read_csv(
             results_path.joinpath(msigdb_cat).joinpath(
                 f"{exp_prefix}_high_vs_low_top_table_"
@@ -1099,6 +1110,7 @@ def get_optimal_gsva_splits(
             index_col=0,
         )
 
+        # 1.2. Compute functional difference score
         sample_groups_summary[contrast_level][msigdb_cat][
             f"{low_n}_{mid_n}_{high_n}"
         ] = (len(all_results_df) / len(msigdb_cats_meta_dfs[msigdb_cat])) * np.sqrt(
