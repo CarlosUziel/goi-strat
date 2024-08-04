@@ -10,9 +10,18 @@ import pandas as pd
 import plotly.express as px
 import rpy2.robjects as ro
 import seaborn as sns
-from components.functional_analysis.orgdb import OrgDB
 from matplotlib import pyplot as plt
 from matplotlib.patches import Patch
+from rpy2.robjects.packages import importr
+from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
+from tqdm.rich import tqdm
+
+from components.functional_analysis.orgdb import OrgDB
+from data.io import copy_file, intersect_raw_counts, rename_genes, subset_star_counts
+from data.ml import get_gene_set_expression_data
+from data.utils import gene_expression_levels, parallelize_star
+from data.visualization import gene_expression_plot
 from r_wrappers.deseq2 import filter_dds, get_deseq_dataset_htseq, vst_transform
 from r_wrappers.msigdb import get_msigb_gene_sets, get_msigdbr
 from r_wrappers.tcgabiolinks import (
@@ -27,15 +36,6 @@ from r_wrappers.utils import (
     rpy2_df_to_pd_df_manual,
     save_rds,
 )
-from rpy2.robjects.packages import importr
-from sklearn.cluster import KMeans
-from sklearn.decomposition import PCA
-from tqdm.rich import tqdm
-
-from data.io import copy_file, intersect_raw_counts, rename_genes, subset_star_counts
-from data.ml import get_gene_set_expression_data
-from data.utils import gene_expression_levels, parallelize_star
-from data.visualization import gene_expression_plot
 
 
 def tcga_rna_seq(project_name: str, data_path: Path, counts_path: Path) -> None:
