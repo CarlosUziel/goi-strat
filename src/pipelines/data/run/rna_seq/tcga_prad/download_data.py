@@ -7,7 +7,7 @@ from pathlib import Path
 from rich import traceback
 from rpy2.rinterface_lib.callbacks import logger as rpy2_logger
 
-from pipelines.data.utils import tcga_prad_rna_seq
+from pipelines.data.utils import tcga_rna_seq
 
 _ = traceback.install()
 rpy2_logger.setLevel(logging.ERROR)
@@ -21,7 +21,7 @@ parser.add_argument(
     type=str,
     help="Root directory",
     nargs="?",
-    default="/media/ssd/Perez/storage",
+    default="/mnt/d/phd_data",
 )
 parser.add_argument(
     "--threads",
@@ -37,4 +37,4 @@ DATA_ROOT: Path = STORAGE.joinpath("TCGA_PRAD_SU2C_RNASeq")
 DATA_PATH: Path = DATA_ROOT.joinpath("data")
 COUNTS_PATH: Path = DATA_PATH.joinpath("star_counts")
 
-tcga_prad_rna_seq(data_path=DATA_PATH, counts_path=COUNTS_PATH)
+tcga_rna_seq(data_path=DATA_PATH, counts_path=COUNTS_PATH)

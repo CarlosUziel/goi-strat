@@ -34,7 +34,7 @@ parser.add_argument(
     type=str,
     help="Root directory",
     nargs="?",
-    default="/media/ssd/Perez/storage",
+    default="/mnt/d/phd_data",
 )
 parser.add_argument(
     "--threads",

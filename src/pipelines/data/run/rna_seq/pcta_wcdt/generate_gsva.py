@@ -30,7 +30,7 @@ parser.add_argument(
     type=str,
     help="Root directory",
     nargs="?",
-    default="/media/ssd/Perez/storage",
+    default="/mnt/d/phd_data",
 )
 parser.add_argument(
     "--threads",
@@ -87,7 +87,7 @@ for msigdb_cat in MSIGDB_CATS:
     )
 
 
-# 2. Run differential expression analysis
+# 2. Generate GSVA matrices
 if __name__ == "__main__":
     freeze_support()
     if PARALLEL and len(input_collection) > 1:
