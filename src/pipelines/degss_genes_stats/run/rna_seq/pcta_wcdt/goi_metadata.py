@@ -9,13 +9,13 @@ from typing import Dict, Iterable, Tuple
 
 import numpy as np
 import pandas as pd
+from components.functional_analysis.orgdb import OrgDB
+from r_wrappers.utils import map_gene_id
 from rich import traceback
 from rpy2.rinterface_lib.callbacks import logger as rpy2_logger
 from tqdm import tqdm
 
-from components.functional_analysis.orgdb import OrgDB
 from pipelines.degss_genes_stats.utils import add_degss_genes_stats_metadata
-from r_wrappers.utils import map_gene_id
 
 _ = traceback.install()
 rpy2_logger.setLevel(logging.ERROR)
