@@ -105,7 +105,12 @@ def parallelize_map(
     func: Callable, inputs: Iterable, threads: int = 8, method: str = "spawn"
 ):
     with get_context(method).Pool(threads, maxtasksperchild=1) as pool:
-        return list(tqdm(pool.imap_unordered(func, inputs), total=len(inputs)))
+        return list(
+            tqdm(
+                pool.imap_unordered(func, inputs),
+                total=len(inputs),
+            )
+        )
 
 
 def filter_genes_wrt_annotation(
