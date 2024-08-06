@@ -56,16 +56,12 @@ RESULTS_PATH.mkdir(exist_ok=True, parents=True)
 PLOTS_PATH: Path = RESULTS_PATH.joinpath("plots")
 PLOTS_PATH.mkdir(exist_ok=True, parents=True)
 DATA_PATH: Path = DATA_ROOT.joinpath("data")
-# ANNOT_PATH: Path = DATA_PATH.joinpath(f"samples_annotation_{GOI_SYMBOL}.csv")
-ANNOT_PATH: Path = DATA_PATH.joinpath(f"samples_annotation_{GOI_SYMBOL}_ext.csv")
+ANNOT_PATH: Path = DATA_PATH.joinpath(f"samples_annotation_{GOI_SYMBOL}.csv")
 RAW_COUNTS_PATH: Path = MAIN_ROOT.joinpath("data").joinpath(
     "raw_counts_wo_batch_effects.csv"
 )
 SAMPLE_CONTRAST_FACTOR: str = "sample_type"
-# GOI_LEVEL_PREFIX: str = f"{GOI_SYMBOL}_level"
-# GOI_CLASS_PREFIX: str = f"{GOI_SYMBOL}_class"
-PERCENTILE: int = 25
-GOI_LEVEL_PREFIX: str = f"{GOI_SYMBOL}_level_at_{PERCENTILE}_perc"
+GOI_LEVEL_PREFIX: str = f"{GOI_SYMBOL}_level"
 GOI_CLASS_PREFIX: str = f"{GOI_SYMBOL}_class"
 SAMPLE_CLUSTER_CONTRAST_LEVELS: Iterable[
     Iterable[Dict[str, Iterable[Union[int, str]]]]
