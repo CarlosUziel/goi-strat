@@ -11,6 +11,7 @@
 """
 
 import logging
+import re
 from pathlib import Path
 from typing import Iterable
 
@@ -19,6 +20,7 @@ import rpy2
 from rpy2 import robjects as ro
 from rpy2.rinterface_lib.embedded import RRuntimeError
 from rpy2.robjects import Formula
+from rpy2.robjects.conversion import localconverter
 from rpy2.robjects.packages import importr
 
 from r_wrappers.utils import pd_df_to_rpy2_df
@@ -57,20 +59,28 @@ def get_deseq_dataset_matrix(
         )
 
     # 1.2. Build design formula
-    design = Formula("~ " + " + ".join(design_factors))
+    def sanitize_factor(factor: str):
+        return re.sub(r"\W|^(?=\d)", "_", factor)
+
+    rename_map = {f: sanitize_factor(f) for f in design_factors}
+    design_factors_safe = list(rename_map.values())
+
+    design = Formula("~ " + " + ".join(design_factors_safe))
 
     # 2. Keep only samples for which annotation is available and vice-versa
     common_samples = counts_matrix.columns.intersection(annot_df.index)
     counts_matrix = counts_matrix.loc[:, common_samples]
     annot_df = annot_df.loc[common_samples, factors]
+    annot_df_safe = annot_df.rename(columns=rename_map)
 
     # 3. Get DESeq dataset
-    return r_deseq2.DESeqDataSetFromMatrix(
-        countData=pd_df_to_rpy2_df(counts_matrix),
-        colData=pd_df_to_rpy2_df(annot_df),
-        design=design,
-        **kwargs,
-    )
+    with localconverter(ro.default_converter):
+        return r_deseq2.DESeqDataSetFromMatrix(
+            countData=pd_df_to_rpy2_df(counts_matrix),
+            colData=pd_df_to_rpy2_df(annot_df_safe),
+            design=design,
+            **kwargs,
+        )
 
 
 def get_deseq_dataset_htseq(
@@ -111,7 +121,14 @@ def get_deseq_dataset_htseq(
         )
 
     # 1.2. Build design formula
-    design = Formula("~ " + " + ".join(design_factors))
+    def sanitize_factor(factor: str):
+        return re.sub(r"\W|^(?=\d)", "_", factor)
+
+    rename_map = {f: sanitize_factor(f) for f in design_factors}
+    design_factors_safe = list(rename_map.values())
+    annot_df_safe = annot_df.rename(columns=rename_map)
+
+    design = Formula("~ " + " + ".join(design_factors_safe))
 
     # 2. Create sample table including sample name, file name and factors
     # 2.1. Get sample name from file names
@@ -123,7 +140,7 @@ def get_deseq_dataset_htseq(
     # according to factor index in the table
     files_names_sorted = []
     indx_to_drop = []
-    for sample_name in annot_df.index:
+    for sample_name in annot_df_safe.index:
         f = [f for f in files_names if sample_name in f]
         if len(f) == 0:
             logging.warning(
@@ -134,7 +151,7 @@ def get_deseq_dataset_htseq(
             indx_to_drop.append(sample_name)
         else:
             files_names_sorted.append(f[0])
-    data_clean = annot_df.drop(indx_to_drop)
+    data_clean = annot_df_safe.drop(indx_to_drop)
 
     # 2.3. Build sample table
     sample_table = pd.DataFrame()
@@ -150,12 +167,17 @@ def get_deseq_dataset_htseq(
         sample_table[factor] = data_clean[factor]
 
     # 2.3.2. Build R DataFrame
-    sample_table = pd_df_to_rpy2_df(sample_table.reset_index())
+    with localconverter(ro.default_converter):
+        sample_table = pd_df_to_rpy2_df(sample_table.reset_index())
 
     # 3. Get DESeq dataset
-    return r_deseq2.DESeqDataSetFromHTSeqCount(
-        sampleTable=sample_table, directory=str(counts_path), design=design, **kwargs
-    )
+    with localconverter(ro.default_converter):
+        return r_deseq2.DESeqDataSetFromHTSeqCount(
+            sampleTable=sample_table,
+            directory=str(counts_path),
+            design=design,
+            **kwargs,
+        )
 
 
 def filter_dds(
