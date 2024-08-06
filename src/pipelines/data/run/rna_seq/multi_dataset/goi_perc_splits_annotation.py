@@ -11,16 +11,16 @@ from typing import Dict, Iterable
 
 import pandas as pd
 import rpy2.robjects as ro
-from components.functional_analysis.orgdb import OrgDB
-from r_wrappers.deseq2 import vst_transform
-from r_wrappers.utils import map_gene_id, pd_df_to_rpy2_df, rpy2_df_to_pd_df
 from rich import traceback
 from rpy2.rinterface_lib.callbacks import logger as rpy2_logger
 from tqdm import tqdm
-from utils import run_func_dict
 
+from components.functional_analysis.orgdb import OrgDB
 from data.utils import parallelize_map
 from pipelines.data.utils import goi_perc_annotation_rna_seq
+from r_wrappers.deseq2 import vst_transform
+from r_wrappers.utils import map_gene_id, pd_df_to_rpy2_df, rpy2_df_to_pd_df
+from utils import run_func_dict
 
 _ = traceback.install()
 rpy2_logger.setLevel(logging.ERROR)
