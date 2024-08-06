@@ -1,9 +1,11 @@
+import re
 from itertools import chain, product
 from pathlib import Path
 from typing import Dict, Iterable, Tuple
 
 import pandas as pd
 import rpy2.robjects as ro
+from rpy2.robjects.conversion import localconverter
 
 from r_wrappers.complex_heatmaps import complex_heatmap, heatmap_annotation
 from r_wrappers.limma import (
@@ -62,38 +64,52 @@ def diff_enrich_gsva_limma(
     gsva_matrix = gsva_matrix.loc[:, common_idxs]
     annot_df_contrasts = annot_df_contrasts.loc[common_idxs, :]
 
+    # Replace invalid characters with underscores
+    def sanitize_factor(factor: str):
+        return re.sub(r"\W|^(?=\d)", "_", factor)
+
+    rename_map = {f: sanitize_factor(f) for f in design_factors}
+    design_factors_safe = list(rename_map.values())
+    annot_df_contrasts_safe = annot_df_contrasts.rename(columns=rename_map)
+
     # 1. Contrasts design matrix
-    design_matrix = get_design_matrix(
-        annot_df_contrasts[design_factors], design_factors
-    )
+    with localconverter(ro.default_converter):
+        design_matrix = get_design_matrix(
+            annot_df_contrasts_safe[design_factors_safe], design_factors_safe
+        )
 
     # 2. Fit linear model
-    lm_fitted = linear_model_fit(pd_df_to_rpy2_df(gsva_matrix), design_matrix)
+    with localconverter(ro.default_converter):
+        lm_fitted = linear_model_fit(pd_df_to_rpy2_df(gsva_matrix), design_matrix)
 
     # 3. Get differential analysis statistics
-    contrast_matrix = make_contrasts(
-        contrasts=ro.StrVector(
-            [f"{test}-{control}" for test, control in contrasts_levels]
-        ),
-        levels=design_matrix,
-    )
-    contrasts_fit = empirical_bayes(
-        fit=fit_contrasts(fit=lm_fitted, contrasts=contrast_matrix)
-    )
+    with localconverter(ro.default_converter):
+        contrast_matrix = make_contrasts(
+            contrasts=ro.StrVector(
+                [f"{test}-{control}" for test, control in contrasts_levels]
+            ),
+            levels=design_matrix,
+        )
+
+    with localconverter(ro.default_converter):
+        contrasts_fit = empirical_bayes(
+            fit=fit_contrasts(fit=lm_fitted, contrasts=contrast_matrix)
+        )
 
     # 4. Get differentially enriched gene sets for each comparison
     for i, (test, control) in enumerate(contrasts_levels, 1):
         # 4.1. Unfiltered results
+        with localconverter(ro.default_converter):
+            pd_df = rpy2_df_to_pd_df(top_table(contrasts_fit, coef=i, num=ro.r("Inf")))
+
         diff_gene_sets = (
-            rpy2_df_to_pd_df(top_table(contrasts_fit, coef=i, num=ro.r("Inf")))
-            .rename(
+            pd_df.rename(
                 columns={
                     "logFC": "log2FoldChange",
                     "P.Val": "pvalue",
                     "adj.P.Val": "padj",
                 }
-            )
-            .sort_values("log2FoldChange", key=abs, ascending=False)
+            ).sort_values("log2FoldChange", key=abs, ascending=False)
         ).join(msigdb_cat_meta)
         diff_gene_sets.to_csv(
             results_path.joinpath(f"{exp_prefix}_{test}_vs_{control}_top_table.csv")
@@ -192,31 +208,34 @@ def diff_enrich_gsva_heatmaps(
         show_annotation_name=False,
     )
 
-    complex_heatmap(
-        counts_matrix,
-        save_path=save_path,
-        width=10,
-        height=8,
-        heatmap_legend_side="top",
-        name=f"Top {top_n} variable gene sets",
-        column_title=contrast_factor,
-        top_annotation=ha_column,
-        show_row_names=False,
-        show_column_names=False,
-        cluster_columns=False,
-        cluster_rows=False,
-        column_split=ro.r.factor(
-            ro.StrVector(
-                annot_df_contrasts[contrast_factor].loc[counts_matrix.columns].tolist()
+    with localconverter(ro.default_converter):
+        complex_heatmap(
+            counts_matrix,
+            save_path=save_path,
+            width=10,
+            height=8,
+            heatmap_legend_side="top",
+            name=f"Top {top_n} variable gene sets",
+            column_title=contrast_factor,
+            top_annotation=ha_column,
+            show_row_names=False,
+            show_column_names=False,
+            cluster_columns=False,
+            cluster_rows=False,
+            column_split=ro.r.factor(
+                ro.StrVector(
+                    annot_df_contrasts[contrast_factor]
+                    .loc[counts_matrix.columns]
+                    .tolist()
+                ),
+                levels=ro.StrVector(list(contrast_levels_colors.keys())),
             ),
-            levels=ro.StrVector(list(contrast_levels_colors.keys())),
-        ),
-        cluster_column_slices=False,
-        heatmap_legend_param=ro.r(
-            'list(title_position = "topcenter", color_bar = "continuous",'
-            ' legend_height = unit(5, "cm"), legend_direction = "horizontal")'
-        ),
-    )
+            cluster_column_slices=False,
+            heatmap_legend_param=ro.r(
+                'list(title_position = "topcenter", color_bar = "continuous",'
+                ' legend_height = unit(5, "cm"), legend_direction = "horizontal")'
+            ),
+        )
 
     # 2. Supervised heatmaps
     for (test, control), p_col, p_th, lfc_level, lfc_th in product(
@@ -270,32 +289,33 @@ def diff_enrich_gsva_heatmaps(
         )
 
         # 2.5. Plot heatmap
-        complex_heatmap(
-            counts_matrix,
-            save_path=save_path,
-            width=10,
-            height=int(0.3 * len(counts_matrix)),
-            name=f"Top {top_n} DEGSs (LFC > {lfc_th}, {p_col} < {p_th})",
-            column_title=contrast_factor,
-            top_annotation=ha_column,
-            show_row_names=True,
-            show_column_names=False,
-            cluster_columns=False,
-            cluster_rows=False,
-            column_split=ro.r.factor(
-                ro.StrVector(
-                    annot_df_test_control[contrast_factor]
-                    .loc[counts_matrix.columns]
-                    .tolist()
+        with localconverter(ro.default_converter):
+            complex_heatmap(
+                counts_matrix,
+                save_path=save_path,
+                width=10,
+                height=int(0.3 * len(counts_matrix)),
+                name=f"Top {top_n} DEGSs (LFC > {lfc_th}, {p_col} < {p_th})",
+                column_title=contrast_factor,
+                top_annotation=ha_column,
+                show_row_names=True,
+                show_column_names=False,
+                cluster_columns=False,
+                cluster_rows=False,
+                column_split=ro.r.factor(
+                    ro.StrVector(
+                        annot_df_test_control[contrast_factor]
+                        .loc[counts_matrix.columns]
+                        .tolist()
+                    ),
+                    levels=ro.StrVector(list(contrast_levels_colors.keys())),
                 ),
-                levels=ro.StrVector(list(contrast_levels_colors.keys())),
-            ),
-            cluster_column_slices=False,
-            heatmap_legend_param=ro.r(
-                'list(title_position = "topcenter", color_bar = "continuous",'
-                ' legend_height = unit(5, "cm"), legend_direction = "horizontal")'
-            ),
-        )
+                cluster_column_slices=False,
+                heatmap_legend_param=ro.r(
+                    'list(title_position = "topcenter", color_bar = "continuous",'
+                    ' legend_height = unit(5, "cm"), legend_direction = "horizontal")'
+                ),
+            )
 
 
 def diff_enrich_gsva(
