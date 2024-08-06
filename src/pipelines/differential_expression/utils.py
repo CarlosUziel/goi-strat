@@ -1,4 +1,5 @@
 import logging
+import re
 from collections import defaultdict
 from copy import deepcopy
 from itertools import product
@@ -8,6 +9,7 @@ from typing import Any, Dict, Iterable, Optional, Tuple
 import pandas as pd
 import plotly.express as px
 import rpy2.robjects as ro
+from rpy2.robjects.conversion import localconverter
 from sklearn.decomposition import PCA
 
 from components.functional_analysis.orgdb import OrgDB
@@ -72,16 +74,18 @@ def proc_diff_expr_dataset_plots(
     save_path = plots_path.joinpath(
         f"{exp_prefix}_samples_clustering_{dataset_label}.pdf"
     )
-    heatmap_sample_distance(sample_dist, save_path)
+    with localconverter(ro.default_converter):
+        heatmap_sample_distance(sample_dist, save_path)
 
     # 2. Genes clustering (unsupervised)
-    counts_df = assay_to_df(
-        norm_transform(dataset) if dataset_label == "dds" else dataset
-    )
-    try:
-        counts_df.index = map_gene_id(counts_df.index, org_db, "ENSEMBL", "SYMBOL")
-    except Exception as e:
-        logging.warn(e)
+    with localconverter(ro.default_converter):
+        counts_df = assay_to_df(
+            norm_transform(dataset) if dataset_label == "dds" else dataset
+        )
+        try:
+            counts_df.index = map_gene_id(counts_df.index, org_db, "ENSEMBL", "SYMBOL")
+        except Exception as e:
+            logging.warn(e)
 
     # get rid of non-uniquely mapped transcripts
     counts_df = counts_df.loc[~counts_df.index.str.contains("/", na=False)]
@@ -98,58 +102,63 @@ def proc_diff_expr_dataset_plots(
     save_path = plots_path.joinpath(
         f"{exp_prefix}_unsupervised_genes_clustering_{dataset_label}.pdf"
     )
-    ha_column = heatmap_annotation(
-        df=annot_df_contrasts[[contrast_factor]],
-        col={contrast_factor: contrast_levels_colors},
-        show_annotation_name=False,
-    )
+    with localconverter(ro.default_converter):
+        ha_column = heatmap_annotation(
+            df=annot_df_contrasts[[contrast_factor]],
+            col={contrast_factor: contrast_levels_colors},
+            show_annotation_name=False,
+        )
 
-    complex_heatmap(
-        counts_matrix,
-        save_path=save_path,
-        width=10,
-        height=8,
-        column_title=f"Top {top_n} variable genes ({dataset_label})",
-        name=f"Gene Expression ({dataset_label})",
-        top_annotation=ha_column,
-        show_row_names=False,
-        show_column_names=True,
-        cluster_columns=True,
-        heatmap_legend_param=ro.r(
-            'list(title_position = "topcenter", color_bar = "continuous",'
-            ' legend_height = unit(5, "cm"), legend_direction = "horizontal")'
-        ),
-    )
+        complex_heatmap(
+            counts_matrix,
+            save_path=save_path,
+            width=10,
+            height=8,
+            column_title=f"Top {top_n} variable genes ({dataset_label})",
+            name=f"Gene Expression ({dataset_label})",
+            top_annotation=ha_column,
+            show_row_names=False,
+            show_column_names=True,
+            cluster_columns=True,
+            heatmap_legend_param=ro.r(
+                'list(title_position = "topcenter", color_bar = "continuous",'
+                ' legend_height = unit(5, "cm"), legend_direction = "horizontal")'
+            ),
+        )
 
-    # for publishing
-    save_path = plots_path.joinpath(
-        f"{exp_prefix}_unsupervised_genes_clustering_{dataset_label}_pub.pdf"
-    )
-    complex_heatmap(
-        counts_matrix,
-        save_path=save_path,
-        width=10,
-        height=8,
-        column_title=f"Top {top_n} variable genes ({dataset_label})",
-        name=f"Gene Expression ({dataset_label})",
-        top_annotation=ha_column,
-        show_row_names=False,
-        show_column_names=False,
-        cluster_columns=False,
-        heatmap_legend_param=ro.r(
-            'list(title_position = "topcenter", color_bar = "continuous",'
-            ' legend_height = unit(5, "cm"), legend_direction = "horizontal")'
-        ),
-    )
+        # for publishing
+        save_path = plots_path.joinpath(
+            f"{exp_prefix}_unsupervised_genes_clustering_{dataset_label}_pub.pdf"
+        )
+        complex_heatmap(
+            counts_matrix,
+            save_path=save_path,
+            width=10,
+            height=8,
+            column_title=f"Top {top_n} variable genes ({dataset_label})",
+            name=f"Gene Expression ({dataset_label})",
+            top_annotation=ha_column,
+            show_row_names=False,
+            show_column_names=False,
+            cluster_columns=False,
+            heatmap_legend_param=ro.r(
+                'list(title_position = "topcenter", color_bar = "continuous",'
+                ' legend_height = unit(5, "cm"), legend_direction = "horizontal")'
+            ),
+        )
 
     # 3. Mean SD plot
-    save_path = plots_path.joinpath(f"{exp_prefix}_mean_sd_plot_{dataset_label}.pdf")
-    mean_sd_plot(
-        norm_transform(dataset) if dataset_label == "dds" else dataset, save_path
-    )
+    with localconverter(ro.default_converter):
+        save_path = plots_path.joinpath(
+            f"{exp_prefix}_mean_sd_plot_{dataset_label}.pdf"
+        )
+        mean_sd_plot(
+            norm_transform(dataset) if dataset_label == "dds" else dataset, save_path
+        )
 
     # 4. Principal Component Analysis (PCA)
-    dataset_df = assay_to_df(dataset)
+    with localconverter(ro.default_converter):
+        dataset_df = assay_to_df(dataset)
 
     pca = PCA(n_components=2, random_state=8080)
     components = pca.fit_transform(dataset_df.transpose())
@@ -171,9 +180,15 @@ def proc_diff_expr_dataset_plots(
     fig.write_html(plots_path.joinpath(f"{exp_prefix}_pca_{dataset_label}.html"))
 
     # 5. Multidimensional scaling (MDS)
-    sample_dist = sample_distance(dataset)
-    save_path = plots_path.joinpath(f"{exp_prefix}_MDS_{dataset_label}.pdf")
-    mds_plot(sample_dist, dataset, color=contrast_factor, save_path=save_path)
+    with localconverter(ro.default_converter):
+        sample_dist = sample_distance(dataset)
+        save_path = plots_path.joinpath(f"{exp_prefix}_MDS_{dataset_label}.pdf")
+        mds_plot(
+            sample_dist,
+            dataset,
+            color=re.sub(r"\W|^(?=\d)", "_", contrast_factor),
+            save_path=save_path,
+        )
 
 
 def proc_diff_expr_dataset(
@@ -234,20 +249,22 @@ def proc_diff_expr_dataset(
 
     # 1.1. Get dataset
     if counts_path and counts_files_pattern:
-        dds = get_deseq_dataset_htseq(
-            annot_df=annot_df_contrasts,
-            counts_path=counts_path,
-            factors=factors,
-            design_factors=design_factors,
-            counts_files_pattern=counts_files_pattern,
-        )
+        with localconverter(ro.default_converter):
+            dds = get_deseq_dataset_htseq(
+                annot_df=annot_df_contrasts,
+                counts_path=counts_path,
+                factors=factors,
+                design_factors=design_factors,
+                counts_files_pattern=counts_files_pattern,
+            )
     elif counts_matrix is not None:
-        dds = get_deseq_dataset_matrix(
-            counts_matrix=counts_matrix,
-            annot_df=annot_df_contrasts,
-            factors=factors,
-            design_factors=design_factors,
-        )
+        with localconverter(ro.default_converter):
+            dds = get_deseq_dataset_matrix(
+                counts_matrix=counts_matrix,
+                annot_df=annot_df_contrasts,
+                factors=factors,
+                design_factors=design_factors,
+            )
     else:
         raise ValueError(
             "Either plots_path and counts_files_pattern or counts_matrix must be used."
@@ -257,36 +274,16 @@ def proc_diff_expr_dataset(
     dds = filter_dds(dds, 10)
 
     # 1.3. Save to disk
-    save_path = results_path.joinpath(f"{exp_prefix}_dds")
-    rpy2_df_to_pd_df(ro.r("counts")(dds)).to_csv(save_path.with_suffix(".csv"))
-    save_rds(dds, save_path.with_suffix(".RDS"))
+    with localconverter(ro.default_converter):
+        save_path = results_path.joinpath(f"{exp_prefix}_dds")
+        rpy2_df_to_pd_df(ro.r("counts")(dds)).to_csv(save_path.with_suffix(".csv"))
+        save_rds(dds, save_path.with_suffix(".RDS"))
 
     # 1.4. Dataset visualizations
-    proc_diff_expr_dataset_plots(
-        dataset=dds,
-        dataset_label="DDS",
-        annot_df_contrasts=deepcopy(annot_df_contrasts),
-        plots_path=plots_path,
-        exp_prefix=exp_prefix,
-        org_db=org_db,
-        contrast_factor=contrast_factor,
-        contrast_levels_colors=contrast_levels_colors,
-        heatmap_top_n=heatmap_top_n,
-    )
-
-    # 2. Variance Stabilizing Transform (VST)
-    if compute_vst:
-        # 2.1. Get dataset
-        vst = vst_transform(dds)
-
-        # 2.2. Save to disk
-        save_path = results_path.joinpath(f"{exp_prefix}_vst.csv")
-        rpy2_df_to_pd_df(ro.r("assay")(vst)).to_csv(save_path)
-
-        # 2.3. Dataset visualizations
+    with localconverter(ro.default_converter):
         proc_diff_expr_dataset_plots(
-            dataset=vst,
-            dataset_label="VST",
+            dataset=dds,
+            dataset_label="DDS",
             annot_df_contrasts=deepcopy(annot_df_contrasts),
             plots_path=plots_path,
             exp_prefix=exp_prefix,
@@ -295,30 +292,56 @@ def proc_diff_expr_dataset(
             contrast_levels_colors=contrast_levels_colors,
             heatmap_top_n=heatmap_top_n,
         )
+
+    # 2. Variance Stabilizing Transform (VST)
+    if compute_vst:
+        with localconverter(ro.default_converter):
+            # 2.1. Get dataset
+            vst = vst_transform(dds)
+
+            # 2.2. Save to disk
+            with localconverter(ro.default_converter):
+                save_path = results_path.joinpath(f"{exp_prefix}_vst.csv")
+                rpy2_df_to_pd_df(ro.r("assay")(vst)).to_csv(save_path)
+
+            # 2.3. Dataset visualizations
+            proc_diff_expr_dataset_plots(
+                dataset=vst,
+                dataset_label="VST",
+                annot_df_contrasts=deepcopy(annot_df_contrasts),
+                plots_path=plots_path,
+                exp_prefix=exp_prefix,
+                org_db=org_db,
+                contrast_factor=contrast_factor,
+                contrast_levels_colors=contrast_levels_colors,
+                heatmap_top_n=heatmap_top_n,
+            )
     else:
         vst = None
 
     # 3. RLOG transform
     if compute_rlog:
-        # 3.1. Get dataset
-        rld = rlog_transform(dds)
+        with localconverter(ro.default_converter):
+            # 3.1. Get dataset
+            rld = rlog_transform(dds)
 
-        # 3.2. Save to disk
-        save_path = results_path.joinpath(f"{exp_prefix}_rld.csv")
-        rpy2_df_to_pd_df(ro.r("assay")(rld)).to_csv(save_path)
+            # 3.2. Save to disk
+            with localconverter(ro.default_converter):
+                save_path = results_path.joinpath(f"{exp_prefix}_rld.csv")
+                rpy2_df_to_pd_df(ro.r("assay")(rld)).to_csv(save_path)
 
-        # 3.3. Dataset visualizations
-        proc_diff_expr_dataset_plots(
-            dataset=rld,
-            dataset_label="RLD",
-            annot_df_contrasts=deepcopy(annot_df_contrasts),
-            plots_path=plots_path,
-            exp_prefix=exp_prefix,
-            org_db=org_db,
-            contrast_factor=contrast_factor,
-            contrast_levels_colors=contrast_levels_colors,
-            heatmap_top_n=heatmap_top_n,
-        )
+            # 3.3. Dataset visualizations
+            proc_diff_expr_dataset_plots(
+                dataset=rld,
+                dataset_label="RLD",
+                annot_df_contrasts=deepcopy(annot_df_contrasts),
+                plots_path=plots_path,
+                exp_prefix=exp_prefix,
+                org_db=org_db,
+                contrast_factor=contrast_factor,
+                contrast_levels_colors=contrast_levels_colors,
+                heatmap_top_n=heatmap_top_n,
+            )
     else:
         rld = None
 
@@ -365,29 +388,36 @@ def proc_diff_expr_results(
     """
 
     # 1. Run DESeq2
-    deseq = run_dseq2(dds)
+    with localconverter(ro.default_converter):
+        deseq = run_dseq2(dds)
 
     # 2. Get results for each contrast
     results = {}
     for test, control in contrasts_levels:
         # [factor, active (numerator), baseline (denominator)]
-        contrast = ro.StrVector([contrast_factor, test, control])
-
-        results[(test, control)] = lfc_shrink(dds=deseq, contrast=contrast, type="ashr")
+        contrast = ro.StrVector(
+            [re.sub(r"\W|^(?=\d)", "_", contrast_factor), test, control]
+        )
+        with localconverter(ro.default_converter):
+            results[(test, control)] = lfc_shrink(
+                dds=deseq, contrast=contrast, type="ashr"
+            )
 
     # 3. MA Plot
     for (test, control), result in results.items():
         # [factor, active (numerator), baseline (denominator)]
-        contrast = [contrast_factor, test, control]
+        contrast = [re.sub(r"\W|^(?=\d)", "_", contrast_factor), test, control]
 
         save_path = plots_path.joinpath(f"{exp_prefix}_{test}_vs_{control}_ma_plot.pdf")
-        ma_plot(result, save_path=save_path, contrast=ro.StrVector(contrast))
+        with localconverter(ro.default_converter):
+            ma_plot(result, save_path=save_path, contrast=ro.StrVector(contrast))
 
     # 4. Annotate results and save to disk
-    results_anno = {
-        k: annotate_deseq_result(deseq_result, org_db)
-        for k, deseq_result in results.items()
-    }
+    with localconverter(ro.default_converter):
+        results_anno = {
+            k: annotate_deseq_result(deseq_result, org_db)
+            for k, deseq_result in results.items()
+        }
     for (test, control), deseq_result in results_anno.items():
         save_path = results_path.joinpath(
             f"{exp_prefix}_{test}_vs_{control}_deseq_results.csv"
@@ -418,14 +448,15 @@ def proc_diff_expr_results(
         save_path = plots_path.joinpath(
             f"{exp_prefix}_{test}_vs_{control}_volcano_plot.pdf"
         )
-        volcano_plot(
-            data=pd_df_to_rpy2_df(result[["log2FoldChange", "padj"]]),
-            lab=ro.StrVector(labels),
-            x="log2FoldChange",
-            y="padj",
-            save_path=save_path,
-            title=f"{test} vs {control}",
-        )
+        with localconverter(ro.default_converter):
+            volcano_plot(
+                data=pd_df_to_rpy2_df(result[["log2FoldChange", "padj"]]),
+                lab=ro.StrVector(labels),
+                x="log2FoldChange",
+                y="padj",
+                save_path=save_path,
+                title=f"{test} vs {control}",
+            )
 
     # 6. Filter results
     results_filtered = {}
@@ -498,19 +529,20 @@ def proc_diff_expr_results(
                 f"{exp_prefix}_{p_col}_{p_thr_str}_{lfc_level}_{lfc_thr_str}_venn.pdf"
             )
 
-            venn_diagram(
-                contrast_degs,
-                save_path,
-                main=f"{exp_prefix}",
-                sub=f"{p_col} < {p_th}, LFC={lfc_level}, >{lfc_thr}",
-                cex=2,
-                fontface="bold",
-                fill=(
-                    ro.StrVector(["red", "blue", "green"])
-                    if len(contrasts_levels) == 3
-                    else ro.NULL
-                ),
-            )
+            with localconverter(ro.default_converter):
+                venn_diagram(
+                    contrast_degs,
+                    save_path,
+                    main=f"{exp_prefix}",
+                    sub=f"{p_col} < {p_th}, LFC={lfc_level}, >{lfc_thr}",
+                    cex=2,
+                    fontface="bold",
+                    fill=(
+                        ro.StrVector(["red", "blue", "green"])
+                        if len(contrasts_levels) == 3
+                        else ro.NULL
+                    ),
+                )
 
     # 8. Gene clustering (supervised heatmap)
     for (
@@ -525,7 +557,8 @@ def proc_diff_expr_results(
             continue
 
         # 8.1. Load and annotate VST matrix
-        counts_df = assay_to_df(vst if vst else dds)
+        with localconverter(ro.default_converter):
+            counts_df = assay_to_df(vst if vst else dds)
         # get SYMBOL IDs of common transcripts
         counts_df = counts_df.loc[counts_df.index.intersection(result.index)]
         counts_df.index = result.loc[counts_df.index, "SYMBOL"].values
@@ -568,53 +601,56 @@ def proc_diff_expr_results(
             f"{exp_prefix}_{test}_vs_{control}_{p_col}_{p_thr_str}_"
             f"{lfc_level}_{lfc_thr_str}_supervised_genes_clustering_vst.pdf"
         )
-        ha_column = heatmap_annotation(
-            df=annot_df_test_control[[contrast_factor]],
-            col={contrast_factor: contrast_levels_colors},
-            show_annotation_name=False,
-        )
+        with localconverter(ro.default_converter):
+            ha_column = heatmap_annotation(
+                df=annot_df_test_control[[contrast_factor]],
+                col={contrast_factor: contrast_levels_colors},
+                show_annotation_name=False,
+            )
 
         # 8.6. Plot heatmap
-        complex_heatmap(
-            counts_matrix,
-            save_path=save_path,
-            width=10,
-            column_title=(
-                f"Top {top_n} DEGs in {contrast_factor} (LFC > {lfc_thr}, {p_col} <"
-                f" {p_th}) (VST)"
-            ),
-            name="Gene Expression (VST)",
-            top_annotation=ha_column,
-            heatmap_legend_param=ro.r(
-                'list(title_position = "topcenter", color_bar = "continuous",'
-                ' legend_height = unit(5, "cm"), legend_direction = "horizontal")'
-            ),
-        )
+        with localconverter(ro.default_converter):
+            complex_heatmap(
+                counts_matrix,
+                save_path=save_path,
+                width=10,
+                column_title=(
+                    f"Top {top_n} DEGs in {contrast_factor} (LFC > {lfc_thr}, {p_col} <"
+                    f" {p_th}) (VST)"
+                ),
+                name="Gene Expression (VST)",
+                top_annotation=ha_column,
+                heatmap_legend_param=ro.r(
+                    'list(title_position = "topcenter", color_bar = "continuous",'
+                    ' legend_height = unit(5, "cm"), legend_direction = "horizontal")'
+                ),
+            )
 
         # 8.7. Plot heatmap (for publishing)
         save_path = plots_path.joinpath(
             f"{exp_prefix}_{test}_vs_{control}_{p_col}_{p_thr_str}_"
             f"{lfc_level}_{lfc_thr_str}_supervised_genes_clustering_vst_pub.pdf"
         )
-        complex_heatmap(
-            counts_matrix,
-            save_path=save_path,
-            width=10,
-            height=8,
-            column_title=(
-                f"Top {top_n} DEGs in {contrast_factor} (LFC > {lfc_thr}, {p_col} <"
-                f" {p_th}) (VST)"
-            ),
-            name="Gene Expression (VST)",
-            top_annotation=ha_column,
-            show_row_names=False,
-            show_column_names=False,
-            cluster_columns=False,
-            heatmap_legend_param=ro.r(
-                'list(title_position = "topcenter", color_bar = "continuous",'
-                ' legend_height = unit(5, "cm"), legend_direction = "horizontal")'
-            ),
-        )
+        with localconverter(ro.default_converter):
+            complex_heatmap(
+                counts_matrix,
+                save_path=save_path,
+                width=10,
+                height=8,
+                column_title=(
+                    f"Top {top_n} DEGs in {contrast_factor} (LFC > {lfc_thr}, {p_col} <"
+                    f" {p_th}) (VST)"
+                ),
+                name="Gene Expression (VST)",
+                top_annotation=ha_column,
+                show_row_names=False,
+                show_column_names=False,
+                cluster_columns=False,
+                heatmap_legend_param=ro.r(
+                    'list(title_position = "topcenter", color_bar = "continuous",'
+                    ' legend_height = unit(5, "cm"), legend_direction = "horizontal")'
+                ),
+            )
 
     # 9. Summary statistics
     summary_degs = defaultdict(dict)
