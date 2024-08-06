@@ -28,7 +28,8 @@ def rpy2_df_to_pd_df(rpy2_df: Any) -> pd.DataFrame:
     (docs in https://rpy2.github.io/doc/latest/html/pandas.html)
     """
     # 0. Ensure rpy2 object is (or is convertible to) an R dataframe
-    rpy2_df = ro.r("as.data.frame")(rpy2_df)
+    with localconverter(ro.default_converter):
+        rpy2_df = ro.r("as.data.frame")(rpy2_df)
 
     with localconverter(ro.default_converter + pandas2ri.converter):
         pd_from_r_df = ro.conversion.rpy2py(rpy2_df)
@@ -128,7 +129,8 @@ def sample_distance(data: Any):
          data: can be a DESeqDataSet or a DESeqTransform (from rlog or vst
             transforms)
     """
-    return r_pdist.parDist(ro.r("t")(ro.r("assay")(data)))
+    with localconverter(ro.default_converter):
+        return r_pdist.parDist(ro.r("t")(ro.r("assay")(data)))
 
 
 def annotate_deseq_result(
