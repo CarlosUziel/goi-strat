@@ -11,6 +11,8 @@ from typing import Any, Dict, Iterable, Tuple
 import numpy as np
 import pandas as pd
 import rpy2.robjects as ro
+from rpy2.rinterface_lib.embedded import RRuntimeError
+
 from r_wrappers.annotatr import (
     annotate_regions,
     build_annotations,
@@ -44,7 +46,6 @@ from r_wrappers.utils import (
     save_csv,
     save_rds,
 )
-from rpy2.rinterface_lib.embedded import RRuntimeError
 
 
 def plot_save_stats(

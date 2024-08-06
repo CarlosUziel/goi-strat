@@ -10,6 +10,8 @@ from typing import Iterable, Tuple
 import numpy as np
 import pandas as pd
 import rpy2.robjects as ro
+from rpy2.rinterface_lib.embedded import RRuntimeError
+
 from r_wrappers.annotatr import (
     annotate_regions,
     build_annotations,
@@ -33,7 +35,6 @@ from r_wrappers.utils import (
     rpy2_df_to_pd_df_manual,
     save_csv,
 )
-from rpy2.rinterface_lib.embedded import RRuntimeError
 
 
 def differential_methylation_rrbs_regions(

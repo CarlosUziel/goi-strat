@@ -7,10 +7,10 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Tuple
 
 import pandas as pd
-from components.functional_analysis.orgdb import OrgDB
 from rich import traceback
 from rpy2.rinterface_lib.callbacks import logger as rpy2_logger
 
+from components.functional_analysis.orgdb import OrgDB
 from pipelines.differential_methylation.minfi_utils import (
     differential_methylation_array,
 )

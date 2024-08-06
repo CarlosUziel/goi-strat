@@ -7,9 +7,9 @@ import numpy as np
 import pandas as pd
 import scipy.stats as ss
 from statsmodels.stats.multitest import multipletests
-from utils import run_func_dict
 
 from data.utils import parallelize_map
+from utils import run_func_dict
 
 
 def get_gene_occurrence_stats(

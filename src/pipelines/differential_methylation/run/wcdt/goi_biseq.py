@@ -11,17 +11,17 @@ from pathlib import Path
 from typing import Dict, Iterable, Union
 
 import pandas as pd
-from components.functional_analysis.orgdb import OrgDB
-from r_wrappers.utils import map_gene_id
 from rich import traceback
 from rpy2.rinterface_lib.callbacks import logger as rpy2_logger
 from tqdm import tqdm
-from utils import run_func_dict
 
+from components.functional_analysis.orgdb import OrgDB
 from data.utils import filter_df, parallelize_map
 from pipelines.differential_methylation.biseq_utils import (
     differential_methylation_rrbs_regions,
 )
+from r_wrappers.utils import map_gene_id
+from utils import run_func_dict
 
 _ = traceback.install()
 rpy2_logger.setLevel(logging.INFO)

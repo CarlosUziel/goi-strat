@@ -10,15 +10,15 @@ from typing import Dict, Iterable, Tuple
 
 import pandas as pd
 import rpy2.robjects as ro
-from components.functional_analysis.orgdb import OrgDB
-from components.functional_analysis.utils import run_all_ora_simple
-from r_wrappers.utils import map_gene_id
 from rich import traceback
 from rpy2.rinterface_lib.callbacks import logger as rpy2_logger
 from tqdm.rich import tqdm
-from utils import run_func_dict
 
+from components.functional_analysis.orgdb import OrgDB
+from components.functional_analysis.utils import run_all_ora_simple
 from data.utils import parallelize_map
+from r_wrappers.utils import map_gene_id
+from utils import run_func_dict
 
 _ = traceback.install()
 rpy2_logger.setLevel(logging.ERROR)
