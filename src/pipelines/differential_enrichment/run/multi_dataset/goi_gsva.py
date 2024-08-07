@@ -52,7 +52,7 @@ org_db = OrgDB(SPECIES)
 P_COLS: Iterable[str] = ["padj"]
 P_THS: Iterable[float] = (0.05,)
 LFC_LEVELS: Iterable[str] = ("all", "up", "down")
-LFC_THS: Iterable[float] = (1.0,)
+LFC_THS: Iterable[float] = (0.0,)
 HEATMAP_TOP_N: int = 1000
 MSIGDB_CATS: Iterable[str] = ("H", *[f"C{i}" for i in range(1, 9)])
 PARALLEL: bool = True
@@ -99,7 +99,7 @@ for i, (dataset_name, goi_symbol) in enumerate(DATASETS_MARKERS.items()):
 
     MAIN_ROOT: Path = STORAGE.joinpath(dataset_name)
     DATA_ROOT: Path = STORAGE.joinpath(f"{dataset_name}_{GOI_SYMBOL}")
-    RESULTS_PATH: Path = DATA_ROOT.joinpath("deseq2")
+    RESULTS_PATH: Path = DATA_ROOT.joinpath("diff_gsva")
     RESULTS_PATH.mkdir(exist_ok=True, parents=True)
     PLOTS_PATH: Path = RESULTS_PATH.joinpath("plots")
     PLOTS_PATH.mkdir(exist_ok=True, parents=True)
