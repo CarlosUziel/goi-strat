@@ -72,15 +72,15 @@ GOI_LEVELS_COLORS: Dict[str, str] = {
 }
 CONTRASTS_LEVELS_COLORS.update(GOI_LEVELS_COLORS)
 DATASETS_MARKERS: Dict[str, str] = {
-    "TCGA-BRCA": "FOXA1",
-    "TCGA-LUAD": "NKX2-1",
-    "TCGA-THCA": "HMGA2",
-    "TCGA-UCEC": "PPARG",
-    "TCGA-LUSC": "SOX2",
-    "TCGA-KIRC": "CA9",
-    "TCGA-HNSC": "TP63",
-    "TCGA-LGG": "IDH1",
-    "PCTA_WCDT": "FOLH1",
+    "TCGA-BRCA": "FOXA1",  # https://www.sciencedirect.com/science/article/abs/pii/S0960977616000242
+    "TCGA-LUAD": "NKX2-1",  # https://www.nature.com/articles/nature09881
+    "TCGA-THCA": "BRAF",  # https://www.frontiersin.org/journals/endocrinology/articles/10.3389/fendo.2024.1372553/full
+    "TCGA-UCEC": "MCM10",  # https://onlinelibrary.wiley.com/doi/full/10.1111/jcmm.17772
+    "TCGA-LUSC": "SOX2",  # https://www.cell.com/cancer-cell/fulltext/S1535-6108(16)30436-6
+    "TCGA-KIRC": "CA9",  # https://www.sciencedirect.com/science/article/abs/pii/S0959804910006982
+    "TCGA-HNSC": "TP63",  # https://aacrjournals.org/mcr/article/17/6/1279/270274/Loss-of-TP63-Promotes-the-Metastasis-of-Head-and
+    "TCGA-LGG": "IDH1",  # https://www.neurology.org/doi/abs/10.1212/wnl.0b013e3181f96282
+    "PCTA_WCDT": "FOLH1",  # https://www.nature.com/articles/nrurol.2016.26
 }
 PERCENTILES: Iterable[int] = (10, 15, 20, 25, 30)
 
