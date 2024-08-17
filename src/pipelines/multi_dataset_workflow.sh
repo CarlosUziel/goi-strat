@@ -1,5 +1,5 @@
 #!/bin/bash
-# run from ~/biopipes/src/pipelines
+# run from ~/goi-strat/src/pipelines
 
 ## 1. Download, process and split data
 python data/run/rna_seq/multi_dataset/download_data.py --threads 8 && \

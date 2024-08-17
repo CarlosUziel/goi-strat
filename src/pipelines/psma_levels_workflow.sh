@@ -1,5 +1,5 @@
 #!/bin/bash
-# run from ~/biopipes/src/pipelines
+# run from ~/goi-strat/src/pipelines
 
 ## PCTA-WCDT
 python data/run/rna_seq/pcta_wcdt/generate_gsva.py && \

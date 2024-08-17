@@ -11,6 +11,7 @@ from typing import Any, Callable, Dict, Iterable, Optional, Tuple
 
 import numpy as np
 import pandas as pd
+from statsmodels.stats.power import TTestIndPower
 from tqdm.rich import tqdm
 
 from components.functional_analysis.orgdb import OrgDB
@@ -292,3 +293,31 @@ def supress_stdout(func):
                 return func(*a, **ka)
 
     return wrapper
+
+
+def calculate_power(effect_size: float, alpha: float, n1: int, n2: int) -> float:
+    """
+    Calculate the power of a two-sample t-test.
+
+    Parameters:
+    - effect_size: Cohen's d, the standardized difference between two means.
+    - alpha): Significance level of the test.
+    - n1: Sample size for group 1.
+    - n2: Sample size for group 2.
+
+    Returns:
+    - float: The power of the test.
+    """
+    # Initialize the power analysis object
+    power_analysis = TTestIndPower()
+
+    # Calculate the power
+    power = power_analysis.solve_power(
+        effect_size=effect_size,
+        nobs1=n1,
+        alpha=alpha,
+        ratio=n2 / n1,
+        alternative="two-sided",
+    )
+
+    return power

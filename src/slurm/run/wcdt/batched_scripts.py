@@ -21,7 +21,7 @@ warnings.filterwarnings("ignore")
 
 ROOT_PATH: Path = Path("/gpfs/data/fs71358/cperez")
 STORAGE_ROOT: Path = ROOT_PATH.joinpath("storage")
-SRC_ROOT: Path = ROOT_PATH.joinpath("biopipes").joinpath("src")
+SRC_ROOT: Path = ROOT_PATH.joinpath("goi-strat").joinpath("src")
 COMMON_KWARGS: Dict[str, str] = {"--root-dir": STORAGE_ROOT, "--threads": 96}
 SLURM_KWARGS: Dict[str, Union[str, int]] = {
     "--nodes": 2,
@@ -30,7 +30,7 @@ SLURM_KWARGS: Dict[str, Union[str, int]] = {
     "--ntasks-per-node": 48,
     "--ntasks-per-core": 2,
 }
-LOGS_PATH: Path = ROOT_PATH.joinpath("logs").joinpath("biopipes")
+LOGS_PATH: Path = ROOT_PATH.joinpath("logs").joinpath("goi-strat")
 
 GOI_BATCHES: Dict[str, Iterable[Path]] = {
     "methylkit": (
