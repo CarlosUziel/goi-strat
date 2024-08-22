@@ -12,15 +12,15 @@ from pathlib import Path
 from typing import Dict, Iterable, Union
 
 import pandas as pd
+from components.functional_analysis.orgdb import OrgDB
+from r_wrappers.utils import map_gene_id
 from rich import traceback
 from rpy2.rinterface_lib.callbacks import logger as rpy2_logger
 from tqdm.rich import tqdm
+from utils import run_func_dict
 
-from components.functional_analysis.orgdb import OrgDB
 from data.utils import filter_df, parallelize_map
 from pipelines.differential_expression.utils import differential_expression
-from r_wrappers.utils import map_gene_id
-from utils import run_func_dict
 
 _ = traceback.install()
 rpy2_logger.setLevel(logging.ERROR)
@@ -73,10 +73,10 @@ GOI_LEVELS_COLORS: Dict[str, str] = {
 }
 CONTRASTS_LEVELS_COLORS.update(GOI_LEVELS_COLORS)
 DATASETS_MARKERS: Dict[str, str] = {
-    "TCGA-BRCA": "FOXA1",  # https://www.sciencedirect.com/science/article/abs/pii/S0960977616000242
+    "TCGA-BRCA": "BRCA1",  # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8998777/
     "TCGA-LUAD": "NKX2-1",  # https://www.nature.com/articles/nature09881
-    "TCGA-THCA": "BRAF",  # https://www.frontiersin.org/journals/endocrinology/articles/10.3389/fendo.2024.1372553/full
-    "TCGA-UCEC": "MCM10",  # https://onlinelibrary.wiley.com/doi/full/10.1111/jcmm.17772
+    "TCGA-THCA": "HMGA2",  # https://core.ac.uk/download/pdf/46919877.pdf#page=59
+    "TCGA-UCEC": "PIK3CA",  # https://pubmed.ncbi.nlm.nih.gov/28860563/, https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3060282/
     "TCGA-LUSC": "SOX2",  # https://www.cell.com/cancer-cell/fulltext/S1535-6108(16)30436-6
     "TCGA-KIRC": "CA9",  # https://www.sciencedirect.com/science/article/abs/pii/S0959804910006982
     "TCGA-HNSC": "TP63",  # https://aacrjournals.org/mcr/article/17/6/1279/270274/Loss-of-TP63-Promotes-the-Metastasis-of-Head-and

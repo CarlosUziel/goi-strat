@@ -12,12 +12,11 @@ import rpy2.robjects as ro
 import seaborn as sns
 from matplotlib import pyplot as plt
 from pydantic import PositiveFloat
+from r_wrappers.complex_heatmaps import complex_heatmap, heatmap_annotation
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import cross_validate
 from sklearn.preprocessing import LabelEncoder
 from upsetplot import UpSet, from_contents
-
-from r_wrappers.complex_heatmaps import complex_heatmap, heatmap_annotation
 
 
 def intersect_degs(
