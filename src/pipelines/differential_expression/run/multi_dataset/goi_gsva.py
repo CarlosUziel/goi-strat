@@ -76,7 +76,7 @@ CONTRASTS_LEVELS_COLORS.update(GOI_LEVELS_COLORS)
 DATASETS_MARKERS: Dict[str, str] = {
     "TCGA-BRCA": "BRCA1",  # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8998777/
     "TCGA-LUAD": "NKX2-1",  # https://www.nature.com/articles/nature09881
-    "TCGA-THCA": "HMGA2",  # https://core.ac.uk/download/pdf/46919877.pdf#page=59
+    "TCGA-THCA": "HMGA2",  # https://pubmed.ncbi.nlm.nih.gov/17943974/
     "TCGA-UCEC": "PIK3CA",  # https://pubmed.ncbi.nlm.nih.gov/28860563/, https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3060282/
     "TCGA-LUSC": "SOX2",  # https://www.cell.com/cancer-cell/fulltext/S1535-6108(16)30436-6
     "TCGA-KIRC": "CA9",  # https://www.sciencedirect.com/science/article/abs/pii/S0959804910006982
