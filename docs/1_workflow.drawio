@@ -1,153 +1,293 @@
 <mxfile host="65bd71144e" scale="2" border="0">
     <diagram name="Page-1" id="WMyTI4VWCgRzHXp1mPb9">
-        <mxGraphModel dx="2253" dy="1054" grid="1" gridSize="5" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+        <mxGraphModel dx="2457" dy="1001" grid="1" gridSize="5" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
+                <mxCell id="122" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="-40" y="180" width="1160" height="580" as="geometry"/>
+                </mxCell>
                 <mxCell id="U7u_f17gVRgXchmAX0Bn-6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="405.3723404255319" y="341.378125" as="sourcePoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="U7u_f17gVRgXchmAX0Bn-1" value="&lt;div style=&quot;font-size: 22px;&quot;&gt;&lt;font style=&quot;font-size: 22px;&quot;&gt;I&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 1px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 16px;&quot;&gt;&lt;i&gt;&lt;span style=&quot;font-weight: normal;&quot;&gt;Data processing&amp;nbsp;&lt;/span&gt;&lt;/i&gt;&lt;i style=&quot;background-color: initial;&quot;&gt;&lt;span style=&quot;font-weight: normal;&quot;&gt;&amp;amp; stratification&lt;/span&gt;&lt;/i&gt;&lt;/div&gt;" style="swimlane;whiteSpace=wrap;html=1;startSize=80;rounded=1;fillStyle=solid;strokeWidth=2;container=0;fillColor=#a6bff2;strokeColor=#A6BFF2;" parent="1" vertex="1">
-                    <mxGeometry y="200" width="260" height="540" as="geometry">
+                <mxCell id="U7u_f17gVRgXchmAX0Bn-1" value="&lt;div style=&quot;font-size: 22px;&quot;&gt;&lt;font style=&quot;font-size: 22px;&quot;&gt;I&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 1px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 16px;&quot;&gt;&lt;i&gt;&lt;span style=&quot;font-weight: normal;&quot;&gt;Data Processing&amp;nbsp;&lt;/span&gt;&lt;/i&gt;&lt;i style=&quot;background-color: initial;&quot;&gt;&lt;span style=&quot;font-weight: normal;&quot;&gt;&amp;amp; Stratification&lt;/span&gt;&lt;/i&gt;&lt;/div&gt;" style="swimlane;whiteSpace=wrap;html=1;startSize=80;rounded=1;fillStyle=solid;strokeWidth=2;container=0;fillColor=#a6bff2;strokeColor=#A6BFF2;" parent="1" vertex="1">
+                    <mxGeometry x="-20" y="200" width="280" height="540" as="geometry">
                         <mxRectangle x="20" y="20" width="40" height="45" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="78" value="" style="edgeStyle=none;html=1;strokeWidth=2;" edge="1" parent="U7u_f17gVRgXchmAX0Bn-1" source="odDYbRYCYWoE1OATyWKR-1" target="76">
-                    <mxGeometry relative="1" as="geometry"/>
+                <mxCell id="odDYbRYCYWoE1OATyWKR-1" value="&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;DATASET&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;RNA-Seq (+ DNA Methylation)&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=#EEEEEE;strokeColor=#A6BFF2;shadow=1;fontStyle=0;container=0;fontSize=14;" parent="U7u_f17gVRgXchmAX0Bn-1" vertex="1">
+                    <mxGeometry x="30" y="120" width="220" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="odDYbRYCYWoE1OATyWKR-1" value="&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;DATASET&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;RNA-Seq&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fillColor=#EEEEEE;strokeColor=#A6BFF2;shadow=1;fontStyle=0;container=0;fontSize=14;" parent="U7u_f17gVRgXchmAX0Bn-1" vertex="1">
-                    <mxGeometry x="20" y="120" width="220" height="80" as="geometry"/>
-                </mxCell>
-                <mxCell id="ll4MLsgl20_4qIF9zqpb-2" value="&lt;div style=&quot;font-size: 14px;&quot;&gt;Sample Stratification based on GOI&amp;nbsp;RNA Expression&lt;br style=&quot;font-size: 14px;&quot;&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#A6BFF2;strokeColor=#000000;fontStyle=0;container=0;fontSize=14;" parent="U7u_f17gVRgXchmAX0Bn-1" vertex="1">
-                    <mxGeometry x="20" y="420" width="220" height="80" as="geometry"/>
-                </mxCell>
-                <mxCell id="32" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;endFill=1;" parent="U7u_f17gVRgXchmAX0Bn-1" source="odDYbRYCYWoE1OATyWKR-2" edge="1">
+                <mxCell id="32" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;endFill=1;" parent="U7u_f17gVRgXchmAX0Bn-1" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="119.99978723404251" y="440.0037500000001" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="77" value="" style="edgeStyle=none;html=1;strokeWidth=2;" edge="1" parent="U7u_f17gVRgXchmAX0Bn-1" source="76" target="ll4MLsgl20_4qIF9zqpb-2">
-                    <mxGeometry relative="1" as="geometry"/>
+                <mxCell id="84" value="&lt;div style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;Sample Stratification&lt;/b&gt;&lt;/div&gt;&lt;/div&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fontSize=12;strokeColor=#000000;fillColor=#a6bff2;" parent="U7u_f17gVRgXchmAX0Bn-1" vertex="1">
+                    <mxGeometry x="30" y="400" width="220" height="120" as="geometry"/>
                 </mxCell>
-                <mxCell id="76" value="&lt;div style=&quot;font-size: 14px;&quot;&gt;Data Pre-processing&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#A6BFF2;strokeColor=#000000;fontStyle=0;container=0;fontSize=14;" vertex="1" parent="U7u_f17gVRgXchmAX0Bn-1">
-                    <mxGeometry x="19.997234042553146" y="270" width="220" height="80" as="geometry"/>
+                <mxCell id="85" value="&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;font style=&quot;border-color: var(--border-color);&quot;&gt;&lt;i style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b&gt;In&lt;/b&gt;&lt;/i&gt;: GOI, MSigDB gene sets,&amp;nbsp;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;expr. matrix&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" style="text;strokeColor=default;fillColor=#A6BFF2;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;gradientColor=none;" parent="84" vertex="1">
+                    <mxGeometry y="40" width="220" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="U7u_f17gVRgXchmAX0Bn-2" value="&lt;div style=&quot;font-size: 22px;&quot;&gt;&lt;font style=&quot;font-size: 22px;&quot;&gt;II&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 1px;&quot;&gt;&lt;font style=&quot;font-size: 1px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 16px;&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;i&gt;Downstream analyses to identify the biological role of the GOI&lt;/i&gt;&lt;/span&gt;&lt;/div&gt;" style="swimlane;whiteSpace=wrap;html=1;startSize=80;rounded=1;strokeWidth=2;fillColor=#e9ae97;strokeColor=#E8D2C7;container=0;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="300" y="200" width="780" height="540" as="geometry">
+                <mxCell id="86" value="&lt;font style=&quot;border-color: var(--border-color);&quot;&gt;&lt;i style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b&gt;Out&lt;/b&gt;&lt;/i&gt;: GSVA matrices , sample groups&lt;/font&gt;&lt;span style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&amp;nbsp;&lt;/span&gt;" style="text;strokeColor=default;fillColor=#a6bff2;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;" parent="84" vertex="1">
+                    <mxGeometry y="80" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="80" value="&lt;div style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;Data Pre-processing&lt;/b&gt;&lt;/div&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fontSize=12;strokeColor=#000000;fillColor=#a6bff2;" parent="U7u_f17gVRgXchmAX0Bn-1" vertex="1">
+                    <mxGeometry x="30" y="240" width="220" height="120" as="geometry">
+                        <mxRectangle x="20" y="240" width="175" height="35" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="81" value="&lt;i&gt;&lt;b&gt;In&lt;/b&gt;&lt;/i&gt;: N&lt;sub style=&quot;border-color: var(--border-color);&quot;&gt;samples&lt;/sub&gt;&amp;nbsp;files" style="text;strokeColor=default;fillColor=#A6BFF2;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;gradientColor=none;" parent="80" vertex="1">
+                    <mxGeometry y="40" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="82" value="&lt;i style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b&gt;Out&lt;/b&gt;&lt;/i&gt;: N&lt;sub style=&quot;border-color: var(--border-color);&quot;&gt;samples&lt;/sub&gt;&amp;nbsp;x M&lt;sub style=&quot;border-color: var(--border-color);&quot;&gt;genes&lt;/sub&gt;&amp;nbsp;expr. matrix (+ meth.)" style="text;strokeColor=default;fillColor=#a6bff2;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;" parent="80" vertex="1">
+                    <mxGeometry y="80" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="109" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=3;endArrow=block;endFill=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;rounded=0;endSize=3;startSize=3;" parent="U7u_f17gVRgXchmAX0Bn-1" source="82" target="85" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="30" y="435" as="targetPoint"/>
+                        <mxPoint x="30" y="335" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="15" y="340"/>
+                            <mxPoint x="15" y="460"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="110" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=3;endArrow=block;endFill=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;rounded=0;endSize=3;startSize=3;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="U7u_f17gVRgXchmAX0Bn-1" source="odDYbRYCYWoE1OATyWKR-1" target="81" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="30" y="300" as="targetPoint"/>
+                        <mxPoint x="150" y="220" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="140" y="220"/>
+                            <mxPoint x="15" y="220"/>
+                            <mxPoint x="15" y="300"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="U7u_f17gVRgXchmAX0Bn-2" value="&lt;div style=&quot;font-size: 22px;&quot;&gt;&lt;font style=&quot;font-size: 22px;&quot;&gt;II&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 1px;&quot;&gt;&lt;font style=&quot;font-size: 1px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 16px;&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;i&gt;Downstream Analyses to identify the Biological Role of the GOI&lt;/i&gt;&lt;/span&gt;&lt;/div&gt;" style="swimlane;whiteSpace=wrap;html=1;startSize=80;rounded=1;strokeWidth=2;fillColor=#e9ae97;strokeColor=#E8D2C7;container=0;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="200" width="800" height="540" as="geometry">
                         <mxRectangle x="20" y="20" width="40" height="45" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="VoZBrdOOJ4ARXTzK2C11-7" value="&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Differential Gene Set&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Variation Analysis&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;(D-GSVA)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E9AE97;strokeColor=#000000;fontStyle=0;container=0;fontSize=14;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
-                    <mxGeometry x="19.997234042553146" y="120" width="220" height="80" as="geometry"/>
-                </mxCell>
-                <mxCell id="38" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;endArrow=block;endFill=1;entryX=0.5;entryY=0.015;entryDx=0;entryDy=0;entryPerimeter=0;" parent="U7u_f17gVRgXchmAX0Bn-2" source="odDYbRYCYWoE1OATyWKR-3" target="VoZBrdOOJ4ARXTzK2C11-10" edge="1">
+                <mxCell id="38" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=3;endArrow=block;endFill=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;rounded=0;endSize=3;startSize=3;" parent="U7u_f17gVRgXchmAX0Bn-2" source="92" target="94" edge="1">
                     <mxGeometry relative="1" as="geometry">
-                        <mxPoint x="140" y="340" as="targetPoint"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="odDYbRYCYWoE1OATyWKR-3" value="&lt;div style=&quot;font-size: 14px;&quot;&gt;Differential Analysis &lt;br style=&quot;font-size: 14px;&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;br style=&quot;font-size: 14px;&quot;&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;(RNA-Seq)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E9AE97;strokeColor=#000000;fontStyle=0;container=0;fontSize=14;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
-                    <mxGeometry x="19.997234042553146" y="269.99999999999994" width="220" height="80" as="geometry"/>
-                </mxCell>
-                <mxCell id="VoZBrdOOJ4ARXTzK2C11-10" value="&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Gene Set&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Enrichment Analysis&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;(GSEA)&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E9AE97;strokeColor=#000000;fontStyle=0;container=0;fontSize=14;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
-                    <mxGeometry x="19.997234042553146" y="420.00000000000006" width="220" height="80" as="geometry"/>
-                </mxCell>
-                <mxCell id="61" value="&lt;div style=&quot;border-color: var(--border-color); color: rgb(0, 0, 0); font-family: Helvetica; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 700; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 16px;&quot;&gt;&lt;i style=&quot;border-color: var(--border-color); font-weight: normal;&quot;&gt;Differential&amp;nbsp;&lt;/i&gt;&lt;i style=&quot;border-color: var(--border-color); font-weight: normal;&quot;&gt;Analyses&lt;/i&gt;&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="U7u_f17gVRgXchmAX0Bn-2">
-                    <mxGeometry x="55" y="85" width="150" height="30" as="geometry"/>
-                </mxCell>
-                <mxCell id="ll4MLsgl20_4qIF9zqpb-33" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;endArrow=block;endFill=1;" parent="U7u_f17gVRgXchmAX0Bn-2" source="VoZBrdOOJ4ARXTzK2C11-7" target="odDYbRYCYWoE1OATyWKR-20" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="24" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;endArrow=block;endFill=1;rounded=0;strokeWidth=3;" parent="U7u_f17gVRgXchmAX0Bn-2" source="VoZBrdOOJ4ARXTzK2C11-10" target="odDYbRYCYWoE1OATyWKR-20" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="odDYbRYCYWoE1OATyWKR-20" value="&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Integration of&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Significant Gene Sets&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E9AE97;strokeColor=#000000;fontStyle=0;container=0;fontSize=14;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
-                    <mxGeometry x="280.00468085106377" y="120" width="220" height="80" as="geometry"/>
-                </mxCell>
-                <mxCell id="ll4MLsgl20_4qIF9zqpb-35" value="Identification of Top Genes&lt;br&gt;through Z-score Correction" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B1516E;strokeColor=#000000;fontStyle=0;container=0;fontSize=14;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
-                    <mxGeometry x="280.00468085106377" y="219.99999999999994" width="220" height="80" as="geometry"/>
-                </mxCell>
-                <mxCell id="55" value="" style="endArrow=block;html=1;rounded=1;sketch=0;strokeColor=#000000;strokeWidth=2;fontColor=#FFFFFF;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="U7u_f17gVRgXchmAX0Bn-2" source="odDYbRYCYWoE1OATyWKR-20" target="ll4MLsgl20_4qIF9zqpb-35" edge="1">
-                    <mxGeometry width="50" height="50" relative="1" as="geometry">
-                        <mxPoint x="390" y="340" as="sourcePoint"/>
-                        <mxPoint x="440" y="290" as="targetPoint"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="odDYbRYCYWoE1OATyWKR-30" value="&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;PPI Network Analysis&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;of Top Genes in Gene Sets&lt;br style=&quot;font-size: 14px;&quot;&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B1516E;strokeColor=#000000;fontStyle=0;container=0;fontSize=14;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
-                    <mxGeometry x="280.00468085106377" y="320" width="220" height="80" as="geometry"/>
-                </mxCell>
-                <mxCell id="56" value="" style="endArrow=block;html=1;rounded=1;sketch=0;strokeColor=#000000;strokeWidth=2;fontColor=#FFFFFF;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="U7u_f17gVRgXchmAX0Bn-2" source="ll4MLsgl20_4qIF9zqpb-35" target="odDYbRYCYWoE1OATyWKR-30" edge="1">
-                    <mxGeometry width="50" height="50" relative="1" as="geometry">
-                        <mxPoint x="405.00468085106377" y="300" as="sourcePoint"/>
-                        <mxPoint x="405.00468085106377" y="320" as="targetPoint"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="VoZBrdOOJ4ARXTzK2C11-2" value="&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Clustering of Genes via&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Graph Embeddings&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B1516E;strokeColor=#000000;fontStyle=0;container=0;fontSize=14;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
-                    <mxGeometry x="280.00468085106377" y="419.9999999999999" width="220" height="80" as="geometry"/>
-                </mxCell>
-                <mxCell id="57" value="" style="endArrow=block;html=1;rounded=1;sketch=0;strokeColor=#000000;strokeWidth=2;fontColor=#FFFFFF;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="U7u_f17gVRgXchmAX0Bn-2" source="odDYbRYCYWoE1OATyWKR-30" target="VoZBrdOOJ4ARXTzK2C11-2" edge="1">
-                    <mxGeometry width="50" height="50" relative="1" as="geometry">
-                        <mxPoint x="400.00468085106377" y="400" as="sourcePoint"/>
-                        <mxPoint x="400.00468085106377" y="420" as="targetPoint"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="58" value="&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Clustering of Genes via&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Graph Embeddings&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E9AE97;strokeColor=#000000;fontStyle=0;container=0;fontSize=14;" vertex="1" parent="U7u_f17gVRgXchmAX0Bn-2">
-                    <mxGeometry x="280.00468085106377" y="419.9999999999999" width="220" height="80" as="geometry"/>
-                </mxCell>
-                <mxCell id="59" value="&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;PPI Network Analysis&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;of Top Genes in Gene Sets&lt;br style=&quot;font-size: 14px;&quot;&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E9AE97;strokeColor=#000000;fontStyle=0;container=0;fontSize=14;" vertex="1" parent="U7u_f17gVRgXchmAX0Bn-2">
-                    <mxGeometry x="280.00468085106377" y="320" width="220" height="80" as="geometry"/>
-                </mxCell>
-                <mxCell id="60" value="Identification of Top Genes&lt;br&gt;through Z-score Correction" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E9AE97;strokeColor=#000000;fontStyle=0;container=0;fontSize=14;" vertex="1" parent="U7u_f17gVRgXchmAX0Bn-2">
-                    <mxGeometry x="280.00468085106377" y="219.99999999999994" width="220" height="80" as="geometry"/>
-                </mxCell>
-                <mxCell id="62" value="&lt;i style=&quot;border-color: var(--border-color); color: rgb(0, 0, 0); font-family: Helvetica; font-size: 16px; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 700; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); font-weight: normal;&quot;&gt;GOI&amp;nbsp;&lt;/span&gt;&lt;/i&gt;&lt;i style=&quot;border-color: var(--border-color); color: rgb(0, 0, 0); font-family: Helvetica; font-size: 16px; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 700; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: initial; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); font-weight: normal;&quot;&gt;Protein Community&lt;/span&gt;&lt;/i&gt;" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="U7u_f17gVRgXchmAX0Bn-2">
-                    <mxGeometry x="302.5" y="85" width="175" height="30" as="geometry"/>
-                </mxCell>
-                <mxCell id="ll4MLsgl20_4qIF9zqpb-43" value="Identification of&lt;br&gt;Relevant Biological Processes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E9AE97;strokeColor=#000000;fontStyle=0;container=0;fontSize=14;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
-                    <mxGeometry x="540" y="220" width="220" height="78" as="geometry"/>
-                </mxCell>
-                <mxCell id="5" value="Evaluation of&lt;br&gt;Differential Analysis Metrics" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E9AE97;strokeColor=#000000;fontStyle=0;container=0;fontSize=14;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
-                    <mxGeometry x="540" y="320" width="220" height="80" as="geometry"/>
-                </mxCell>
-                <mxCell id="21" value="" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeWidth=2;" parent="U7u_f17gVRgXchmAX0Bn-2" source="ll4MLsgl20_4qIF9zqpb-43" target="5" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="ll4MLsgl20_4qIF9zqpb-41" value="Gene Set&lt;br&gt;Over-representation Analysis" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E9AE97;strokeColor=#000000;fontStyle=0;container=0;fontSize=14;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
-                    <mxGeometry x="540" y="120" width="220" height="78.30000000000001" as="geometry"/>
-                </mxCell>
-                <mxCell id="25" value="" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;rounded=0;endArrow=block;endFill=1;strokeWidth=3;" parent="U7u_f17gVRgXchmAX0Bn-2" source="VoZBrdOOJ4ARXTzK2C11-2" target="ll4MLsgl20_4qIF9zqpb-41" edge="1">
-                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="140.01" y="401.5" as="targetPoint"/>
+                        <mxPoint x="140.01" y="360" as="sourcePoint"/>
                         <Array as="points">
-                            <mxPoint x="520" y="460"/>
-                            <mxPoint x="520" y="159"/>
+                            <mxPoint x="15.009999999999998" y="360"/>
+                            <mxPoint x="15.009999999999998" y="460"/>
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="ll4MLsgl20_4qIF9zqpb-44" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;" parent="U7u_f17gVRgXchmAX0Bn-2" source="ll4MLsgl20_4qIF9zqpb-41" target="ll4MLsgl20_4qIF9zqpb-43" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
+                <mxCell id="61" value="&lt;div style=&quot;border-color: var(--border-color); color: rgb(0, 0, 0); font-family: Helvetica; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 700; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 16px;&quot;&gt;&lt;i style=&quot;border-color: var(--border-color); font-weight: normal;&quot;&gt;Differential&amp;nbsp;&lt;/i&gt;&lt;i style=&quot;border-color: var(--border-color); font-weight: normal;&quot;&gt;Analyses&lt;/i&gt;&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fillColor=default;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
+                    <mxGeometry x="70.01" y="85" width="150" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="19" value="Filtering of potentially&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;Relevant Targets" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E9AE97;strokeColor=#000000;fontStyle=0;container=0;fontSize=14;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
-                    <mxGeometry x="540" y="420" width="220" height="80" as="geometry"/>
-                </mxCell>
-                <mxCell id="22" value="" style="edgeStyle=none;html=1;endArrow=block;endFill=1;strokeWidth=2;" parent="U7u_f17gVRgXchmAX0Bn-2" source="5" target="19" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="63" value="&lt;i style=&quot;border-color: var(--border-color); color: rgb(0, 0, 0); font-family: Helvetica; font-size: 16px; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 700; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: initial; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); font-weight: normal;&quot;&gt;Functional profiling&lt;/span&gt;&lt;/i&gt;" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="U7u_f17gVRgXchmAX0Bn-2">
-                    <mxGeometry x="580" y="85" width="140" height="30" as="geometry"/>
-                </mxCell>
-                <mxCell id="53" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;endArrow=block;endFill=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="odDYbRYCYWoE1OATyWKR-1" target="VoZBrdOOJ4ARXTzK2C11-7" edge="1">
+                <mxCell id="ll4MLsgl20_4qIF9zqpb-33" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;endArrow=block;endFill=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;endSize=3;startSize=3;" parent="U7u_f17gVRgXchmAX0Bn-2" source="89" target="98" edge="1">
                     <mxGeometry relative="1" as="geometry">
-                        <mxPoint x="254.99978723404251" y="418.00374999999985" as="sourcePoint"/>
-                        <mxPoint x="294.99723404255315" y="418.00374999999985" as="targetPoint"/>
+                        <mxPoint x="250.01" y="170" as="sourcePoint"/>
+                        <mxPoint x="290.01468085106376" y="160" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="265" y="220"/>
+                            <mxPoint x="265" y="180"/>
+                        </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="79" value="" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;rounded=0;strokeWidth=3;" edge="1" parent="1" source="ll4MLsgl20_4qIF9zqpb-2" target="odDYbRYCYWoE1OATyWKR-3">
+                <mxCell id="24" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;endArrow=block;endFill=1;rounded=0;strokeWidth=3;endSize=3;startSize=3;" parent="U7u_f17gVRgXchmAX0Bn-2" source="95" target="98" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="250.01" y="450" as="sourcePoint"/>
+                        <mxPoint x="290.01468085106376" y="160" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="265" y="500"/>
+                            <mxPoint x="265" y="180"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="62" value="&lt;i style=&quot;border-color: var(--border-color); color: rgb(0, 0, 0); font-family: Helvetica; font-size: 16px; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 700; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); font-weight: normal;&quot;&gt;GOI&amp;nbsp;&lt;/span&gt;&lt;/i&gt;&lt;i style=&quot;border-color: var(--border-color); color: rgb(0, 0, 0); font-family: Helvetica; font-size: 16px; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 700; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: initial; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); font-weight: normal;&quot;&gt;Protein Community&lt;/span&gt;&lt;/i&gt;" style="text;whiteSpace=wrap;html=1;fillColor=default;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
+                    <mxGeometry x="317.51" y="85" width="175" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="25" value="" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;rounded=0;endArrow=block;endFill=1;strokeWidth=3;endSize=3;startSize=3;" parent="U7u_f17gVRgXchmAX0Bn-2" source="105" target="112" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
-                            <mxPoint x="280" y="660"/>
-                            <mxPoint x="280" y="510"/>
+                            <mxPoint x="525" y="500"/>
+                            <mxPoint x="525" y="180"/>
                         </Array>
+                        <mxPoint x="510.01468085106376" y="460" as="sourcePoint"/>
+                        <mxPoint x="550.0099999999995" y="159.1500000000001" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="63" value="&lt;i style=&quot;border-color: var(--border-color); color: rgb(0, 0, 0); font-family: Helvetica; font-size: 16px; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 700; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: initial; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); font-weight: normal;&quot;&gt;Functional Profiling&lt;/span&gt;&lt;/i&gt;" style="text;whiteSpace=wrap;html=1;fillColor=default;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
+                    <mxGeometry x="595.01" y="85" width="140" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="87" value="&lt;div style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color);&quot;&gt;Differential Gene Set&lt;/span&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;Variation Analysis&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;(D-GSVA)&lt;/span&gt;&lt;/b&gt;&lt;/div&gt;&lt;/div&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fontSize=12;strokeColor=#000000;fillColor=#E9AE97;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
+                    <mxGeometry x="30.009999999999998" y="120" width="220" height="120" as="geometry">
+                        <mxRectangle x="20" y="240" width="175" height="35" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="88" value="&lt;i&gt;&lt;b&gt;In&lt;/b&gt;&lt;/i&gt;: GSVA matrices, sample groups" style="text;strokeColor=default;fillColor=#E9AE97;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;gradientColor=none;" parent="87" vertex="1">
+                    <mxGeometry y="40" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="89" value="&lt;i style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b&gt;Out&lt;/b&gt;&lt;/i&gt;: DEGSs" style="text;strokeColor=default;fillColor=#E9AE97;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;" parent="87" vertex="1">
+                    <mxGeometry y="80" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="90" value="&lt;div style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color); font-size: 12px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;Differential Analysis&amp;nbsp;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;(RNA/DNA)&lt;/span&gt;&lt;/b&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fontSize=12;strokeColor=#000000;fillColor=#E9AE97;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
+                    <mxGeometry x="30.009999999999998" y="260" width="220" height="120" as="geometry">
+                        <mxRectangle x="20" y="240" width="175" height="35" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="91" value="&lt;i&gt;&lt;b&gt;In&lt;/b&gt;&lt;/i&gt;:&amp;nbsp;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;N&lt;/span&gt;&lt;sub style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;samples&lt;/sub&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;&amp;nbsp;x M&lt;/span&gt;&lt;sub style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;genes&lt;/sub&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;&amp;nbsp;expr. matrix (+ meth.)&lt;/span&gt;" style="text;strokeColor=default;fillColor=#E9AE97;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;gradientColor=none;" parent="90" vertex="1">
+                    <mxGeometry y="40" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="92" value="&lt;i style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b&gt;Out&lt;/b&gt;&lt;/i&gt;: DEGs / DMRs" style="text;strokeColor=default;fillColor=#E9AE97;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;" parent="90" vertex="1">
+                    <mxGeometry y="80" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="93" value="&lt;div style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color); font-size: 12px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;&lt;font style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color);&quot;&gt;Gene Set&amp;nbsp;&lt;/span&gt;&lt;/font&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;Enrichment Analysis&lt;/span&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;font style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;(GSEA)&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fontSize=12;strokeColor=#000000;fillColor=#E9AE97;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
+                    <mxGeometry x="30.009999999999998" y="400" width="220" height="120" as="geometry">
+                        <mxRectangle x="20" y="240" width="175" height="35" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="94" value="&lt;i&gt;&lt;b&gt;In&lt;/b&gt;&lt;/i&gt;: DEGs / DMRs, MSigDB gene sets" style="text;strokeColor=default;fillColor=#E9AE97;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;gradientColor=none;" parent="93" vertex="1">
+                    <mxGeometry y="40" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="95" value="&lt;i style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b&gt;Out&lt;/b&gt;&lt;/i&gt;: DEGSs" style="text;strokeColor=default;fillColor=#E9AE97;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;" parent="93" vertex="1">
+                    <mxGeometry y="80" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="97" value="&lt;div style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color); font-size: 12px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&lt;b&gt;Identification of Top Genes&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;through Z-score Correction&lt;/b&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fontSize=12;strokeColor=#000000;fillColor=#E9AE97;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
+                    <mxGeometry x="290.01" y="120" width="220" height="120" as="geometry">
+                        <mxRectangle x="20" y="240" width="175" height="35" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="98" value="&lt;i&gt;&lt;b&gt;In&lt;/b&gt;&lt;/i&gt;: DEGSs (all)" style="text;strokeColor=default;fillColor=#E9AE97;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;gradientColor=none;" parent="97" vertex="1">
+                    <mxGeometry y="40" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="99" value="&lt;i style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b&gt;Out&lt;/b&gt;&lt;/i&gt;: Top genes (P-value &amp;lt; 0.05)" style="text;strokeColor=default;fillColor=#E9AE97;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;" parent="97" vertex="1">
+                    <mxGeometry y="80" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="100" value="&lt;div style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color); font-size: 12px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b&gt;PPI Network Analysis&lt;br&gt;&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fontSize=12;strokeColor=#000000;fillColor=#E9AE97;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
+                    <mxGeometry x="290.01" y="260" width="220" height="120" as="geometry">
+                        <mxRectangle x="20" y="240" width="175" height="35" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="101" value="&lt;i&gt;&lt;b&gt;In&lt;/b&gt;&lt;/i&gt;: Top genes" style="text;strokeColor=default;fillColor=#E9AE97;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;gradientColor=none;" parent="100" vertex="1">
+                    <mxGeometry y="40" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="102" value="&lt;i style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b&gt;Out&lt;/b&gt;&lt;/i&gt;: PPI Network" style="text;strokeColor=default;fillColor=#E9AE97;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;" parent="100" vertex="1">
+                    <mxGeometry y="80" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="103" value="&lt;div style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color); font-size: 12px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color);&quot;&gt;Clustering of Genes via&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color);&quot;&gt;Graph Embeddings&lt;/span&gt;&lt;/div&gt;&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fontSize=12;strokeColor=#000000;fillColor=#E9AE97;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
+                    <mxGeometry x="290.01" y="400" width="220" height="120" as="geometry">
+                        <mxRectangle x="20" y="240" width="175" height="35" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="104" value="&lt;i&gt;&lt;b&gt;In&lt;/b&gt;&lt;/i&gt;: PPI Network" style="text;strokeColor=default;fillColor=#E9AE97;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;gradientColor=none;" parent="103" vertex="1">
+                    <mxGeometry y="40" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="105" value="&lt;i style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b&gt;Out&lt;/b&gt;&lt;/i&gt;: Optimal protein clusters C&lt;sub&gt;n_clusters&lt;/sub&gt;" style="text;strokeColor=default;fillColor=#E9AE97;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;" parent="103" vertex="1">
+                    <mxGeometry y="80" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="107" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=3;endArrow=block;endFill=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;rounded=0;endSize=3;startSize=3;" parent="U7u_f17gVRgXchmAX0Bn-2" source="102" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="290.01" y="460" as="targetPoint"/>
+                        <mxPoint x="290.01" y="360" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="275.01" y="360"/>
+                            <mxPoint x="275.01" y="460"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="108" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=3;endArrow=block;endFill=1;rounded=0;endSize=3;startSize=3;" parent="U7u_f17gVRgXchmAX0Bn-2" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="290.01" y="320" as="targetPoint"/>
+                        <mxPoint x="290.01" y="220" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="275.01" y="220"/>
+                            <mxPoint x="275.01" y="320"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="111" value="&lt;div style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color); font-size: 12px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&lt;b&gt;Over-representation Analysis (ORA)&lt;/b&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fontSize=12;strokeColor=#000000;fillColor=#E9AE97;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
+                    <mxGeometry x="550.01" y="120" width="220" height="120" as="geometry">
+                        <mxRectangle x="20" y="240" width="175" height="35" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="112" value="&lt;i&gt;&lt;b&gt;In&lt;/b&gt;&lt;/i&gt;: GOI Cluster, MSigDB gene sets" style="text;strokeColor=default;fillColor=#E9AE97;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;gradientColor=none;" parent="111" vertex="1">
+                    <mxGeometry y="40" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="113" value="&lt;i style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b&gt;Out&lt;/b&gt;&lt;/i&gt;: Over-represented gene sets" style="text;strokeColor=default;fillColor=#E9AE97;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;" parent="111" vertex="1">
+                    <mxGeometry y="80" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="114" value="&lt;div style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color); font-size: 12px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&lt;b&gt;&lt;i&gt;Identification of&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;Relevant Biological Processes&lt;/i&gt;&lt;/b&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fontSize=12;strokeColor=#82b366;fillColor=#d5e8d4;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
+                    <mxGeometry x="550.01" y="260" width="220" height="120" as="geometry">
+                        <mxRectangle x="20" y="240" width="175" height="35" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="115" value="&lt;i&gt;&lt;b&gt;In&lt;/b&gt;&lt;/i&gt;: Over-represented gene sets" style="text;strokeColor=#82b366;fillColor=#d5e8d4;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;" parent="114" vertex="1">
+                    <mxGeometry y="40" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="116" value="&lt;i style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b&gt;Out&lt;/b&gt;&lt;/i&gt;: Relevant gene sets for the research question" style="text;strokeColor=#82b366;fillColor=#d5e8d4;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;" parent="114" vertex="1">
+                    <mxGeometry y="80" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="117" value="&lt;div style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color); font-size: 12px;&quot;&gt;&lt;div style=&quot;border-color: var(--border-color); font-size: 14px;&quot;&gt;&lt;b&gt;&lt;i&gt;Filtering of potentially&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;Relevant Targets&lt;/i&gt;&lt;/b&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fontSize=12;strokeColor=#82b366;fillColor=#d5e8d4;" parent="U7u_f17gVRgXchmAX0Bn-2" vertex="1">
+                    <mxGeometry x="550.01" y="400" width="220" height="120" as="geometry">
+                        <mxRectangle x="20" y="240" width="175" height="35" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="118" value="&lt;i&gt;&lt;b&gt;In&lt;/b&gt;&lt;/i&gt;: Relevant gene sets for the research question" style="text;strokeColor=#82b366;fillColor=#d5e8d4;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;" parent="117" vertex="1">
+                    <mxGeometry y="40" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="119" value="&lt;i style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b&gt;Out&lt;/b&gt;&lt;/i&gt;: Relevant targets for the research question" style="text;strokeColor=#82b366;fillColor=#d5e8d4;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;" parent="117" vertex="1">
+                    <mxGeometry y="80" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="120" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=3;endArrow=block;endFill=1;rounded=0;endSize=3;startSize=3;" parent="U7u_f17gVRgXchmAX0Bn-2" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="550.01" y="320" as="targetPoint"/>
+                        <mxPoint x="550.01" y="220" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="535.01" y="220"/>
+                            <mxPoint x="535.01" y="320"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="121" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=3;endArrow=block;endFill=1;rounded=0;endSize=3;startSize=3;" parent="U7u_f17gVRgXchmAX0Bn-2" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="550.01" y="460.0000000000001" as="targetPoint"/>
+                        <mxPoint x="550.01" y="360" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="535.01" y="360"/>
+                            <mxPoint x="535.01" y="460"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="53" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;endArrow=block;endFill=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endSize=3;startSize=3;" parent="1" target="88" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="240" y="700" as="sourcePoint"/>
+                        <mxPoint x="300" y="370" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="270" y="700"/>
+                            <mxPoint x="270" y="380"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="79" value="" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;rounded=0;strokeWidth=3;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endSize=3;startSize=3;endArrow=block;endFill=1;" parent="1" source="86" target="91" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="290" y="700"/>
+                            <mxPoint x="290" y="520"/>
+                        </Array>
+                        <mxPoint x="240" y="660" as="sourcePoint"/>
+                        <mxPoint x="320" y="510" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="96" value="" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;rounded=0;strokeWidth=3;strokeColor=default;jumpStyle=arc;endSize=3;startSize=3;endArrow=block;endFill=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="82" target="90" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="260" y="540"/>
+                            <mxPoint x="290" y="540"/>
+                            <mxPoint x="290" y="520"/>
+                        </Array>
+                        <mxPoint x="245" y="704.9999999999998" as="sourcePoint"/>
+                        <mxPoint x="295" y="495" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
             </root>
