@@ -1,10 +1,10 @@
 <mxfile host="65bd71144e" scale="2" border="0">
     <diagram name="Page-1" id="WMyTI4VWCgRzHXp1mPb9">
-        <mxGraphModel dx="2457" dy="1001" grid="1" gridSize="5" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+        <mxGraphModel dx="2366" dy="720" grid="1" gridSize="5" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="122" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=default;" vertex="1" parent="1">
+                <mxCell id="122" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=default;" parent="1" vertex="1">
                     <mxGeometry x="-40" y="180" width="1160" height="580" as="geometry"/>
                 </mxCell>
                 <mxCell id="U7u_f17gVRgXchmAX0Bn-6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" edge="1">
@@ -42,7 +42,7 @@
                 <mxCell id="81" value="&lt;i&gt;&lt;b&gt;In&lt;/b&gt;&lt;/i&gt;: N&lt;sub style=&quot;border-color: var(--border-color);&quot;&gt;samples&lt;/sub&gt;&amp;nbsp;files" style="text;strokeColor=default;fillColor=#A6BFF2;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;gradientColor=none;" parent="80" vertex="1">
                     <mxGeometry y="40" width="220" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="82" value="&lt;i style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b&gt;Out&lt;/b&gt;&lt;/i&gt;: N&lt;sub style=&quot;border-color: var(--border-color);&quot;&gt;samples&lt;/sub&gt;&amp;nbsp;x M&lt;sub style=&quot;border-color: var(--border-color);&quot;&gt;genes&lt;/sub&gt;&amp;nbsp;expr. matrix (+ meth.)" style="text;strokeColor=default;fillColor=#a6bff2;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;" parent="80" vertex="1">
+                <mxCell id="82" value="&lt;i style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b&gt;Out&lt;/b&gt;&lt;/i&gt;: N&lt;sub style=&quot;border-color: var(--border-color);&quot;&gt;samples&lt;/sub&gt;&amp;nbsp;x M&lt;sub style=&quot;border-color: var(--border-color);&quot;&gt;genes&lt;/sub&gt;&amp;nbsp;expr. matrix (+ meth.matrix)" style="text;strokeColor=default;fillColor=#a6bff2;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;" parent="80" vertex="1">
                     <mxGeometry y="80" width="220" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="109" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=3;endArrow=block;endFill=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;rounded=0;endSize=3;startSize=3;" parent="U7u_f17gVRgXchmAX0Bn-1" source="82" target="85" edge="1">
@@ -136,7 +136,7 @@
                         <mxRectangle x="20" y="240" width="175" height="35" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="91" value="&lt;i&gt;&lt;b&gt;In&lt;/b&gt;&lt;/i&gt;:&amp;nbsp;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;N&lt;/span&gt;&lt;sub style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;samples&lt;/sub&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;&amp;nbsp;x M&lt;/span&gt;&lt;sub style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;genes&lt;/sub&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;&amp;nbsp;expr. matrix (+ meth.)&lt;/span&gt;" style="text;strokeColor=default;fillColor=#E9AE97;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;gradientColor=none;" parent="90" vertex="1">
+                <mxCell id="91" value="&lt;i&gt;&lt;b&gt;In&lt;/b&gt;&lt;/i&gt;:&amp;nbsp;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;N&lt;/span&gt;&lt;sub style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;samples&lt;/sub&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;&amp;nbsp;x M&lt;/span&gt;&lt;sub style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;genes&lt;/sub&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;&amp;nbsp;expr. matrix (+ meth.matrix)&lt;/span&gt;" style="text;strokeColor=default;fillColor=#E9AE97;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;gradientColor=none;" parent="90" vertex="1">
                     <mxGeometry y="40" width="220" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="92" value="&lt;i style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b&gt;Out&lt;/b&gt;&lt;/i&gt;: DEGs / DMRs" style="text;strokeColor=default;fillColor=#E9AE97;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=12;" parent="90" vertex="1">
