@@ -9,14 +9,14 @@ from pathlib import Path
 from typing import Dict, Iterable
 
 import pandas as pd
-from components.functional_analysis.orgdb import OrgDB
 from rich import traceback
 from rpy2.rinterface_lib.callbacks import logger as rpy2_logger
 from tqdm.rich import tqdm
-from utils import run_func_dict
 
+from components.functional_analysis.orgdb import OrgDB
 from data.utils import parallelize_map
 from pipelines.data.utils import generate_gsva_matrix
+from utils import run_func_dict
 
 _ = traceback.install()
 rpy2_logger.setLevel(logging.ERROR)
@@ -42,7 +42,7 @@ parser.add_argument(
 
 user_args = vars(parser.parse_args())
 STORAGE: Path = Path(user_args["root_dir"])
-DATA_ROOT: Path = STORAGE.joinpath("PCTA_WCDT")
+DATA_ROOT: Path = STORAGE.joinpath("PCTA-WCDT")
 DATA_PATH: Path = DATA_ROOT.joinpath("data")
 GSVA_PATH: Path = DATA_PATH.joinpath("gsva")
 GSVA_PATH.mkdir(parents=True, exist_ok=True)

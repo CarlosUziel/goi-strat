@@ -7,10 +7,10 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Tuple
 
 import pandas as pd
-from components.functional_analysis.orgdb import OrgDB
 from rich import traceback
 from rpy2.rinterface_lib.callbacks import logger as rpy2_logger
 
+from components.functional_analysis.orgdb import OrgDB
 from pipelines.differential_methylation.minfi_utils import (
     differential_methylation_array,
 )
@@ -39,7 +39,7 @@ parser.add_argument(
 
 user_args = vars(parser.parse_args())
 STORAGE: Path = Path(user_args["root_dir"])
-DATA_ROOT: Path = STORAGE.joinpath("TCGA_PRAD_MethArray")
+DATA_ROOT: Path = STORAGE.joinpath("TCGA-PRAD_MethArray")
 RESULTS_PATH: Path = DATA_ROOT.joinpath("minfi")
 RESULTS_PATH.mkdir(exist_ok=True, parents=True)
 PLOTS_PATH: Path = RESULTS_PATH.joinpath("plots")

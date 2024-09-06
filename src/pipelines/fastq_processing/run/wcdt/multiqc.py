@@ -14,7 +14,7 @@ logging.basicConfig(force=True)
 logging.getLogger().setLevel(logging.ERROR)
 warnings.filterwarnings("ignore")
 
-STORAGE: Path = Path("/gpfs/data/fs71358/cperez/storage/WCDT_MCRPC_MethArray")
+STORAGE: Path = Path("/gpfs/data/fs71358/cperez/storage/WCDT-MCRPC_MethArray")
 MULTIQC_PATH: Path = STORAGE.joinpath("multiqc_clean")
 ANALYSES_PATH: Iterable[Path] = [
     STORAGE.joinpath("fastqc_clean"),

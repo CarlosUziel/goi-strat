@@ -12,10 +12,10 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Optional
 
 import pandas as pd
-from slurm.slurm_job_submitter import SlurmJobSubmitter
 from tqdm.rich import tqdm
 
 from data.utils import run_cmd
+from slurm.slurm_job_submitter import SlurmJobSubmitter
 
 
 def run_fastqc(

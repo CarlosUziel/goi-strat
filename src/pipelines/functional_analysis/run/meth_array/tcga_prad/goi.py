@@ -10,15 +10,15 @@ from pathlib import Path
 from typing import Dict, Iterable, Union
 
 import pandas as pd
-from components.functional_analysis.orgdb import OrgDB
-from r_wrappers.utils import map_gene_id
 from rich import traceback
 from rpy2.rinterface_lib.callbacks import logger as rpy2_logger
 from tqdm import tqdm
-from utils import run_func_dict
 
+from components.functional_analysis.orgdb import OrgDB
 from data.utils import parallelize_map
 from pipelines.functional_analysis.utils import functional_enrichment
+from r_wrappers.utils import map_gene_id
+from utils import run_func_dict
 
 _ = traceback.install()
 rpy2_logger.setLevel(logging.ERROR)
@@ -48,7 +48,7 @@ GOI_ENSEMBL: str = "ENSG00000086205"  # ENSEMBL ID for FOLH1 (PSMA)
 SPECIES: str = "Homo sapiens"
 org_db = OrgDB(SPECIES)
 GOI_SYMBOL = map_gene_id([GOI_ENSEMBL], org_db, "ENSEMBL", "SYMBOL")[0]
-DATA_ROOT: Path = STORAGE.joinpath(f"TCGA_PRAD_MethArray_{GOI_SYMBOL}")
+DATA_ROOT: Path = STORAGE.joinpath(f"TCGA-PRAD_MethArray_{GOI_SYMBOL}")
 FUNC_PATH: Path = DATA_ROOT.joinpath("functional")
 FUNC_PATH.mkdir(exist_ok=True, parents=True)
 PLOTS_PATH: Path = FUNC_PATH.joinpath("plots")

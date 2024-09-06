@@ -6,9 +6,9 @@ from typing import Iterable
 
 import networkx as nx
 import pandas as pd
-from r_wrappers.rbioapi import string_interactions_network, string_map_ids
 
 from data.networks import get_node_metrics
+from r_wrappers.rbioapi import string_interactions_network, string_map_ids
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)

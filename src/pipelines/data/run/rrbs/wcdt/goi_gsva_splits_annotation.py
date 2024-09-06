@@ -10,17 +10,17 @@ from typing import Iterable
 
 import pandas as pd
 import rpy2.robjects as ro
-from components.functional_analysis.orgdb import OrgDB
-from r_wrappers.deseq2 import vst_transform
-from r_wrappers.utils import map_gene_id, pd_df_to_rpy2_df, rpy2_df_to_pd_df
 from rich import traceback
 from rpy2.rinterface_lib.callbacks import logger as rpy2_logger
 from tqdm.rich import tqdm
-from utils import run_func_dict
 
+from components.functional_analysis.orgdb import OrgDB
 from data.utils import parallelize_map
 from pipelines.data.utils import get_optimal_gsva_splits
 from pipelines.differential_enrichment.utils import diff_enrich_gsva_limma
+from r_wrappers.deseq2 import vst_transform
+from r_wrappers.utils import map_gene_id, pd_df_to_rpy2_df, rpy2_df_to_pd_df
+from utils import run_func_dict
 
 _ = traceback.install()
 rpy2_logger.setLevel(logging.ERROR)
@@ -50,13 +50,13 @@ GOI_ENSEMBL: str = "ENSG00000086205"  # ENSEMBL ID for FOLH1 (PSMA)
 SPECIES: str = "Homo sapiens"
 org_db = OrgDB(SPECIES)
 GOI_SYMBOL = map_gene_id([GOI_ENSEMBL], org_db, "ENSEMBL", "SYMBOL")[0]
-ROOT: Path = STORAGE.joinpath("WCDT_MCRPC")
+ROOT: Path = STORAGE.joinpath("WCDT-MCRPC")
 DATA_PATH: Path = ROOT.joinpath("data")
 ANNOT_PATH: Path = DATA_PATH.joinpath("samples_annotation.csv")
 RAW_COUNTS_PATH: Path = DATA_PATH.joinpath("raw_counts_srr.csv")
 GSVA_PATH: Path = DATA_PATH.joinpath("gsva")
 GSVA_PATH.mkdir(exist_ok=True, parents=True)
-GOI_METH_MAIN_ROOT: Path = STORAGE.joinpath(f"WCDT_MCRPC_{GOI_SYMBOL}")
+GOI_METH_MAIN_ROOT: Path = STORAGE.joinpath(f"WCDT-MCRPC_{GOI_SYMBOL}")
 RESULTS_PATH: Path = GOI_METH_MAIN_ROOT.joinpath("group_splits_gsva")
 RESULTS_PATH.mkdir(exist_ok=True, parents=True)
 DATA_PATH: Path = GOI_METH_MAIN_ROOT.joinpath("data")

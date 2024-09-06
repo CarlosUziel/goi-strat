@@ -9,6 +9,9 @@ from typing import Any, Dict, Iterable, Optional, Tuple
 import pandas as pd
 import plotly.express as px
 import rpy2.robjects as ro
+from rpy2.robjects.conversion import localconverter
+from sklearn.decomposition import PCA
+
 from components.functional_analysis.orgdb import OrgDB
 from r_wrappers.complex_heatmaps import complex_heatmap, heatmap_annotation
 from r_wrappers.deseq2 import (
@@ -39,8 +42,6 @@ from r_wrappers.visualization import (
     venn_diagram,
     volcano_plot,
 )
-from rpy2.robjects.conversion import localconverter
-from sklearn.decomposition import PCA
 
 
 def proc_diff_expr_dataset_plots(

@@ -14,7 +14,7 @@ logging.basicConfig(force=True)
 logging.getLogger().setLevel(logging.ERROR)
 warnings.filterwarnings("ignore")
 
-STORAGE: Path = Path("/gpfs/data/fs71358/cperez/storage/WCDT_MCRPC_MethArray")
+STORAGE: Path = Path("/gpfs/data/fs71358/cperez/storage/WCDT-MCRPC_MethArray")
 FASTQ_PATH: Path = STORAGE.joinpath("fastq_raw")
 TRIM_GALORE_PATH: Path = STORAGE.joinpath("trim_galore")
 TRIM_GALORE_KWARGS: Dict[str, Any] = {

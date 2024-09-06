@@ -10,17 +10,17 @@ from typing import Iterable
 
 import pandas as pd
 import rpy2.robjects as ro
-from components.functional_analysis.orgdb import OrgDB
-from r_wrappers.deseq2 import vst_transform
-from r_wrappers.utils import map_gene_id, pd_df_to_rpy2_df, rpy2_df_to_pd_df
 from rich import traceback
 from rpy2.rinterface_lib.callbacks import logger as rpy2_logger
 from tqdm.rich import tqdm
-from utils import run_func_dict
 
+from components.functional_analysis.orgdb import OrgDB
 from data.utils import parallelize_map
 from pipelines.data.utils import get_optimal_gsva_splits
 from pipelines.differential_enrichment.utils import diff_enrich_gsva_limma
+from r_wrappers.deseq2 import vst_transform
+from r_wrappers.utils import map_gene_id, pd_df_to_rpy2_df, rpy2_df_to_pd_df
+from utils import run_func_dict
 
 _ = traceback.install()
 rpy2_logger.setLevel(logging.ERROR)
@@ -50,8 +50,8 @@ GOI_ENSEMBL: str = "ENSG00000086205"  # ENSEMBL ID for FOLH1 (PSMA)
 SPECIES: str = "Homo sapiens"
 org_db = OrgDB(SPECIES)
 GOI_SYMBOL = map_gene_id([GOI_ENSEMBL], org_db, "ENSEMBL", "SYMBOL")[0]
-RNA_MAIN_ROOT: Path = STORAGE.joinpath("PCTA_WCDT")
-METH_MAIN_ROOT: Path = STORAGE.joinpath("TCGA_PRAD_MethArray")
+RNA_MAIN_ROOT: Path = STORAGE.joinpath("PCTA-WCDT")
+METH_MAIN_ROOT: Path = STORAGE.joinpath("TCGA-PRAD_MethArray")
 METH_DATA_PATH: Path = METH_MAIN_ROOT.joinpath("data")
 RNA_ANNOT_PATH: Path = RNA_MAIN_ROOT.joinpath("data").joinpath("samples_annotation.csv")
 METH_ANNOT_PATH: Path = METH_DATA_PATH.joinpath("samples_annotation.csv")
@@ -60,7 +60,7 @@ RAW_COUNTS_PATH: Path = RNA_MAIN_ROOT.joinpath("data").joinpath(
     "raw_counts_wo_batch_effects.csv"
 )
 GSVA_PATH: Path = METH_DATA_PATH.joinpath("gsva")
-GOI_METH_MAIN_ROOT: Path = STORAGE.joinpath(f"TCGA_PRAD_MethArray_{GOI_SYMBOL}")
+GOI_METH_MAIN_ROOT: Path = STORAGE.joinpath(f"TCGA-PRAD_MethArray_{GOI_SYMBOL}")
 RESULTS_PATH: Path = GOI_METH_MAIN_ROOT.joinpath("group_splits_gsva")
 RESULTS_PATH.mkdir(exist_ok=True, parents=True)
 DATA_PATH: Path = GOI_METH_MAIN_ROOT.joinpath("data")

@@ -10,16 +10,16 @@ import networkx as nx
 import numpy as np
 import pandas as pd
 import rpy2.robjects as ro
-from components.np_encoder import NpEncoder
 from node2vec import Node2Vec
 from sklearn.cluster import DBSCAN, MiniBatchKMeans, SpectralClustering
 from sklearn.metrics import silhouette_samples, silhouette_score
 from sklearn.preprocessing import LabelEncoder, RobustScaler
 from tqdm import tqdm
-from utils import run_func_dict
 
+from components.np_encoder import NpEncoder
 from data.utils import parallelize_map
 from pipelines.degss_ppi_networks_clustering.components import ClusterSimilarityMatrix
+from utils import run_func_dict
 
 double_brackets = ro.r("function(obj, idx){return(obj[[idx]])}")
 logging.basicConfig()

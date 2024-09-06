@@ -11,17 +11,17 @@ from pathlib import Path
 from typing import Dict, Iterable, Union
 
 import pandas as pd
-from components.functional_analysis.orgdb import OrgDB
-from r_wrappers.utils import map_gene_id
 from rich import traceback
 from rpy2.rinterface_lib.callbacks import logger as rpy2_logger
 from tqdm import tqdm
-from utils import run_func_dict
 
+from components.functional_analysis.orgdb import OrgDB
 from data.utils import filter_df, parallelize_map
 from pipelines.differential_methylation.minfi_utils import (
     differential_methylation_array,
 )
+from r_wrappers.utils import map_gene_id
+from utils import run_func_dict
 
 _ = traceback.install()
 rpy2_logger.setLevel(logging.ERROR)
@@ -51,7 +51,7 @@ GOI_ENSEMBL: str = "ENSG00000086205"  # ENSEMBL ID for FOLH1 (PSMA)
 SPECIES: str = "Homo sapiens"
 org_db = OrgDB(SPECIES)
 GOI_SYMBOL = map_gene_id([GOI_ENSEMBL], org_db, "ENSEMBL", "SYMBOL")[0]
-DATA_ROOT: Path = STORAGE.joinpath(f"TCGA_PRAD_MethArray_{GOI_SYMBOL}")
+DATA_ROOT: Path = STORAGE.joinpath(f"TCGA-PRAD_MethArray_{GOI_SYMBOL}")
 RESULTS_PATH: Path = DATA_ROOT.joinpath("minfi")
 RESULTS_PATH.mkdir(exist_ok=True, parents=True)
 PLOTS_PATH: Path = RESULTS_PATH.joinpath("plots")
@@ -59,7 +59,7 @@ PLOTS_PATH.mkdir(exist_ok=True, parents=True)
 DATA_PATH: Path = DATA_ROOT.joinpath("data")
 ANNOT_PATH: Path = DATA_PATH.joinpath(f"samples_annotation_{GOI_SYMBOL}.csv")
 IDAT_PATH: Path = (
-    STORAGE.joinpath("TCGA_PRAD_MethArray").joinpath("data").joinpath("idat")
+    STORAGE.joinpath("TCGA-PRAD_MethArray").joinpath("data").joinpath("idat")
 )
 GENOME: str = "hg38"
 ARRAY_TYPE: str = "450K"

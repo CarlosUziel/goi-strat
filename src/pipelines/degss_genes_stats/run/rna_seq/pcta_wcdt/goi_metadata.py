@@ -9,13 +9,13 @@ from typing import Dict, Iterable, Tuple
 
 import numpy as np
 import pandas as pd
-from components.functional_analysis.orgdb import OrgDB
-from r_wrappers.utils import map_gene_id
 from rich import traceback
 from rpy2.rinterface_lib.callbacks import logger as rpy2_logger
 from tqdm import tqdm
 
+from components.functional_analysis.orgdb import OrgDB
 from pipelines.degss_genes_stats.utils import add_degss_genes_stats_metadata
+from r_wrappers.utils import map_gene_id
 
 _ = traceback.install()
 rpy2_logger.setLevel(logging.ERROR)
@@ -46,11 +46,11 @@ GOI_ENSEMBL: str = "ENSG00000086205"  # ENSEMBL ID for FOLH1 (PSMA)
 SPECIES: str = "Homo sapiens"
 org_db = OrgDB(SPECIES)
 GOI_SYMBOL = map_gene_id([GOI_ENSEMBL], org_db, "ENSEMBL", "SYMBOL")[0]
-DATA_ROOT: Path = STORAGE.joinpath(f"PCTA_WCDT_{GOI_SYMBOL}")
-PRIM_METH_ROOT: Path = STORAGE.joinpath(f"TCGA_PRAD_MethArray_{GOI_SYMBOL}")
-MET_METH_ROOT: Path = STORAGE.joinpath(f"WCDT_MCRPC_{GOI_SYMBOL}")
+DATA_ROOT: Path = STORAGE.joinpath(f"PCTA-WCDT_{GOI_SYMBOL}")
+PRIM_METH_ROOT: Path = STORAGE.joinpath(f"TCGA-PRAD_MethArray_{GOI_SYMBOL}")
+MET_METH_ROOT: Path = STORAGE.joinpath(f"WCDT-MCRPC_{GOI_SYMBOL}")
 DATA_PATH: Path = DATA_ROOT.joinpath("data")
-GSVA_PATH: Path = STORAGE.joinpath("PCTA_WCDT").joinpath("data").joinpath("gsva")
+GSVA_PATH: Path = STORAGE.joinpath("PCTA-WCDT").joinpath("data").joinpath("gsva")
 INT_ANALYSIS_PATH: Path = DATA_ROOT.joinpath("integrative_analysis")
 GENES_STATS_PATH: Path = DATA_ROOT.joinpath("degss_genes_stats")
 ANNOT_PATH: Path = DATA_PATH.joinpath(f"samples_annotation_{GOI_SYMBOL}.csv")

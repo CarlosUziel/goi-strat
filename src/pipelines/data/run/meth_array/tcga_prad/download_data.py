@@ -33,7 +33,7 @@ parser.add_argument(
 
 user_args = vars(parser.parse_args())
 STORAGE: Path = Path(user_args["root_dir"])
-DATA_ROOT: Path = STORAGE.joinpath("TCGA_PRAD_MethArray")
+DATA_ROOT: Path = STORAGE.joinpath("TCGA-PRAD_MethArray")
 DATA_PATH: Path = DATA_ROOT.joinpath("data")
 IDAT_PATH: Path = DATA_PATH.joinpath("idat")
 IDAT_PATH.mkdir(exist_ok=True, parents=True)

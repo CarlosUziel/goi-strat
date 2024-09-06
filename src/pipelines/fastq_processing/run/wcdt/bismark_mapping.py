@@ -14,7 +14,7 @@ logging.basicConfig(force=True)
 logging.getLogger().setLevel(logging.ERROR)
 warnings.filterwarnings("ignore")
 
-STORAGE: Path = Path("/gpfs/data/fs71358/cperez/storage/WCDT_MCRPC_MethArray")
+STORAGE: Path = Path("/gpfs/data/fs71358/cperez/storage/WCDT-MCRPC_MethArray")
 FASTQ_PATH: Path = STORAGE.joinpath("trim_galore")
 GENOME_PATH: Path = STORAGE.joinpath(
     "/gpfs/data/fs71358/cperez/storage/genomes/Homo_sapiens/GRCh38/ENSEMBL"

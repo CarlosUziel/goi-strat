@@ -14,7 +14,7 @@ logging.basicConfig(force=True)
 logging.getLogger().setLevel(logging.ERROR)
 warnings.filterwarnings("ignore")
 
-STORAGE: Path = Path("/gpfs/data/fs71358/cperez/storage/WCDT_MCRPC_MethArray")
+STORAGE: Path = Path("/gpfs/data/fs71358/cperez/storage/WCDT-MCRPC_MethArray")
 SRA_PATH: Path = STORAGE.joinpath("sra")
 NGC_FILEPATH: Path = SRA_PATH.joinpath("ncbi").joinpath("prj_22525.ngc")
 FASTQ_PATH: Path = STORAGE.joinpath("fastq_raw")

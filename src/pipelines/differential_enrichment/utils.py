@@ -5,6 +5,8 @@ from typing import Dict, Iterable, Tuple
 
 import pandas as pd
 import rpy2.robjects as ro
+from rpy2.robjects.conversion import localconverter
+
 from r_wrappers.complex_heatmaps import complex_heatmap, heatmap_annotation
 from r_wrappers.limma import (
     empirical_bayes,
@@ -14,7 +16,6 @@ from r_wrappers.limma import (
     top_table,
 )
 from r_wrappers.utils import get_design_matrix, pd_df_to_rpy2_df, rpy2_df_to_pd_df
-from rpy2.robjects.conversion import localconverter
 
 
 def diff_enrich_gsva_limma(

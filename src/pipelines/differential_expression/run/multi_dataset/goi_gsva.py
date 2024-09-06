@@ -12,15 +12,15 @@ from pathlib import Path
 from typing import Dict, Iterable, Union
 
 import pandas as pd
-from components.functional_analysis.orgdb import OrgDB
-from r_wrappers.utils import map_gene_id
 from rich import traceback
 from rpy2.rinterface_lib.callbacks import logger as rpy2_logger
 from tqdm.rich import tqdm
-from utils import run_func_dict
 
+from components.functional_analysis.orgdb import OrgDB
 from data.utils import filter_df, parallelize_map
 from pipelines.differential_expression.utils import differential_expression
+from r_wrappers.utils import map_gene_id
+from utils import run_func_dict
 
 _ = traceback.install()
 rpy2_logger.setLevel(logging.ERROR)
@@ -82,7 +82,7 @@ DATASETS_MARKERS: Dict[str, str] = {
     "TCGA-KIRC": "CA9",  # https://www.sciencedirect.com/science/article/abs/pii/S0959804910006982
     "TCGA-HNSC": "TP63",  # https://aacrjournals.org/mcr/article/17/6/1279/270274/Loss-of-TP63-Promotes-the-Metastasis-of-Head-and
     "TCGA-LGG": "IDH1",  # https://www.neurology.org/doi/abs/10.1212/wnl.0b013e3181f96282
-    "PCTA_WCDT": "FOLH1",  # https://www.nature.com/articles/nrurol.2016.26
+    "PCTA-WCDT": "FOLH1",  # https://www.nature.com/articles/nrurol.2016.26
 }
 
 # 1. Collect all function inputs for each tcga project

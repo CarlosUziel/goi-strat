@@ -11,16 +11,16 @@ from typing import Dict, Iterable
 
 import pandas as pd
 import rpy2.robjects as ro
-from components.functional_analysis.orgdb import OrgDB
-from r_wrappers.deseq2 import vst_transform
-from r_wrappers.utils import map_gene_id, pd_df_to_rpy2_df, rpy2_df_to_pd_df
 from rich import traceback
 from rpy2.rinterface_lib.callbacks import logger as rpy2_logger
 from tqdm import tqdm
-from utils import run_func_dict
 
+from components.functional_analysis.orgdb import OrgDB
 from data.utils import parallelize_map
 from pipelines.data.utils import goi_perc_annotation_rna_seq
+from r_wrappers.deseq2 import vst_transform
+from r_wrappers.utils import map_gene_id, pd_df_to_rpy2_df, rpy2_df_to_pd_df
+from utils import run_func_dict
 
 _ = traceback.install()
 rpy2_logger.setLevel(logging.ERROR)
@@ -83,7 +83,7 @@ DATASETS_MARKERS: Dict[str, str] = {
     "TCGA-KIRC": "CA9",  # https://www.sciencedirect.com/science/article/abs/pii/S0959804910006982
     "TCGA-HNSC": "TP63",  # https://aacrjournals.org/mcr/article/17/6/1279/270274/Loss-of-TP63-Promotes-the-Metastasis-of-Head-and
     "TCGA-LGG": "IDH1",  # https://www.neurology.org/doi/abs/10.1212/wnl.0b013e3181f96282
-    "PCTA_WCDT": "FOLH1",  # https://www.nature.com/articles/nrurol.2016.26
+    "PCTA-WCDT": "FOLH1",  # https://www.nature.com/articles/nrurol.2016.26
 }
 PERCENTILES: Iterable[int] = (10, 15, 20, 25, 30)
 

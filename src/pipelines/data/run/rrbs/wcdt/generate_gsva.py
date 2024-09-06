@@ -8,14 +8,14 @@ from pathlib import Path
 from typing import Iterable
 
 import pandas as pd
-from components.functional_analysis.orgdb import OrgDB
 from rich import traceback
 from rpy2.rinterface_lib.callbacks import logger as rpy2_logger
 from tqdm.rich import tqdm
-from utils import run_func_dict
 
+from components.functional_analysis.orgdb import OrgDB
 from data.utils import parallelize_map
 from pipelines.data.utils import generate_gsva_matrix
+from utils import run_func_dict
 
 _ = traceback.install()
 rpy2_logger.setLevel(logging.ERROR)
@@ -41,7 +41,7 @@ parser.add_argument(
 
 user_args = vars(parser.parse_args())
 STORAGE: Path = Path(user_args["root_dir"])
-ROOT: Path = STORAGE.joinpath("WCDT_MCRPC")
+ROOT: Path = STORAGE.joinpath("WCDT-MCRPC")
 DATA_PATH: Path = ROOT.joinpath("data")
 ANNOT_PATH: Path = DATA_PATH.joinpath("samples_annotation.csv")
 RAW_COUNTS_PATH: Path = DATA_PATH.joinpath("raw_counts_srr.csv")

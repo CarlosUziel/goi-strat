@@ -33,7 +33,7 @@ parser.add_argument(
 
 user_args = vars(parser.parse_args())
 STORAGE: Path = Path(user_args["root_dir"])
-DATA_ROOT: Path = STORAGE.joinpath("TCGA_PRAD_SU2C_RNASeq")
+DATA_ROOT: Path = STORAGE.joinpath("TCGA-PRAD_SU2C_RNASeq")
 DATA_PATH: Path = DATA_ROOT.joinpath("data")
 COUNTS_PATH: Path = DATA_PATH.joinpath("star_counts")
 
