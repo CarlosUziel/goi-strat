@@ -43,7 +43,6 @@ parser.add_argument(
 
 user_args = vars(parser.parse_args())
 STORAGE: Path = Path(user_args["root_dir"])
-
 DATASET_NAMES: Iterable[str] = [
     "TCGA-BRCA",  # >1000 RNA-seq samples
     "TCGA-LUAD",  # 517 RNA-seq samples

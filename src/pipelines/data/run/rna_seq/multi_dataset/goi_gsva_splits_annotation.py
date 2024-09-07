@@ -48,10 +48,8 @@ parser.add_argument(
 user_args = vars(parser.parse_args())
 
 STORAGE: Path = Path(user_args["root_dir"])
-
 SPECIES: str = "Homo sapiens"
 org_db = OrgDB(SPECIES)
-
 P_COLS: Iterable[str] = ["padj"]
 P_THS: Iterable[float] = (0.05,)
 LFC_LEVELS: Iterable[str] = ("all",)

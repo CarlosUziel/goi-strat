@@ -47,17 +47,8 @@ parser.add_argument(
 user_args = vars(parser.parse_args())
 
 STORAGE: Path = Path(user_args["root_dir"])
-
 SPECIES: str = "Homo sapiens"
 org_db = OrgDB(SPECIES)
-
-P_COLS: Iterable[str] = ["padj"]
-P_THS: Iterable[float] = (0.05,)
-LFC_LEVELS: Iterable[str] = ("all",)
-LFC_THS: Iterable[float] = (0.0,)
-MSIGDB_CATS: Iterable[str] = ("H", *[f"C{i}" for i in range(1, 9)])
-MIN_PERCENTILE: float = 0.1
-MID_PERCENTILE: float = 0.5
 PARALLEL: bool = True
 CONTRASTS_LEVELS_COLORS: Dict[str, str] = {
     "prim": "#4A708B",
