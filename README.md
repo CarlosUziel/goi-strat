@@ -29,6 +29,7 @@
         <li><a href="#file-descriptions">File descriptions</a></li>
       </ul>
     </li>
+    <li><a href="#project-documentation">Project Documentation</a></li>
     <li><a href="#tutorial-performing-sample-stratification-with-goistrat-and-the-topbottom-approach-plus-differential-analyses-on-multiple-datasets">Tutorial: Performing sample stratification with GoiStrat and the top/bottom approach, plus differential analyses, on multiple datasets</a></li>
     <li><a href="#tutorial-downstream-analyses-on-the-folh1-use-case">Tutorial: Downstream analyses on the FOLH1 use case</a></li>
     <li><a href="#additional-notes">Additional Notes</a></li>
@@ -148,6 +149,23 @@ This repository is organized as follows:
 > This repository is an extract of all the code I developed during my PhD. While care has been taken to remove anything unrelated to `GoiStrat`, some artifacts might still be present. In any case, they can be safely ignored.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
+
+## Project Documentation
+
+The documentation for the GoiStrat workflow entire codebase is generated using Sphinx. To build the documentation, navigate to the `docs` directory and run the following command:
+
+```bash
+make html
+```
+
+This will generate the HTML documentation in the `docs/build` directory. Open the `index.html` file in your browser to view the documentation or run the following command to open it in your default browser:
+
+```bash
+open build/html/index.html
+```
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 
 ## Tutorial: Performing sample stratification with GoiStrat and the top/bottom approach, plus differential analyses, on multiple datasets
 
