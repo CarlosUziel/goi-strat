@@ -30,7 +30,7 @@ def kegga(gene_names: StrVector, **kwargs):
     """
     KEGG over-representation analysis
 
-    *ref docs: https://rdrr.io/bioc/limma/man/goana.html
+    See: https://rdrr.io/bioc/limma/man/goana.html
     """
     return r_limma.kegga(gene_names, **kwargs)
 
@@ -63,7 +63,7 @@ def linear_model_fit(obj: Any, design: Any, **kwargs):
     """
     Fit linear model for each gene given a series of arrays
 
-    *ref docs: https://rdrr.io/bioc/limma/man/lmFit.html
+    See: https://rdrr.io/bioc/limma/man/lmFit.html
 
     Args:
         obj: A matrix-like ann_df object containing log-ratios or
@@ -84,7 +84,7 @@ def make_contrasts(contrasts: StrVector, levels: Any):
     Construct the contrast matrix corresponding to specified contrasts of a
     set of parameters.
 
-    *ref docs: https://rdrr.io/bioc/limma/man/makeContrasts.html
+    See: https://rdrr.io/bioc/limma/man/makeContrasts.html
 
     Args:
         contrasts: character vector specifying contrasts
@@ -102,7 +102,7 @@ def fit_contrasts(fit: Any, contrasts: Any):
      coefficients and standard errors for a given set
         of contrasts.
 
-    *ref docs: https://rdrr.io/bioc/limma/man/contrasts.fit.html
+    See: https://rdrr.io/bioc/limma/man/contrasts.fit.html
 
     Args:
         fit: an MArrayLM object or a list object produced by the function
@@ -124,7 +124,7 @@ def empirical_bayes(fit: Any, **kwargs):
         differential expression by empirical Bayes moderation of the
         standard errors towards a common value.
 
-    *ref docs: https://rdrr.io/bioc/limma/man/ebayes.html
+    See: https://rdrr.io/bioc/limma/man/ebayes.html
 
     Args:
         fit: an MArrayLM object or a list object produced by the function
@@ -143,7 +143,7 @@ def decide_tests(obj: Any, **kwargs):
         multiple testing down the genes as well as across contrasts for each
         gene.
 
-    *ref docs: https://rdrr.io/bioc/limma/man/decideTests.html
+    See: https://rdrr.io/bioc/limma/man/decideTests.html
 
     Returns:
         obj: a numeric matrix of p-values or an MArrayLM object from which
@@ -158,7 +158,7 @@ def venn_diagram(
     """
     Compute classification counts and draw a Venn diagram.
 
-    *ref docs: https://rdrr.io/bioc/limma/man/venn.html
+    See: https://rdrr.io/bioc/limma/man/venn.html
 
     Args:
         obj: object to plot
@@ -177,7 +177,7 @@ def volcano_plot(
     """
     Creates a volcano plot for a specified coefficient of a linear model.
 
-    *ref docs: https://rdrr.io/bioc/limma/man/volcanoplot.html
+    See: https://rdrr.io/bioc/limma/man/volcanoplot.html
 
     Args:
         obj: object to plot
@@ -195,7 +195,7 @@ def plot_md(obj: Any, save_path: Path, width: int = 10, height: int = 10, **kwar
      Creates a mean-difference plot (aka MA plot) with color coding for
      highlighted points.
 
-    *ref docs: https://rdrr.io/bioc/limma/man/plotMD.html
+    See: https://rdrr.io/bioc/limma/man/plotMD.html
 
     Args:
         obj: object to plot
@@ -213,7 +213,7 @@ def top_table(fit: Any, **kwargs):
     Table of Top Genes from Linear Model Fit. Extract a table of the
     top-ranked genes from a linear model fit.
 
-    *ref docs: https://rdrr.io/bioc/limma/man/toptable.html
+    See: https://rdrr.io/bioc/limma/man/toptable.html
 
     Args:
         fit: list containing a linear model fit produced by lmFit,
@@ -228,7 +228,7 @@ def remove_batch_effect(x: Any, **kwargs):
     """
     Remove batch effects from expression data.
 
-    *ref docs: https://rdrr.io/bioc/limma/man/removeBatchEffect.html
+    See: https://rdrr.io/bioc/limma/man/removeBatchEffect.html
 
     Args:
         x: numeric matrix, or any data object that can be processed by getEAWP

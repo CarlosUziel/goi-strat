@@ -37,7 +37,7 @@ def bs_raw(
     The BSraw class is derived from RangedSummarizedExperiment and contains a SimpleList
         of matrices named methReads and totalReads as assays.
 
-    *ref docs: https://rdrr.io/bioc/BiSeq/man/BSraw-class.html
+    See: https://rdrr.io/bioc/BiSeq/man/BSraw-class.html
 
     Args:
         metadata: An optional list of arbitrary content describing the overall
@@ -67,7 +67,7 @@ def cov_statistics(biseq_obj: Any) -> Any:
         1.) the covered CpG-sites
         2.) the median of their coverages.
 
-    *ref docs: https://rdrr.io/bioc/BiSeq/man/covStatistics.html
+    See: https://rdrr.io/bioc/BiSeq/man/covStatistics.html
 
     Args:
         biseq_obj: A BiSeq object.
@@ -83,7 +83,7 @@ def cov_boxplot(
         to CpG-sites which are covered in the respective sample (coverage != 0 and not
         NA).
 
-    *ref docs: https://rdrr.io/bioc/BiSeq/man/covBoxplots.html
+    See: https://rdrr.io/bioc/BiSeq/man/covBoxplots.html
 
     Args:
         biseq_obj: A BSraw.
@@ -114,7 +114,7 @@ def cluster_sites(
         boundaries of the CpG clusters only. For the subsequent analysis the methylation
         data of all CpG sites within these clusters are used.
 
-    *ref docs: https://rdrr.io/bioc/BiSeq/man/clusterSites.html
+    See: https://rdrr.io/bioc/BiSeq/man/clusterSites.html
 
     Args:
         biseq_obj: A BiSeq object.
@@ -143,7 +143,7 @@ def cluster_sites_to_gr(biseq_obj: Any) -> Any:
     This function allows to get the start and end positions of CpG clusters from a
         BSraw or BSrel object, when there is a cluster.id column in the rowRanges slot.
 
-    *ref docs: https://rdrr.io/bioc/BiSeq/man/clusterSitesToGR.html
+    See: https://rdrr.io/bioc/BiSeq/man/clusterSitesToGR.html
 
     Args:
         biseq_obj: A BSraw or BSrel object with a cluster.id column in the rowRanges

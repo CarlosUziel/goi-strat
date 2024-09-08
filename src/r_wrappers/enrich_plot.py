@@ -26,7 +26,7 @@ def barplot(
     """
     Barplot of enrichResult (ORA).
 
-    *ref docs: https://rdrr.io/bioc/enrichplot/man/barplot.enrichResult.html
+    See: https://rdrr.io/bioc/enrichplot/man/barplot.enrichResult.html
     """
     plot = r_enrichplot.barplot_enrichResult(enrich_result, **kwargs)
     r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
@@ -38,7 +38,7 @@ def dotplot(
     """
     Dotplot for enrichment result (ORA/GSEA)
 
-    *ref docs: https://rdrr.io/bioc/enrichplot/man/dotplot.html
+    See: https://rdrr.io/bioc/enrichplot/man/dotplot.html
     """
     plot = r_enrichplot.dotplot(enrich_result, **kwargs)
     r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
@@ -50,7 +50,7 @@ def gene_concept_net(
     """
     Gene-Concept Network
 
-    *ref docs: https://rdrr.io/bioc/enrichplot/man/cnetplot.html
+    See: https://rdrr.io/bioc/enrichplot/man/cnetplot.html
     """
     plot = r_enrichplot.cnetplot(enrich_result, **kwargs)
     r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
@@ -62,7 +62,7 @@ def heatplot(
     """
     Heatmap like plot for functional classification
 
-    *ref docs: https://rdrr.io/bioc/enrichplot/man/heatplot.html
+    See: https://rdrr.io/bioc/enrichplot/man/heatplot.html
     """
     plot = r_enrichplot.heatplot(enrich_result, **kwargs)
     r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
@@ -72,7 +72,7 @@ def pairwise_termsim(x: Any, **kwargs):
     """
     Get the similarity matrix.
 
-    *ref docs: https://rdrr.io/bioc/enrichplot/man/pairwise_termsim.html
+    See: https://rdrr.io/bioc/enrichplot/man/pairwise_termsim.html
     """
     return r_enrichplot.pairwise_termsim(x, **kwargs)
 
@@ -84,7 +84,7 @@ def emapplot(
     Enrichment Map for enrichment result of over-representation test or
     gene set enrichment analysis
 
-    *ref docs: https://rdrr.io/bioc/enrichplot/man/emapplot.html
+    See: https://rdrr.io/bioc/enrichplot/man/emapplot.html
     """
     plot = r_enrichplot.emapplot(pairwise_termsim(enrich_result), **kwargs)
     r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
@@ -96,7 +96,7 @@ def upsetplot(
     """
     Upsetplot method generics
 
-    *ref docs: https://rdrr.io/bioc/enrichplot/man/upsetplot-methods.html
+    See: https://rdrr.io/bioc/enrichplot/man/upsetplot-methods.html
     """
     plot = r_enrichplot.upsetplot(enrich_result, **kwargs)
     r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
@@ -126,7 +126,7 @@ def gseaplot(
     """
     Visualize analyzing result of GSEA
 
-    *ref docs: https://rdrr.io/bioc/enrichplot/man/gseaplot.html
+    See: https://rdrr.io/bioc/enrichplot/man/gseaplot.html
     """
     plot = r_enrichplot.gseaplot(enrich_result, gene_set_id, **kwargs)
     r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
@@ -143,7 +143,7 @@ def pmcplot(
     """
     PubMed Central Trend plot
 
-    *ref docs: https://rdrr.io/bioc/enrichplot/man/pmcplot.html
+    See: https://rdrr.io/bioc/enrichplot/man/pmcplot.html
     """
     plot = r_enrichplot.pmcplot(enrich_result, period, **kwargs)
     r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
@@ -155,7 +155,7 @@ def goplot(
     """
     Plot induced GO DAG of significant terms
 
-    *ref docs: https://rdrr.io/bioc/enrichplot/man/goplot.html
+    See: https://rdrr.io/bioc/enrichplot/man/goplot.html
     """
     plot = r_enrichplot.goplot(enrich_result, **kwargs)
     r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)

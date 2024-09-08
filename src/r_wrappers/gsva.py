@@ -17,7 +17,7 @@ def gsva(
     """
     Estimates GSVA enrichment scores.
 
-    *ref docs: https://rdrr.io/bioc/GSVA/man/gsva.html
+    See: https://rdrr.io/bioc/GSVA/man/gsva.html
     """
     data_matrix = ro.r("data.matrix")(pd_df_to_rpy2_df(expr_df))
     data_matrix.rownames = ro.StrVector(expr_df.index)

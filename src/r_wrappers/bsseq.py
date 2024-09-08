@@ -23,7 +23,7 @@ def read_bismark(cov_files: List[Path], **kwargs) -> Any:
     """
     Parsing output from the Bismark alignment suite.
 
-    *ref docs: https://rdrr.io/bioc/bsseq/man/read.bismark.html
+    See: https://rdrr.io/bioc/bsseq/man/read.bismark.html
 
     Args:
         cov_files: List of coverage files, obtained from running
@@ -38,7 +38,7 @@ def get_coverage(bsseq_obj: Any, **kwargs) -> Any:
     """
     Obtain coverage for BSseq objects.
 
-    *ref docs: https://rdrr.io/bioc/bsseq/man/getCoverage.html
+    See: https://rdrr.io/bioc/bsseq/man/getCoverage.html
 
     Args:
         bsseq_obj: An object of class BSseq.

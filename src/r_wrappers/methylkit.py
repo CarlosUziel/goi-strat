@@ -52,7 +52,7 @@ def process_bismark_aln(
         necessary for methylation percentage calling using processBismarkAln.
         SAM/BAM files from other aligners will not work with this function.
 
-    *ref docs: https://rdrr.io/bioc/methylKit/man/processBismarkAln-methods.html
+    See: https://rdrr.io/bioc/methylKit/man/processBismarkAln-methods.html
 
     Args:
         files: location of sam or bam file(s).
@@ -91,7 +91,7 @@ def meth_read(
         The information can be stored as flat file database by creating a
         methylrawlistDB or methylrawDB object.
 
-    *ref docs: https://rdrr.io/bioc/methylKit/man/methRead-methods.html
+    See: https://rdrr.io/bioc/methylKit/man/methRead-methods.html
 
     Args:
         files: file location(s), either a list of locations (each a character string)
@@ -129,7 +129,7 @@ def filter_by_coverage(methyl_obj: Any, **kwargs) -> Any:
         read cutoff is usefull to eliminate PCR effects Lower read cutoff is usefull
         for doing better statistical tests.
 
-    *ref docs: https://rdrr.io/bioc/methylKit/man/filterByCoverage-methods.html
+    See: https://rdrr.io/bioc/methylKit/man/filterByCoverage-methods.html
 
     Args:
         methyl_obj: a methylRaw, methylRawDB, methylRawList or methylRawListDB object
@@ -147,7 +147,7 @@ def unite(methyl_obj: Any, **kwargs) -> Any:
         coverage from all samples are retained. The resulting object is either of class
         methylBase or methylBaseDB depending on input.
 
-    *ref docs: https://rdrr.io/bioc/methylKit/man/unite-methods.html
+    See: https://rdrr.io/bioc/methylKit/man/unite-methods.html
 
     Args:
         methyl_obj: a methylRawList or methylRawListDB object to be merged by common
@@ -170,7 +170,7 @@ def reorganize(
         on sample ids or when you want to reorder samples and/or give a new treatmet
         vector.
 
-    *ref docs: https://rdrr.io/bioc/methylKit/man/reorganize-methods.html
+    See: https://rdrr.io/bioc/methylKit/man/reorganize-methods.html
 
     Args:
         methyl_obj: a methylRawList, methylRawListDB, methylBase or methylBaseDB object
@@ -195,7 +195,7 @@ def calculate_diff_meth(methyl_obj: Any, **kwargs) -> Any:
         test to calculate differential methylation. See the rest of the help page and
         references for detailed explanation on statistics.
 
-    *ref docs: https://rdrr.io/bioc/methylKit/man/calculateDiffMeth-methods.html
+    See: https://rdrr.io/bioc/methylKit/man/calculateDiffMeth-methods.html
 
     Args:
         methyl_obj: a methylBase or methylBaseDB object to calculate differential
@@ -214,7 +214,7 @@ def get_methylation_stats(
     """
     Get Methylation stats from methylRaw or methylRawDB object.
 
-    *ref docs: https://rdrr.io/bioc/methylKit/man/getMethylationStats-methods.html
+    See: https://rdrr.io/bioc/methylKit/man/getMethylationStats-methods.html
 
     Args:
         methyl_obj: a methylRaw or methylRawDB object.
@@ -244,7 +244,7 @@ def get_coverage_stats(
     The function returns basic statistics about read coverage per base. It can also plot
         a histogram of read coverage values.
 
-    *ref docs: https://rdrr.io/bioc/methylKit/man/getCoverageStats-methods.html
+    See: https://rdrr.io/bioc/methylKit/man/getCoverageStats-methods.html
 
     Args:
         methyl_obj: a methylRaw or methylRawDB object.
@@ -276,7 +276,7 @@ def get_correlation(
         contain also fitted lines using lm() for linear regression and lowess for
         polynomial regression.
 
-    *ref docs: https://rdrr.io/bioc/methylKit/man/getCorrelation-methods.html
+    See: https://rdrr.io/bioc/methylKit/man/getCorrelation-methods.html
 
     Args:
         methyl_obj: a methylBase or methylBaseDB object
@@ -307,7 +307,7 @@ def cluster_samples(
         using hclust function and various distance metrics derived from percent
         methylation per base or per region for each sample.
 
-    *ref docs: https://rdrr.io/bioc/methylKit/man/clusterSamples-methods.html
+    See: https://rdrr.io/bioc/methylKit/man/clusterSamples-methods.html
 
     Args:
         methyl_obj: a methylBase or methylBaseDB object.
@@ -338,7 +338,7 @@ def pca_samples(
     The function does a PCA analysis using prcomp function using percent methylation
         matrix as an input.
 
-    *ref docs: https://rdrr.io/bioc/methylKit/man/PCASamples-methods.html
+    See: https://rdrr.io/bioc/methylKit/man/PCASamples-methods.html
 
     Args:
         methyl_obj: a methylBase or methylBaseDB object.
@@ -527,7 +527,7 @@ def get_methyl_diff(methyl_obj: Any, **kwargs) -> Any:
     The function subsets a methylDiff or methylDiffDB object in order to get
         differentially methylated bases/regions satisfying thresholds.
 
-    *ref docs: https://rdrr.io/bioc/methylKit/man/getMethylDiff-methods.html
+    See: https://rdrr.io/bioc/methylKit/man/getMethylDiff-methods.html
 
     Args:
         methyl_obj: a methylDiff or methylDiffDB object
@@ -627,7 +627,7 @@ def percentage_methylation(methyl_obj: Any, **kwargs) -> Any:
     """
     Get percent methylation scores from methylBase or methylBaseDB object.
 
-    *ref docs: https://rdrr.io/bioc/methylKit/man/percMethylation-methods.html
+    See: https://rdrr.io/bioc/methylKit/man/percMethylation-methods.html
 
     Args:
         methyl_obj: a methylBase or methylBaseDB object

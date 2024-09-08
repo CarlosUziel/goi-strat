@@ -33,7 +33,7 @@ def gost(gene_names: ro.StrVector, **kwargs):
     'multi_query' is selected, the result is a data frame for comparing
     multiple input lists, just as in the web tool.
 
-    *ref docs: https://rdrr.io/cran/gprofiler2/man/gost.html
+    See: https://rdrr.io/cran/gprofiler2/man/gost.html
     """
     return r_gprofiler2.gost(query=gene_names, **kwargs)
 
@@ -89,7 +89,7 @@ def gost_plot(
     gprofiler2::gost(). The plot is very similar to the one shown in the
     g:GOSt web tool.
 
-    *ref docs: https://rdrr.io/cran/gprofiler2/man/gostplot.html
+    See: https://rdrr.io/cran/gprofiler2/man/gostplot.html
     """
     plot = r_gprofiler2.gostplot(gost_res, **kwargs)
 
@@ -108,7 +108,7 @@ def publish_gost_table(
     'term_id' and 'p_value' then any enrichment results data frame can be
     visualised in a table with this function.
 
-    *ref docs: https://rdrr.io/cran/gprofiler2/man/publish_gosttable.html
+    See: https://rdrr.io/cran/gprofiler2/man/publish_gosttable.html
     """
     plot = r_gprofiler2.publish_gosttable(gost_res, **kwargs)
     r_ggplot.ggsave(str(save_path), plot, width=width, height=height)
@@ -124,7 +124,7 @@ def publish_gost_plot(
     is specified. The plot is very similar to the one shown in the
     g:GOSt web tool after clicking on circles.
 
-    *ref docs: https://rdrr.io/cran/gprofiler2/man/publish_gostplot.html
+    See: https://rdrr.io/cran/gprofiler2/man/publish_gostplot.html
     """
     plot = r_gprofiler2.publish_gostplot(g_plot, **kwargs)
     r_ggplot.ggsave(str(save_path), plot, width=width, height=height)

@@ -28,7 +28,7 @@ def gdc_query(
     Uses GDC API to search for search, it searches for both controlled and
     open-access data.
 
-    *ref docs: https://rdrr.io/bioc/TCGAbiolinks/man/GDCquery.html
+    See: https://rdrr.io/bioc/TCGAbiolinks/man/GDCquery.html
 
     Returns:
         rpy2 dataframe, can be passed directly to gdc_download
@@ -42,7 +42,7 @@ def get_query_results(query: rpy2.robjects.vectors.DataFrame, **kwargs) -> pd.Da
     Get the result's table from query, it can select columns with cols
     argument and return a number of rows using rows argument.
 
-    *ref docs: https://rdrr.io/bioc/TCGAbiolinks/man/getResults.html
+    See: https://rdrr.io/bioc/TCGAbiolinks/man/getResults.html
 
     Args:
         query: TCGAbiolinks query object
@@ -56,7 +56,7 @@ def gdc_download(query: Any, **kwargs) -> bool:
     use query argument The annot_df from query will be
         save in a folder: project/annot_df.category
 
-    *ref docs: https://rdrr.io/bioc/TCGAbiolinks/man/GDCdownload.html
+    See: https://rdrr.io/bioc/TCGAbiolinks/man/GDCdownload.html
 
     Args:
         query: A query for GDCquery function
@@ -68,7 +68,7 @@ def gdc_prepare(query: Any, **kwargs) -> rpy2.robjects.methods.RS4:
     """
     Reads the data downloaded and prepare it into an R object
 
-    *ref docs: https://rdrr.io/bioc/TCGAbiolinks/man/GDCprepare.html
+    See: https://rdrr.io/bioc/TCGAbiolinks/man/GDCprepare.html
 
     Args:
         query: A query for GDCquery function

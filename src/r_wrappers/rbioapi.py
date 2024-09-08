@@ -35,7 +35,7 @@ def string_map_ids(
     identifiers, It is recommended by STRING's documentations that you first map Your
     Protein/genes IDs to STRING IDs and then proceed with other STRING's functions.
 
-    *ref docs:  https://rbioapi.moosa-r.com/reference/rba_string_map_ids.html
+    See:  https://rbioapi.moosa-r.com/reference/rba_string_map_ids.html
 
     Args:
         symbol_genes: List of genes to map.
@@ -71,7 +71,7 @@ def string_network_image(
     input proteins or/and with other proteins. See the "Arguments" section to learn
     more about how you can modify the network image.
 
-    *ref docs: https://rbioapi.moosa-r.com/reference/rba_string_network_image.html
+    See: https://rbioapi.moosa-r.com/reference/rba_string_network_image.html
 
     Args:
         proteins_ids: A list of protein IDs.
@@ -113,7 +113,7 @@ def string_interactions_network(
     with the combined score and separate score for each STRING score channels. You can
     further expand your network to a defined size by providing "add_node" parameter.
 
-    *ref docs: https://rdrr.io/cran/rbioapi/man/rba_string_interactions_network.html
+    See: https://rdrr.io/cran/rbioapi/man/rba_string_interactions_network.html
 
     Args:
         proteins_ids: A list of protein IDs.

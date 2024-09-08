@@ -36,7 +36,7 @@ def complex_heatmap(
     """
     Plots a heatmap of a dataframe.
 
-    *ref docs: https://rdrr.io/bioc/ComplexHeatmap/man/Heatmap.html
+    See: https://rdrr.io/bioc/ComplexHeatmap/man/Heatmap.html
 
     Args:
         counts_matrix: A pandas dataframe containing the numeric values for

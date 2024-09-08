@@ -19,6 +19,6 @@ def rnapower(**kwargs):
     """
     Sample size and power computation for RNA-seq studies.
 
-    *ref docs: https://rdrr.io/bioc/RNASeqPower/man/rnapower.html
+    See: https://rdrr.io/bioc/RNASeqPower/man/rnapower.html
     """
     return r_rnaseq_power.rnapower(**kwargs)

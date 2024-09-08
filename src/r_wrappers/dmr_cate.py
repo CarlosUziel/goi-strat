@@ -34,7 +34,7 @@ def cpg_annotate(obj: Any, design: Any, **kwargs):
         or - Standardise this information from DSS:::DMLtest()
         to the same ann_df format.
 
-    *ref docs: https://rdrr.io/bioc/DMRcate/man/cpg.annotate.html
+    See: https://rdrr.io/bioc/DMRcate/man/cpg.annotate.html
 
     Args:
         obj: Either: - A matrix of M-values, with unique Illumina probe IDs
@@ -56,7 +56,7 @@ def dmr_cate(obj: Any, **kwargs):
     null comparison to identify significantly
         differentially (or variable) methylated regions.
 
-    *ref docs: https://rdrr.io/bioc/DMRcate/man/dmrcate.html
+    See: https://rdrr.io/bioc/DMRcate/man/dmrcate.html
 
     Args:
         obj: A class of type "annot", created from cpg.annotate.
@@ -68,7 +68,7 @@ def extract_ranges(dmrs: Any, **kwargs):
     """
     Takes a DMResults object and produces the corresponding GRanges object.
 
-     *ref docs: https://rdrr.io/bioc/DMRcate/man/extractRanges.html
+     See: https://rdrr.io/bioc/DMRcate/man/extractRanges.html
 
     Args:
         dmrs: A DMResults object.
@@ -91,7 +91,7 @@ def dmr_plot(
     dmrcate. Heatmaps are shown as well as proximal coding regions, smoothed
         group means and chromosome ideogram.
 
-    *ref docs: https://rdrr.io/bioc/DMRcate/man/DMR.plot.html
+    See: https://rdrr.io/bioc/DMRcate/man/DMR.plot.html
 
     Args:
         ranges: A GRanges object (ostensibly created by extractRanges())

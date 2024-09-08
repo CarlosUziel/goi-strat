@@ -39,7 +39,7 @@ def heatmap_sample_distance(
     number of samples, the plot shows a NxN grid color-coded depending on
     the distance between the samples at a given i,j coordinates.
 
-    *ref docs: https://rdrr.io/cran/pheatmap/man/pheatmap.html
+    See: https://rdrr.io/cran/pheatmap/man/pheatmap.html
 
     Args:
         sample_dist: a distance structure, containing all sample
@@ -88,7 +88,7 @@ def pca_plot(
     """
     Principal component analysis plot.
 
-    *ref docs: https://rdrr.io/bioc/DESeq2/man/plotPCA.html
+    See: https://rdrr.io/bioc/DESeq2/man/plotPCA.html
 
     Args:
         data: data used to compute and plot PCA

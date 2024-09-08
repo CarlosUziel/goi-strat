@@ -28,7 +28,7 @@ def dml_fit_multi_factor(
     This function takes a BSseq object, a ann_df frame for experimental design and a
         model formula and then fit a linear model.
 
-    *ref docs: https://rdrr.io/bioc/DSS/man/DMLfit.multiFactor.html
+    See: https://rdrr.io/bioc/DSS/man/DMLfit.multiFactor.html
 
     Args:
         bsseq_obj: An object of BSseq class for the BS-seq ann_df.
@@ -60,7 +60,7 @@ def dml_test_multi_factor(dml_fit: Any, **kwargs) -> Any:
     This function takes the linear model fitting results and performs Wald test at each
         CpG site, then return test statistics, p-values and FDR.
 
-    *ref docs: https://rdrr.io/bioc/DSS/man/DMLtest.multiFactor.html
+    See: https://rdrr.io/bioc/DSS/man/DMLtest.multiFactor.html
 
     Args:
         dml_fit: Result object returned from 'DMLfit.multiFactor' function.
@@ -74,7 +74,7 @@ def dml_test(bsseq_obj: Any, group1: StrVector, group2: StrVector, **kwargs) -> 
     This function takes a BSseq object and two group labels, then perform statistical
         tests for differential methylation at each CpG site.
 
-    *ref docs: https://rdrr.io/github/haowulab/DSS/man/DMLtest.html
+    See: https://rdrr.io/github/haowulab/DSS/man/DMLtest.html
 
     Args:
         bsseq_obj: An object of BSseq class for the BS-seq ann_df.
@@ -104,7 +104,7 @@ def call_dml(dml_result: Any, **kwargs) -> Any:
         calls DMLs. Regions will CpG sites being statistically significant are deemed as
         DMLs.
 
-    *ref docs: https://rdrr.io/github/haowulab/DSS/man/callDML.html
+    See: https://rdrr.io/github/haowulab/DSS/man/callDML.html
 
     Args:
         dml_result: A ann_df frame representing the results for DML detection.
@@ -139,7 +139,7 @@ def call_dmr(dml_result: Any, **kwargs) -> Any:
         restrictions including the minimum length, minimum number of CpG
         sites, etc. are applied.
 
-    *ref docs: https://rdrr.io/github/haowulab/DSS/man/callDMR.html
+    See: https://rdrr.io/github/haowulab/DSS/man/callDMR.html
 
     Args:
         dml_result: A ann_df frame representing the results for DML detection.

@@ -12,7 +12,7 @@ def get_msigdbr(species: str = "Homo sapiens", **kwargs) -> pd.DataFrame:
     """
     Retrieve the msigdbr data frame.
 
-    *ref docs: https://rdrr.io/github/dekanglv/RpacEx/man/msigdbr.html
+    See: https://rdrr.io/github/dekanglv/RpacEx/man/msigdbr.html
     """
     return rpy2_df_to_pd_df(r_msigdbr.msigdbr(species=species, **kwargs))
 

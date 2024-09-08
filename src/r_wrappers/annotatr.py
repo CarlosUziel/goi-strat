@@ -26,7 +26,7 @@ def builtin_annotations():
     This includes the shortcuts. The expand_annotations() function helps handle the
     shortcuts.
 
-    *ref docs: https://rdrr.io/bioc/annotatr/man/builtin_annotations.html
+    See: https://rdrr.io/bioc/annotatr/man/builtin_annotations.html
     """
     return r_annotatr.builtin_annotations()
 
@@ -35,7 +35,7 @@ def build_ah_annots(genome: str, ah_codes: Dict[str, str], annotation_class: str
     """
     A helper function to build arbitrary annotatinos from AnnotationHub.
 
-    *ref docs: https://rdrr.io/bioc/annotatr/man/build_ah_annots.html
+    See: https://rdrr.io/bioc/annotatr/man/build_ah_annots.html
     """
     ah_codes_r = StrVector(ah_codes.values())
     ah_codes_r.names = StrVector(ah_codes.keys())
@@ -65,7 +65,7 @@ def annotate_regions(regions: Any, annotations: Any, **kwargs):
     Annotate genomic regions to selected genomic annotations while
     preserving the data associated with the genomic regions.
 
-    *ref docs: https://rdrr.io/bioc/annotatr/man/annotate_regions.html
+    See: https://rdrr.io/bioc/annotatr/man/annotate_regions.html
 
     Args:
         regions: The GRanges object returned by read_regions().
@@ -80,7 +80,7 @@ def summarize_annotations(annotated_regions: Any, **kwargs):
     each annotation type. If annotated_random is not NULL, then the same
     is computed for the random regions.
 
-    *ref docs: https://rdrr.io/bioc/annotatr/man/summarize_annotations.html
+    See: https://rdrr.io/bioc/annotatr/man/summarize_annotations.html
 
     Args:
         annotated_regions: The GRanges result of annotate_regions().
@@ -99,7 +99,7 @@ def plot_annotation(
     to multiple exons, it would only count once toward the exon bar in the plot, but if
     it were annotated to an exon and an intron, it would count towards both.
 
-    *ref docs: https://rdrr.io/bioc/annotatr/man/plot_annotation.html
+    See: https://rdrr.io/bioc/annotatr/man/plot_annotation.html
 
     Args:
         annotated_regions: The GRanges result of annotate_regions().
@@ -118,7 +118,7 @@ def randomize_regions(regions: Any, **kwargs):
     It relies on the seqlengths of regions in order to build the appropriate genome
     object for regioneR::randomizeRegions().
 
-    *ref docs: https://rdrr.io/bioc/annotatr/man/randomize_regions.html
+    See: https://rdrr.io/bioc/annotatr/man/randomize_regions.html
 
     Args:
         regions: A GRanges object from read_regions.

@@ -274,7 +274,7 @@ def map_gene_id(
 ) -> pd.Series:
     """Changes the ID naming scheme of the given gene set.
 
-    *ref docs: https://rdrr.io/bioc/ensembldb/man/EnsDb-AnnotationDbi.html
+    See: https://rdrr.io/bioc/ensembldb/man/EnsDb-AnnotationDbi.html
 
     Args:
         genes: Set of gene names. Should be a string vector.

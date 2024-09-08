@@ -39,7 +39,7 @@ def get_deseq_dataset_matrix(
     """
     Creates a dataset for DESeq2 from a counts matrix.
 
-    *ref docs: https://rdrr.io/bioc/DESeq2/man/DESeqDataSet.html
+    See: https://rdrr.io/bioc/DESeq2/man/DESeqDataSet.html
 
     Args:
         counts_matrix: A matrix representing counts of shape [n_features, n_samples]
@@ -94,7 +94,7 @@ def get_deseq_dataset_htseq(
     """
     Creates a dataset for DESeq2 from htseq files.
 
-    *ref docs: https://rdrr.io/bioc/DESeq2/man/DESeqDataSet.html
+    See: https://rdrr.io/bioc/DESeq2/man/DESeqDataSet.html
 
     Format of sample table:
         A data.frame with two or more columns. Each row describes one
@@ -328,7 +328,7 @@ def fpkm(dds: rpy2.robjects.methods.RS4, **kwargs):
     length per million mapped fragments (by default using a robust estimate of the
     library size, as in estimateSizeFactors).
 
-    *ref docs: https://rdrr.io/bioc/DESeq2/man/fpkm.html
+    See: https://rdrr.io/bioc/DESeq2/man/fpkm.html
     """
     return r_deseq2.fpkm(dds, **kwargs)
 
@@ -340,6 +340,6 @@ def fpm(dds: rpy2.robjects.methods.RS4, **kwargs):
     function is written very simply and can be easily altered to produce other
     behavior by examining the source code.
 
-    *ref docs: https://rdrr.io/bioc/DESeq2/man/fpm.html
+    See: https://rdrr.io/bioc/DESeq2/man/fpm.html
     """
     return r_deseq2.fpm(dds, **kwargs)

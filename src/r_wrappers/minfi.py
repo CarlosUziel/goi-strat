@@ -31,7 +31,7 @@ def get_annotation(ann_file: Union[str, Any], **kwargs):
     These functions access provided annotation for various Illumina
     methylation objects.
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/getAnnotation.html
+    See: https://rdrr.io/bioc/minfi/man/getAnnotation.html
 
     Args:
         ann_file: Name of the annotation to load or R object. E.g.:
@@ -53,7 +53,7 @@ def read_metharray_sheet(data_dir: Path, **kwargs):
     Reading an Illumina methylation sample sheet, containing pheno-data
     information for the samples in an experiment.
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/read.metharray.sheet.html
+    See: https://rdrr.io/bioc/minfi/man/read.metharray.sheet.html
 
     Args:
         data_dir: The base directory from which the search is started. The
@@ -70,7 +70,7 @@ def read_metharray_exp(
     Reads an entire methylation array experiment using a sample sheet or
     (optionally) a target like data.frame.
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/read.metharray.exp.html
+    See: https://rdrr.io/bioc/minfi/man/read.metharray.exp.html
 
     Args:
         data_dir: The base directory from which the search is started. The
@@ -103,7 +103,7 @@ def combine_arrays(rg_set_0: Any, rg_set_1: Any, **kwargs):
     types and outputs a data object of the user-specified type. Essentially, this
     new object will be like (for example) an EPIC array with many probes missing.
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/combineArrays.html
+    See: https://rdrr.io/bioc/minfi/man/combineArrays.html
     """
     return r_minfi.combineArrays(rg_set_0, rg_set_1, **kwargs)
 
@@ -113,7 +113,7 @@ def detection_p(rg_set: Any, **kwargs):
     This function identifies failed positions defined as both the methylated
     and unmethylated channel reporting background signal levels.
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/detectionP.html
+    See: https://rdrr.io/bioc/minfi/man/detectionP.html
 
     Args:
         rg_set: An RGChannelSet.
@@ -171,7 +171,7 @@ def get_qc(rg_set: Any) -> ro.DataFrame:
     """
     Estimate sample-specific quality control (QC) for methylation data.
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/getQC.html
+    See: https://rdrr.io/bioc/minfi/man/getQC.html
 
     Args:
         rg_set: An object of class [Genomic]MethylSet.
@@ -187,7 +187,7 @@ def plot_qc(qc: Any, save_path: Path, width: int = 10, height: int = 10):
     """
     Plot sample-specific quality control (QC) for methylation data.
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/getQC.html
+    See: https://rdrr.io/bioc/minfi/man/getQC.html
 
     Args:
         qc: An object as produced by getQC.
@@ -205,7 +205,7 @@ def qc_report(rg_set: Any, **kwargs):
     Produces a PDF QC report for Illumina Infinium Human Methylation 450k
     arrays, useful for identifying failed samples.
 
-    **ref docs: https://rdrr.io/bioc/minfi/man/qcReport.html
+    *See: https://rdrr.io/bioc/minfi/man/qcReport.html
 
     Args:
         rg_set: An RGChannelSet.
@@ -219,7 +219,7 @@ def preprocess_raw(rg_set: Any):
     methylation signal, without using any
         normalization.
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/preprocessRaw.html
+    See: https://rdrr.io/bioc/minfi/man/preprocessRaw.html
 
     Args:
         rg_set: An object of class RGChannelSet.
@@ -235,7 +235,7 @@ def preprocess_funnorm(rg_set: Any, **kwargs):
         regressing out variability explained
         by the control probes present on the array.
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/preprocessFunnorm.html
+    See: https://rdrr.io/bioc/minfi/man/preprocessFunnorm.html
 
     Args:
         rg_set: An object of class RGChannelSet.
@@ -249,7 +249,7 @@ def preprocess_illumina(rg_set: Any, **kwargs):
     microarrays as used in Genome Studio, the
         standard software provided by Illumina.
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/preprocessIllumina.html
+    See: https://rdrr.io/bioc/minfi/man/preprocessIllumina.html
 
     Args:
         rg_set: An object of class RGChannelSet.
@@ -263,7 +263,7 @@ def preprocess_noob(rg_set: Any, **kwargs):
     with dye-bias normalization for Illumina
         Infinium methylation arrays.
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/preprocessNoob.html
+    See: https://rdrr.io/bioc/minfi/man/preprocessNoob.html
 
     Args:
         rg_set: An object of class RGChannelSet.
@@ -279,7 +279,7 @@ def preprocess_swan(rg_set: Any, **kwargs):
         probes on a single array to be normalized
         together.
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/preprocessSwan.html
+    See: https://rdrr.io/bioc/minfi/man/preprocessSwan.html
 
     Args:
         rg_set: An object of class RGChannelSet.
@@ -295,7 +295,7 @@ def preprocess_quantile(obj: Any, **kwargs):
         are stratified by region (CpG island, shore, etc.)
 
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/preprocessQuantile.html
+    See: https://rdrr.io/bioc/minfi/man/preprocessQuantile.html
 
     Args:
         obj: An object of class RGChannelSet or [Genomic]MethylSet.
@@ -309,7 +309,7 @@ def mds_plot(obj: Any, save_path: Path, width: int = 10, height: int = 10, **kwa
     Multi-dimensional scaling (MDS) plots showing a 2-d projection of
     distances between samples.
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/mdsPlot.html
+    See: https://rdrr.io/bioc/minfi/man/mdsPlot.html
 
 
     Args:
@@ -338,7 +338,7 @@ def density_plot(
     """
      Density plots of methylation Beta values, primarily for QC.
 
-     *ref docs: https://rdrr.io/bioc/minfi/man/densityPlot.html
+     See: https://rdrr.io/bioc/minfi/man/densityPlot.html
 
     Args:
          obj: An RGChannelSet, a MethylSet or a matrix. We either use the
@@ -415,7 +415,7 @@ def drop_loci_with_snps(obj: Any, **kwargs):
     """
     A convenience function for removing loci with SNPs based on their MAF.
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/getAnnotation.html
+    See: https://rdrr.io/bioc/minfi/man/getAnnotation.html
 
     Args:
         obj: A minfi object.
@@ -480,7 +480,7 @@ def plot_cpgs(
     Plot single-position (single CpG) methylation values as a function of a
     categorical or continuous phenotype
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/plotCpg.html
+    See: https://rdrr.io/bioc/minfi/man/plotCpg.html
 
     Args:
         dat: An RGChannelSet, a MethylSet or a matrix. We either use the
@@ -504,7 +504,7 @@ def density_bean_plot(
     """
     Density ‘bean’ plots of methylation Beta values, primarily for QC.
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/densityBeanPlot.html
+    See: https://rdrr.io/bioc/minfi/man/densityBeanPlot.html
 
     Args:
         dat: An RGChannelSet, a MethylSet or a matrix. We either use the
@@ -525,7 +525,7 @@ def map_to_genome(meth_obj: Any, **kwargs):
     package. Depending on the genome, not all methylation loci may have a
     genomic position.
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/mapToGenome-methods.html
+    See: https://rdrr.io/bioc/minfi/man/mapToGenome-methods.html
 
     Args:
         meth_obj: Either a MethylSet, a RGChannelSet or a RatioSet.
@@ -537,7 +537,7 @@ def read_tcga(filename: Path, **kwargs):
     """
     Read in tab delimited file in the TCGA format
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/readTCGA.html
+    See: https://rdrr.io/bioc/minfi/man/readTCGA.html
 
     Args:
         filename: The name of the file to be read from.
@@ -551,7 +551,7 @@ def ratio_convert(meth_obj: Any, **kwargs):
     Converting methylation data from methylation and unmethylation channels,
         to ratios (Beta and M-values).
 
-    *ref docs: https://rdrr.io/bioc/minfi/man/ratioConvert-methods.html
+    See: https://rdrr.io/bioc/minfi/man/ratioConvert-methods.html
 
     Args:
         meth_obj: Either a MethylSet, or a GenomicRatioSet.
