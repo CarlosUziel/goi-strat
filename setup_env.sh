@@ -27,7 +27,7 @@ scikit-learn networkx nltk r-magick pygraphviz bismark pigz \
 bioconductor-bsseq bioconductor-dss bioconductor-biseq deeptools \
 bioconductor-txdb.mmusculus.ucsc.mm10.knowngene bioconductor-chipseeker \
 bioconductor-rgreat bioconductor-org.mm.eg.db r-r.filesets python-docx \
-pyarrow
+pyarrow sphinx
 
 conda activate bioinfo
 

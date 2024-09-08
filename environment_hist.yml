@@ -21,6 +21,8 @@ dependencies:
   - bioconductor-tcgabiolinks
   - bioconductor-deseq2
   - bioconductor-complexheatmap
+  - bioconductor-sesame
+  - bioconductor-sesamedata
   - bioconductor-apeglm
   - bioconductor-enhancedvolcano
   - r-pheatmap
@@ -33,9 +35,6 @@ dependencies:
   - r-gprofiler2
   - r-irkernel
   - bioconductor-pathview
-  - bioconductor-sbgnview
-  - bioconductor-sesame
-  - bioconductor-sesamedata
   - bioconductor-methylkit
   - bioconductor-minfi
   - bioconductor-limma
@@ -71,7 +70,6 @@ dependencies:
   - r-biocmanager
   - seaborn=0.12.2
   - fastcluster
-  - r-wgcna
   - r-paralleldist
   - bioconductor-biocparallel
   - r-languageserver
@@ -126,4 +124,10 @@ dependencies:
   - bioconductor-org.mm.eg.db
   - r-r.filesets
   - python-docx
+  - pyarrow
+  - sphinx
+  - ca-certificates
+  - certifi
+  - openssl
+  - pydocstyle
 prefix: /home/uziel/miniforge3/envs/bioinfo
