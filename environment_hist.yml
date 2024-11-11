@@ -130,4 +130,6 @@ dependencies:
   - certifi
   - openssl
   - pydocstyle
+  - ruff
+  - isort
 prefix: /home/uziel/miniforge3/envs/bioinfo
