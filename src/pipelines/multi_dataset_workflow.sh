@@ -9,6 +9,8 @@ python data/run/rna_seq/multi_dataset/goi_perc_splits_annotation.py
 
 ## 2. Differential analyses
 python differential_expression/run/multi_dataset/goi_gsva.py --threads 16 && \
+python functional_analysis/run/rna_seq/multi_dataset/goi_gsva.py --threads 16 && \
 python differential_expression/run/multi_dataset/goi_perc.py --threads 16 && \
+python functional_analysis/run/rna_seq/multi_dataset/goi_perc.py --threads 16 && \
 python differential_enrichment/run/multi_dataset/goi_gsva.py --threads 16 && \
 python differential_enrichment/run/multi_dataset/goi_perc.py --threads 16

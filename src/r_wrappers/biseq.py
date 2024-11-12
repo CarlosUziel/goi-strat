@@ -1,13 +1,13 @@
 """
-    Wrappers for R package BiSeq
+Wrappers for R package BiSeq
 
-    All functions have pythonic inputs and outputs.
+All functions have pythonic inputs and outputs.
 
-    Note that the arguments in python use "_" instead of ".".
-    rpy2 does this transformation for us.
-    Eg:
-        R --> data.category
-        Python --> data_category
+Note that the arguments in python use "_" instead of ".".
+rpy2 does this transformation for us.
+Eg:
+    R --> data.category
+    Python --> data_category
 """
 
 from pathlib import Path
@@ -102,7 +102,7 @@ def cluster_sites(
     perc_samples: float = 10 / 12,
     min_sites: int = 20,
     max_dist: int = 100,
-    **kwargs
+    **kwargs,
 ):
     """
     Within a BSraw object clusterSites searches for agglomerations of CpG sites across
@@ -134,7 +134,7 @@ def cluster_sites(
         perc_samples=perc_samples,
         min_sites=min_sites,
         max_dist=max_dist,
-        **kwargs
+        **kwargs,
     )
 
 

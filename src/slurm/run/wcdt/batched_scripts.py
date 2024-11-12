@@ -1,5 +1,5 @@
 """
-    Run a series of python scripts in batches, submited as SLURM jobs.
+Run a series of python scripts in batches, submited as SLURM jobs.
 """
 
 import logging

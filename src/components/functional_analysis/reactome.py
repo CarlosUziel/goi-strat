@@ -26,14 +26,14 @@ class REACTOMEora(FunctionalAnalysisBase):
 
     func_kwargs: dict = Field(default_factory=dict)
 
-    def __post_init_post_parse__(self):
+    def __post_init__(self):
         # 1. Get functional result
         self.func_result = enrich_reactome(
             self.filtered_genes.names,
             universe=self.background_genes.names,
             **self.func_kwargs,
         )
-        super().__post_init_post_parse__()
+        super().__post_init__()
 
     def ridgeplot(self, **kwargs):
         raise NotImplementedError("ORA result cannot be used for GSEA plots.")
@@ -59,10 +59,10 @@ class REACTOMEgsea(FunctionalAnalysisBase):
 
     func_kwargs: dict = Field(default_factory=dict)
 
-    def __post_init_post_parse__(self):
+    def __post_init__(self):
         # 1. Get functional result
         self.func_result = gsea_reactome(self.background_genes, **self.func_kwargs)
-        super().__post_init_post_parse__()
+        super().__post_init__()
 
     def plot_all(self, **kwargs):
         self.plot_all_gsea(**kwargs)

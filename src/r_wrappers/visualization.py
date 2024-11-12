@@ -1,13 +1,13 @@
 """
-    Wrappers for R visualization tools
+Wrappers for R visualization tools
 
-    All functions have pythonic inputs and outputs.
+All functions have pythonic inputs and outputs.
 
-    Note that the arguments in python use "_" instead of ".".
-    rpy2 does this transformation for us.
-    Eg:
-        R --> annot_df.category
-        Python --> data_category
+Note that the arguments in python use "_" instead of ".".
+rpy2 does this transformation for us.
+Eg:
+    R --> annot_df.category
+    Python --> data_category
 """
 
 from pathlib import Path
@@ -54,7 +54,7 @@ def heatmap_sample_distance(
         clustering_distance_rows=sample_dist,
         clustering_distance_cols=sample_dist,
         col=colors,
-        **kwargs
+        **kwargs,
     )
     r_ggplot2.ggsave(str(save_path), plot, width=width, height=height)
 
@@ -83,7 +83,7 @@ def pca_plot(
     save_path: Path,
     width: int = 10,
     height: int = 10,
-    **kwargs
+    **kwargs,
 ):
     """
     Principal component analysis plot.
@@ -109,7 +109,7 @@ def mds_plot(
     save_path: Path,
     width: int = 10,
     height: int = 10,
-    **kwargs
+    **kwargs,
 ):
     """
         Multidimensional scaling (MDS) plot. Classical multidimensional
@@ -140,7 +140,7 @@ def mds_plot(
         ro.r("sym")("X2"),
         data=mds,
         color=ro.r("sym")(color),
-        **kwargs
+        **kwargs,
     )
     r_ggplot2.ggsave(str(save_path), plot, width=width, height=height)
 
@@ -152,7 +152,7 @@ def gene_counts(
     save_path: Path,
     width: int = 10,
     height: int = 10,
-    **kwargs
+    **kwargs,
 ):
     """
         (full docs in https://rdrr.io/bioc/DESeq2/man/plotCounts.html)
@@ -175,7 +175,7 @@ def ma_plot(
     save_path: Path,
     width: int = 10,
     height: int = 10,
-    **kwargs
+    **kwargs,
 ):
     """
     A scatter plot of log2 fold changes (on the y-axis) versus the mean of
@@ -207,7 +207,7 @@ def volcano_plot(
     save_path: Path,
     width: int = 10,
     height: int = 10,
-    **kwargs
+    **kwargs,
 ):
     """
         (reference docs in
@@ -242,7 +242,7 @@ def venn_diagram(
     save_path: Path,
     width: int = 10,
     height: int = 10,
-    **kwargs
+    **kwargs,
 ):
     """
     This function takes a list and creates a publication-quality TIFF Venn
@@ -269,7 +269,7 @@ def venn_diagram(
         ro.NULL,
         category_names=StrVector(list(contrasts_degs.keys())),
         disable_logging=True,
-        **kwargs
+        **kwargs,
     )
 
     # 2. Draw and save plot

@@ -28,8 +28,7 @@ def rpy2_df_to_pd_df(rpy2_df: Any) -> pd.DataFrame:
     (docs in https://rpy2.github.io/doc/latest/html/pandas.html)
     """
     # 0. Ensure rpy2 object is (or is convertible to) an R dataframe
-    with localconverter(ro.default_converter):
-        rpy2_df = ro.r("as.data.frame")(rpy2_df)
+    rpy2_df = ro.r("as.data.frame")(rpy2_df)
 
     with localconverter(ro.default_converter + pandas2ri.converter):
         pd_from_r_df = ro.conversion.rpy2py(rpy2_df)
@@ -48,7 +47,7 @@ def rpy2_df_to_pd_df_manual(rpy2_df: Any) -> pd.DataFrame:
 
     df_dict = {
         col: [
-            str(x) if type(x) != ro.StrVector else tuple(list(x))
+            str(x) if isinstance(x, ro.Strvector) else tuple(list(x))
             for x in rpy2_df.rx2(col)
         ]
         for col in rpy2_df.colnames
@@ -245,7 +244,7 @@ def make_granges_from_dataframe(df: Any, **kwargs):
         df: A ann_df.frame or DataFrame object. If not, then the function first
             tries to turn df into a ann_df frame with as.data.frame(df).
     """
-    df = pd_df_to_rpy2_df(df) if type(df) == pd.DataFrame else df
+    df = pd_df_to_rpy2_df(df) if isinstance(df, pd.DataFrame) else df
     return r_genomic_ranges.makeGRangesFromDataFrame(df, **kwargs)
 
 
@@ -380,6 +379,7 @@ def prepare_gene_list(
             org_db=org_db,
             from_type=from_type,
             to_type=to_type,
+            multiple_values="first",
         )
 
         genes_list = (

@@ -158,6 +158,7 @@ if __name__ == "__main__":
             functools.partial(run_func_dict, func=functional_enrichment),
             input_collection,
             threads=user_args["threads"] // 3,
+            method="fork",
         )
     else:
         for ins in tqdm(input_collection):

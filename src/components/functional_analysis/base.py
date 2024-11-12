@@ -1,5 +1,4 @@
 import logging
-from abc import abstractmethod
 from pathlib import Path
 from typing import Optional
 
@@ -23,7 +22,7 @@ from r_wrappers.enrich_plot import (
     upsetplot,
 )
 from r_wrappers.pathview import pathview
-from r_wrappers.utils import rpy2_df_to_pd_df_manual, save_rds
+from r_wrappers.utils import rpy2_df_to_pd_df, save_rds
 
 
 class Config:
@@ -48,14 +47,14 @@ class FunctionalAnalysisBase:
     files_prefix: Path = Path("")
     plots_prefix: Path = Path("")
 
-    @abstractmethod
-    def __post_init_post_parse__(self):
+    def __post_init__(self):
         # 1. Get dataframe of result
+        # TODO: fix this
         try:
             self.func_result = set_readable(
                 self.func_result, self.org_db, keyType="ENTREZID"
             )
-            self.func_result_df = rpy2_df_to_pd_df_manual(self.func_result)
+            self.func_result_df = rpy2_df_to_pd_df(self.func_result)
         except RRuntimeError as e:
             logging.warning(e)
             self.func_result_df = None

@@ -1,19 +1,20 @@
 """
-    Wrappers for R package enrichplot
+Wrappers for R package enrichplot
 
-    All functions have pythonic inputs and outputs.
+All functions have pythonic inputs and outputs.
 
-    Note that the arguments in python use "_" instead of ".".
-    rpy2 does this transformation for us.
-    Eg:
-        R --> ann_df.category
-        Python --> data_category
+Note that the arguments in python use "_" instead of ".".
+rpy2 does this transformation for us.
+Eg:
+    R --> ann_df.category
+    Python --> data_category
 """
 
 from pathlib import Path
 from typing import Any
 
 import rpy2.robjects as ro
+from rpy2.robjects.conversion import localconverter
 from rpy2.robjects.packages import importr
 
 r_enrichplot = importr("enrichplot")
@@ -28,8 +29,9 @@ def barplot(
 
     See: https://rdrr.io/bioc/enrichplot/man/barplot.enrichResult.html
     """
-    plot = r_enrichplot.barplot_enrichResult(enrich_result, **kwargs)
-    r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
+    with localconverter(ro.default_converter):
+        plot = r_enrichplot.barplot_enrichResult(enrich_result, **kwargs)
+        r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
 
 
 def dotplot(
@@ -40,8 +42,9 @@ def dotplot(
 
     See: https://rdrr.io/bioc/enrichplot/man/dotplot.html
     """
-    plot = r_enrichplot.dotplot(enrich_result, **kwargs)
-    r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
+    with localconverter(ro.default_converter):
+        plot = r_enrichplot.dotplot(enrich_result, **kwargs)
+        r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
 
 
 def gene_concept_net(
@@ -52,8 +55,9 @@ def gene_concept_net(
 
     See: https://rdrr.io/bioc/enrichplot/man/cnetplot.html
     """
-    plot = r_enrichplot.cnetplot(enrich_result, **kwargs)
-    r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
+    with localconverter(ro.default_converter):
+        plot = r_enrichplot.cnetplot(enrich_result, **kwargs)
+        r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
 
 
 def heatplot(
@@ -64,8 +68,9 @@ def heatplot(
 
     See: https://rdrr.io/bioc/enrichplot/man/heatplot.html
     """
-    plot = r_enrichplot.heatplot(enrich_result, **kwargs)
-    r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
+    with localconverter(ro.default_converter):
+        plot = r_enrichplot.heatplot(enrich_result, **kwargs)
+        r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
 
 
 def pairwise_termsim(x: Any, **kwargs):
@@ -74,7 +79,8 @@ def pairwise_termsim(x: Any, **kwargs):
 
     See: https://rdrr.io/bioc/enrichplot/man/pairwise_termsim.html
     """
-    return r_enrichplot.pairwise_termsim(x, **kwargs)
+    with localconverter(ro.default_converter):
+        return r_enrichplot.pairwise_termsim(x, **kwargs)
 
 
 def emapplot(
@@ -86,8 +92,9 @@ def emapplot(
 
     See: https://rdrr.io/bioc/enrichplot/man/emapplot.html
     """
-    plot = r_enrichplot.emapplot(pairwise_termsim(enrich_result), **kwargs)
-    r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
+    with localconverter(ro.default_converter):
+        plot = r_enrichplot.emapplot(pairwise_termsim(enrich_result), **kwargs)
+        r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
 
 
 def upsetplot(
@@ -98,8 +105,9 @@ def upsetplot(
 
     See: https://rdrr.io/bioc/enrichplot/man/upsetplot-methods.html
     """
-    plot = r_enrichplot.upsetplot(enrich_result, **kwargs)
-    r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
+    with localconverter(ro.default_converter):
+        plot = r_enrichplot.upsetplot(enrich_result, **kwargs)
+        r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
 
 
 def ridgeplot(
@@ -111,8 +119,9 @@ def ridgeplot(
     *ref docs:
         https://rdrr.io/github/GuangchuangYu/enrichplot/man/ridgeplot.html
     """
-    plot = r_enrichplot.ridgeplot(enrich_result, **kwargs)
-    r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
+    with localconverter(ro.default_converter):
+        plot = r_enrichplot.ridgeplot(enrich_result, **kwargs)
+        r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
 
 
 def gseaplot(
@@ -121,15 +130,16 @@ def gseaplot(
     save_path: Path,
     width: int = 10,
     height: int = 10,
-    **kwargs
+    **kwargs,
 ):
     """
     Visualize analyzing result of GSEA
 
     See: https://rdrr.io/bioc/enrichplot/man/gseaplot.html
     """
-    plot = r_enrichplot.gseaplot(enrich_result, gene_set_id, **kwargs)
-    r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
+    with localconverter(ro.default_converter):
+        plot = r_enrichplot.gseaplot(enrich_result, gene_set_id, **kwargs)
+        r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
 
 
 def pmcplot(
@@ -138,15 +148,16 @@ def pmcplot(
     period: ro.IntVector = ro.IntVector(range(2010, 2021, 1)),
     width: int = 10,
     height: int = 10,
-    **kwargs
+    **kwargs,
 ):
     """
     PubMed Central Trend plot
 
     See: https://rdrr.io/bioc/enrichplot/man/pmcplot.html
     """
-    plot = r_enrichplot.pmcplot(enrich_result, period, **kwargs)
-    r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
+    with localconverter(ro.default_converter):
+        plot = r_enrichplot.pmcplot(enrich_result, period, **kwargs)
+        r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
 
 
 def goplot(
@@ -157,5 +168,6 @@ def goplot(
 
     See: https://rdrr.io/bioc/enrichplot/man/goplot.html
     """
-    plot = r_enrichplot.goplot(enrich_result, **kwargs)
-    r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)
+    with localconverter(ro.default_converter):
+        plot = r_enrichplot.goplot(enrich_result, **kwargs)
+        r_ggplot2.ggsave(str(save_path), plot, width=width, height=height, dpi=320)

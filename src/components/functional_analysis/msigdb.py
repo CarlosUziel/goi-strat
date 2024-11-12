@@ -28,7 +28,7 @@ class MSIGDBora(FunctionalAnalysisBase):
     term2gene: Any = None
     func_kwargs: dict = Field(default_factory=dict)
 
-    def __post_init_post_parse__(self):
+    def __post_init__(self):
         # 1. Get functional result
         self.func_result = enricher(
             self.filtered_genes.names,
@@ -36,7 +36,7 @@ class MSIGDBora(FunctionalAnalysisBase):
             TERM2GENE=self.term2gene,
             **self.func_kwargs,
         )
-        super().__post_init_post_parse__()
+        super().__post_init__()
 
     def ridgeplot(self, **kwargs):
         raise NotImplementedError("ORA result cannot be used for GSEA plots.")
@@ -63,12 +63,12 @@ class MSIGDBgsea(FunctionalAnalysisBase):
     term2gene: Any = None
     func_kwargs: dict = Field(default_factory=dict)
 
-    def __post_init_post_parse__(self):
+    def __post_init__(self):
         # 1. Get functional result
         self.func_result = gsea(
             self.background_genes, TERM2GENE=self.term2gene, **self.func_kwargs
         )
-        super().__post_init_post_parse__()
+        super().__post_init__()
 
     def plot_all(self, **kwargs):
         self.plot_all_gsea(**kwargs)

@@ -37,7 +37,7 @@ class GPROFILER2base:
     plots_prefix: Path = Path("")
     func_kwargs: dict = Field(default_factory=dict)
 
-    def __post_init_post_parse__(self):
+    def __post_init__(self):
         # 1. Get dataframe of result
         func_result = getattr(self, "func_result", None)
         try:
@@ -161,7 +161,7 @@ class GPROFILER2ora(GPROFILER2base):
 
     func_kwargs: dict = Field(default_factory=dict)
 
-    def __post_init_post_parse__(self):
+    def __post_init__(self):
         # 1. Get functional result
         self.func_result = gost(
             self.filtered_genes.names,
@@ -169,7 +169,7 @@ class GPROFILER2ora(GPROFILER2base):
             evcodes=True,
             **self.func_kwargs,
         )
-        super().__post_init_post_parse__()
+        super().__post_init__()
 
 
 @dataclass(config=Config)
@@ -183,7 +183,7 @@ class GPROFILER2gsea(GPROFILER2base):
 
     func_kwargs: dict = Field(default_factory=dict)
 
-    def __post_init_post_parse__(self):
+    def __post_init__(self):
         # 1. Get functional result
         self.func_result = gost(
             self.background_genes.names,
@@ -191,7 +191,7 @@ class GPROFILER2gsea(GPROFILER2base):
             ordered_query=True,
             **self.func_kwargs,
         )
-        super().__post_init_post_parse__()
+        super().__post_init__()
 
 
 def run_gprofiler2_ora(

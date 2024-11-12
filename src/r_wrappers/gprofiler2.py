@@ -1,13 +1,13 @@
 """
-    Wrappers for R package gprofiler2
+Wrappers for R package gprofiler2
 
-    All functions have pythonic inputs and outputs.
+All functions have pythonic inputs and outputs.
 
-    Note that the arguments in python use "_" instead of ".".
-    rpy2 does this transformation for us.
-    Eg:
-        R --> ann_df.category
-        Python --> data_category
+Note that the arguments in python use "_" instead of ".".
+rpy2 does this transformation for us.
+Eg:
+    R --> ann_df.category
+    Python --> data_category
 """
 
 from pathlib import Path
@@ -15,6 +15,7 @@ from typing import Any
 
 import pandas as pd
 from rpy2 import robjects as ro
+from rpy2.robjects.conversion import localconverter
 from rpy2.robjects.packages import importr
 
 from r_wrappers.utils import rpy2_df_to_pd_df
@@ -35,7 +36,8 @@ def gost(gene_names: ro.StrVector, **kwargs):
 
     See: https://rdrr.io/cran/gprofiler2/man/gost.html
     """
-    return r_gprofiler2.gost(query=gene_names, **kwargs)
+    with localconverter(ro.default_converter):
+        return r_gprofiler2.gost(query=gene_names, **kwargs)
 
 
 def save_gost_res(
@@ -91,7 +93,8 @@ def gost_plot(
 
     See: https://rdrr.io/cran/gprofiler2/man/gostplot.html
     """
-    plot = r_gprofiler2.gostplot(gost_res, **kwargs)
+    with localconverter(ro.default_converter):
+        plot = r_gprofiler2.gostplot(gost_res, **kwargs)
 
     if not kwargs.get("interactive", True) and save_path is not None:
         r_ggplot.ggsave(str(save_path), plot, width=width, height=height)

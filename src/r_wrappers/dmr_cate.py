@@ -1,13 +1,13 @@
 """
-    Wrappers for R package DMRcate
+Wrappers for R package DMRcate
 
-    All functions have pythonic inputs and outputs.
+All functions have pythonic inputs and outputs.
 
-    Note that the arguments in python use "_" instead of ".".
-    rpy2 does this transformation for us.
-    Eg:
-        R --> ann_df.category
-        Python --> data_category
+Note that the arguments in python use "_" instead of ".".
+rpy2 does this transformation for us.
+Eg:
+    R --> ann_df.category
+    Python --> data_category
 """
 
 from pathlib import Path
@@ -84,7 +84,7 @@ def dmr_plot(
     save_path: Path,
     width: int = 10,
     height: int = 10,
-    **kwargs
+    **kwargs,
 ):
     """
     Plots an individual DMR (in context of possibly other DMRs) as found by

@@ -458,7 +458,7 @@ def differential_methylation_rrbs_sites(
             del diff_res_ann
 
         except RRuntimeError as e:
-            logging.warning(e)
+            logging.error(e)
     logging.info("Finished annotation of unfiltered differential methylation results.")
 
     # 5. Filter differential methylation results
@@ -571,7 +571,7 @@ def differential_methylation_rrbs_sites(
             )
 
         except RRuntimeError as e:
-            logging.warning(e)
+            logging.error(e)
     logging.info("Finished differential annotation (I).")
 
     # 7. Plot annotations versus random regions
@@ -627,5 +627,5 @@ def differential_methylation_rrbs_sites(
                 y_label="Count",
             )
         except RRuntimeError as e:
-            logging.warning(e)
+            logging.error(e)
     logging.info("Finished differential annotation (II).")

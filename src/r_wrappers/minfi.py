@@ -1,13 +1,13 @@
 """
-    Wrappers for R package minfi
+Wrappers for R package minfi
 
-    All functions have pythonic inputs and outputs.
+All functions have pythonic inputs and outputs.
 
-    Note that the arguments in python use "_" instead of ".".
-    rpy2 does this transformation for us.
-    Eg:
-        R --> data.category
-        Python --> data_category
+Note that the arguments in python use "_" instead of ".".
+rpy2 does this transformation for us.
+Eg:
+    R --> data.category
+    Python --> data_category
 """
 
 from pathlib import Path

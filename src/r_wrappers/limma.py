@@ -1,13 +1,13 @@
 """
-    Wrappers for R package limma
+Wrappers for R package limma
 
-    All functions have pythonic inputs and outputs.
+All functions have pythonic inputs and outputs.
 
-    Note that the arguments in python use "_" instead of ".".
-    rpy2 does this transformation for us.
-    Eg:
-        R --> ann_df.category
-        Python --> data_category
+Note that the arguments in python use "_" instead of ".".
+rpy2 does this transformation for us.
+Eg:
+    R --> ann_df.category
+    Python --> data_category
 """
 
 from pathlib import Path

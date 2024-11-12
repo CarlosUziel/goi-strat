@@ -26,7 +26,7 @@ class GOora(FunctionalAnalysisBase):
 
     func_kwargs: dict = Field(default_factory=dict)
 
-    def __post_init_post_parse__(self):
+    def __post_init__(self):
         # 1. Get functional result
         self.func_result = enrich_go(
             self.filtered_genes.names,
@@ -34,7 +34,7 @@ class GOora(FunctionalAnalysisBase):
             org_db=self.org_db,
             **self.func_kwargs,
         )
-        super().__post_init_post_parse__()
+        super().__post_init__()
 
     def ridgeplot(self, **kwargs):
         raise NotImplementedError("ORA result cannot be used for GSEA plots.")
@@ -61,12 +61,12 @@ class GOgsea(FunctionalAnalysisBase):
 
     func_kwargs: dict = Field(default_factory=dict)
 
-    def __post_init_post_parse__(self):
+    def __post_init__(self):
         # 1. Get functional result
         self.func_result = gse_go(
             self.background_genes, org_db=self.org_db, **self.func_kwargs
         )
-        super().__post_init_post_parse__()
+        super().__post_init__()
 
     def plot_all(self, **kwargs):
         self.plot_all_gsea(**kwargs)
