@@ -49,5 +49,5 @@ Rscript -e 'BiocManager::install()' # to update all bioconductor packages
 Rscript -e 'IRkernel::installspec()' # to install R kernel for Jupyter
 
 # package fixes as of 04/08/2024
-Rscript -e 'devtools::install_github('https://github.com/Bioconductor/BiocFileCache.git')'
-Rscript -e 'remotes::install_version("matrixStats", version="1.1.0")'
+Rscript -e 'devtools::install_github("Bioconductor/BiocFileCache")'
+Rscript -e 'remotes::install_version("matrixStats", version="1.1.0", repos="https://cloud.r-project.org")'
