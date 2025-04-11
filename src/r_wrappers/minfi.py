@@ -5,9 +5,10 @@ All functions have pythonic inputs and outputs.
 
 Note that the arguments in python use "_" instead of ".".
 rpy2 does this transformation for us.
-Eg:
-    R --> data.category
-    Python --> data_category
+
+Example:
+R --> data.category
+Python --> data_category
 """
 
 from pathlib import Path
@@ -205,7 +206,7 @@ def qc_report(rg_set: Any, **kwargs):
     Produces a PDF QC report for Illumina Infinium Human Methylation 450k
     arrays, useful for identifying failed samples.
 
-    *See: https://rdrr.io/bioc/minfi/man/qcReport.html
+    See: https://rdrr.io/bioc/minfi/man/qcReport.html
 
     Args:
         rg_set: An RGChannelSet.
@@ -216,8 +217,7 @@ def qc_report(rg_set: Any, **kwargs):
 def preprocess_raw(rg_set: Any):
     """
     Converts the Red/Green channel for an Illumina methylation array into
-    methylation signal, without using any
-        normalization.
+    methylation signal, without using any normalization.
 
     See: https://rdrr.io/bioc/minfi/man/preprocessRaw.html
 
@@ -230,10 +230,9 @@ def preprocess_raw(rg_set: Any):
 def preprocess_funnorm(rg_set: Any, **kwargs):
     """
     Functional normalization (FunNorm) is a between-array normalization
-    method for the Illumina Infinium
-        HumanMethylation450 platform. It removes unwanted variation by
-        regressing out variability explained
-        by the control probes present on the array.
+    method for the Illumina Infinium HumanMethylation450 platform. It removes
+    unwanted variation by regressing out variability explained by the control
+    probes present on the array.
 
     See: https://rdrr.io/bioc/minfi/man/preprocessFunnorm.html
 
@@ -246,8 +245,8 @@ def preprocess_funnorm(rg_set: Any, **kwargs):
 def preprocess_illumina(rg_set: Any, **kwargs):
     """
     These functions implements preprocessing for Illumina methylation
-    microarrays as used in Genome Studio, the
-        standard software provided by Illumina.
+    microarrays as used in Genome Studio, the standard software provided
+    by Illumina.
 
     See: https://rdrr.io/bioc/minfi/man/preprocessIllumina.html
 
@@ -260,8 +259,7 @@ def preprocess_illumina(rg_set: Any, **kwargs):
 def preprocess_noob(rg_set: Any, **kwargs):
     """
     Noob (normal-exponential out-of-band) is a background correction method
-    with dye-bias normalization for Illumina
-        Infinium methylation arrays.
+    with dye-bias normalization for Illumina Infinium methylation arrays.
 
     See: https://rdrr.io/bioc/minfi/man/preprocessNoob.html
 
@@ -274,10 +272,9 @@ def preprocess_noob(rg_set: Any, **kwargs):
 def preprocess_swan(rg_set: Any, **kwargs):
     """
     Subset-quantile Within Array Normalisation (SWAN) is a within array
-    normalisation method for the Illumina Infinium
-        HumanMethylation450 platform. It allows Infinium I and II type
-        probes on a single array to be normalized
-        together.
+    normalisation method for the Illumina Infinium HumanMethylation450 platform.
+    It allows Infinium I and II type probes on a single array to be normalized
+    together.
 
     See: https://rdrr.io/bioc/minfi/man/preprocessSwan.html
 
@@ -289,17 +286,15 @@ def preprocess_swan(rg_set: Any, **kwargs):
 
 def preprocess_quantile(obj: Any, **kwargs):
     """
-    Stratified quantile normalization for Illumina amethylation arrays.
+    Stratified quantile normalization for Illumina methylation arrays.
     This function implements stratified quantile normalization preprocessing
-    for Illumina methylation microarrays. Probes
-        are stratified by region (CpG island, shore, etc.)
-
+    for Illumina methylation microarrays. Probes are stratified by region
+    (CpG island, shore, etc.)
 
     See: https://rdrr.io/bioc/minfi/man/preprocessQuantile.html
 
     Args:
         obj: An object of class RGChannelSet or [Genomic]MethylSet.
-
     """
     return r_minfi.preprocessQuantile(obj, **kwargs)
 
@@ -311,15 +306,13 @@ def mds_plot(obj: Any, save_path: Path, width: int = 10, height: int = 10, **kwa
 
     See: https://rdrr.io/bioc/minfi/man/mdsPlot.html
 
-
     Args:
         obj: An RGChannelSet, a MethylSet or a matrix. We either use the
-        getBeta function to get Beta values (for the
-        first two) or we assume the matrix contains Beta values.
+            getBeta function to get Beta values (for the first two) or we
+            assume the matrix contains Beta values.
         save_path: where to save the generated plot
         width: width of saved figure
         height: height of saved figure
-
     """
     # todo: improve color handling
     # 0. Setup color
@@ -341,12 +334,12 @@ def density_plot(
      See: https://rdrr.io/bioc/minfi/man/densityPlot.html
 
     Args:
-         obj: An RGChannelSet, a MethylSet or a matrix. We either use the
-         getBeta function to get Beta values (for the
-         first two) or we assume the matrix contains Beta values.
-         save_path: where to save the generated plot
-         width: width of saved figure
-         height: height of saved figure
+        obj: An RGChannelSet, a MethylSet or a matrix. We either use the
+            getBeta function to get Beta values (for the first two) or we
+            assume the matrix contains Beta values.
+        save_path: where to save the generated plot
+        width: width of saved figure
+        height: height of saved figure
     """
     # todo: improve color handling
     # 0. Setup color
@@ -381,7 +374,7 @@ def density_plot_minfi_pair(
         save_path: where to save the generated plot
         title_0: Title for figure 1
         title_1: Title for figure 2
-        x_lab_0: x-axis label for figure 2
+        x_lab_0: x-axis label for figure 1
         x_lab_1: x-axis label for figure 2
         width: width of saved figure
         height: height of saved figure
@@ -484,9 +477,8 @@ def plot_cpgs(
 
     Args:
         dat: An RGChannelSet, a MethylSet or a matrix. We either use the
-        getBeta (or getM for measure="M") function to
-            get Beta values (or M-values) (for the first two) or we assume
-            the matrix contains Beta values (or M-values)
+            getBeta (or getM for measure="M") function to get Beta values (or M-values)
+            (for the first two) or we assume the matrix contains Beta values (or M-values)
         cpg: A character vector of the CpG position identifiers to be plotted.
         pheno: A vector of phenotype values.
         save_path: where to save the generated plot
@@ -502,14 +494,14 @@ def density_bean_plot(
     dat: Any, save_path: Path, width: int = 10, height: int = 10, **kwargs
 ):
     """
-    Density ‘bean’ plots of methylation Beta values, primarily for QC.
+    Density 'bean' plots of methylation Beta values, primarily for QC.
 
     See: https://rdrr.io/bioc/minfi/man/densityBeanPlot.html
 
     Args:
         dat: An RGChannelSet, a MethylSet or a matrix. We either use the
-        getBeta function to get Beta values (for the
-            first two) or we assume the matrix contains Beta values.
+            getBeta function to get Beta values (for the first two) or we
+            assume the matrix contains Beta values.
         save_path: where to save the generated plot
         width: width of saved figure
         height: height of saved figure

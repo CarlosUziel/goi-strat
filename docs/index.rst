@@ -14,13 +14,13 @@ Contents:
    :maxdepth: 2
    :caption: Contents:
 
-   docs/source/modules
-   docs/source/components
-   docs/source/data
-   docs/source/pipelines
-   docs/source/r_wrappers
-   docs/source/slurm
-   docs/source/utils
+   source/modules
+   source/components
+   source/data
+   source/pipelines
+   source/r_wrappers
+   source/slurm
+   source/utils
 
 Indices and tables
 ==================

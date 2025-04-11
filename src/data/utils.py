@@ -56,8 +56,8 @@ def gene_expression_levels(
 
 def run_cmd(cmd: Iterable[str], log_path: Optional[Path] = None) -> Dict[str, str]:
     """
-    Runs console command. Saves log if log_path is provided and is
-        valid. Piping with '|' is allowed.
+    Runs console command. Saves log if log_path is provided and is valid. Piping with '|' is allowed.
+
     Args:
         cmd: Iterable, where each element is a component of the command.
             E.g.: ['/bin/prog', '-i', 'data.txt', '-o', 'more data.txt']
@@ -152,12 +152,12 @@ def filter_df(
     df: pd.DataFrame, filter_values: Dict[str, Iterable[Any]]
 ) -> pd.DataFrame:
     """
-        Filter pandas dataframe by matching targets for multiple columns.
+    Filter pandas dataframe by matching targets for multiple columns.
 
     Args:
         df: pandas DataFrame object to be filtered
         filter_values: Dictionary of the form:
-                `{<field>: <target_values_Iterable>}`
+            `{<field>: <target_values_Iterable>}`
             used to filter columns data.
     """
     # ensure that all fields are valid
@@ -178,21 +178,20 @@ def select_data_classes(
     metadata: pd.DataFrame, classes_filters: Iterable[Dict[str, Iterable[Any]]]
 ) -> Iterable[Iterable[Any]]:
     """
-        Given a pandas dataframe describing data, with size
-            (samples x features), apply different filters to obtain the
-            unique class IDs. Thus, the IDs of the different classes cannot
-            overlap.
+    Given a pandas dataframe describing data, with size (samples x features), apply
+    different filters to obtain the unique class IDs. Thus, the IDs of the different
+    classes cannot overlap.
 
-        The dataframe index is used as unique class IDs (should be the sample ID)
+    The dataframe index is used as unique class IDs (should be the sample ID).
 
-        Args:
-            metadata: data metadata
-            classes_filters: Iterable of dictionaries. Each dictionary of the form:
-                `{<field>: <target_values_Iterable>}`, used to filter columns data.
+    Args:
+        metadata: Data metadata.
+        classes_filters: Iterable of dictionaries. Each dictionary of the form:
+            `{<field>: <target_values_Iterable>}`, used to filter columns data.
 
     Returns:
-        A Iterable of length equal to the number of classes, each element contains
-            the unique sample IDs belonging to each class.
+        An Iterable of length equal to the number of classes, each element contains
+        the unique sample IDs belonging to each class.
     """
     # 1. Filter dataframe and get sample IDs for each class
     class_samples_ids = [
@@ -201,34 +200,29 @@ def select_data_classes(
     ]
 
     # 2. Check that the samples of the different classes do not intersect
-    assert len(set(metadata.index).intersection(*class_samples_ids)) == 0, (
-        "There are overlapping samples among classes, please check the class filters"
-    )
+    assert (
+        len(set(metadata.index).intersection(*class_samples_ids)) == 0
+    ), "There are overlapping samples among classes, please check the class filters"
 
     # 3. Return class ids
     return class_samples_ids
 
 
-def ranges_overlap(ranges: Iterable[Tuple[float, float]]):
+def ranges_overlap(
+    range_1: Tuple[int, int], range_2: Tuple[int, int], dist: int = 0
+) -> bool:
     """
-    Find whether the passed ranges overlap. True is only return if ALL ranges overlap.
-    For an overlap, there exists some number X which is in all ranges, i.e.
-
-        A1 <= C <= B1 for all ranges [Ai:Bi]
-
-    Asuming the ranges are well-formed (so that A <= B for all ranges) then it is
-        sufficient to test:
-
-        A1 <= B2 && B1 <= A2 (StartA <= EndB) and (EndA >= StartB) for each pair of
-    ranges.
+    Checks if two ranges (with 0-based coordinates) overlap or are at least at the
+    given distance from each other.
 
     Args:
-        ranges: Iterable of ranges to check overlap for.
+        range_1: First range
+        range_2: Second range
+        dist: Minimum distance, 0 means the ranges must overlap.
+
+    Returns:
+        True if ranges overlap or are within the given distance, False otherwise.
     """
-    for (a_min, a_max), (b_min, b_max) in zip(ranges[:-1], ranges[1:]):
-        if not ((a_min <= b_max) and (b_min <= a_max)):
-            return False
-    return True
 
 
 def get_overlapping_features(

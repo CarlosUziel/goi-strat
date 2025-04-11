@@ -1,13 +1,14 @@
 """
-Wrappers for R package RNASeqPower
+Wrappers for R package RnaSeqSampleSize
 
 All functions have pythonic inputs and outputs.
 
 Note that the arguments in python use "_" instead of ".".
 rpy2 does this transformation for us.
-Eg:
-    R --> data.category
-    Python --> data_category
+
+Example:
+R --> data.category
+Python --> data_category
 """
 
 from rpy2.robjects.packages import importr

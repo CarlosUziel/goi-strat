@@ -285,7 +285,7 @@ def run_star(
 
     Genome files can be obtained from the ENSEMBL ftp server. For example, Homo
     sapiens files can be obtained from:
-        https://www.ensembl.org/Homo_sapiens/Info/Index
+    https://www.ensembl.org/Homo_sapiens/Info/Index
 
     Args:
         fastq_path: Path to directory containing fastq files.
@@ -889,7 +889,7 @@ def run_bowtie2(
 
     Genome files can be obtained from the ENSEMBL ftp server. For example, Homo
     sapiens files can be obtained from:
-        https://www.ensembl.org/Homo_sapiens/Info/Index
+    https://www.ensembl.org/Homo_sapiens/Info/Index
 
     Args:
         fastq_path: Path to directory containing fastq files.

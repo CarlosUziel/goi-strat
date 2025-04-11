@@ -15,13 +15,12 @@ def gene_expression_plot(
     gene_expr_level: str = "gene_expr_level",
 ):
     """
-        Plots the expression values of a certain gene amongst many samples.
-        The first and last deciles are colored
-            differently.
+    Plots the expression values of a certain gene amongst many samples.
+    The first and last deciles are colored differently.
 
     Args:
         expr_df: Contains the log2 counts of gene expression, with as many
-        rows as samples involved.
+            rows as samples involved.
         save_path: File to save the generated plot to.
         title: Plot title
         color_discrete_sequence: List of three elements, each representing a

@@ -5,9 +5,10 @@ All functions have pythonic inputs and outputs.
 
 Note that the arguments in python use "_" instead of ".".
 rpy2 does this transformation for us.
-Eg:
-    R --> ann_df.category
-    Python --> data_category
+
+Example:
+R --> data.category
+Python --> data_category
 """
 
 from pathlib import Path
@@ -41,12 +42,13 @@ def top_kegg(
     filter_thr: float = 0.05,
 ):
     """
-        Get top kegg pathways from a kegg_result.
+    Get top kegg pathways from a kegg_result.
+
     Args:
         kegg_result: Kegg result
         filter_by: Name of column by which to filter
         filter_thr: Value used for filtering. Rows must have a value lower
-        than this.
+            than this.
     """
     # 0. Convert R dataframe to Pandas
     df = rpy2_df_to_pd_df(kegg_result)
@@ -66,10 +68,10 @@ def linear_model_fit(obj: Any, design: Any, **kwargs):
     See: https://rdrr.io/bioc/limma/man/lmFit.html
 
     Args:
-        obj: A matrix-like ann_df object containing log-ratios or
+        obj: A matrix-like data object containing log-ratios or
             log-expression values for a series of arrays, with rows
             corresponding to genes and columns to samples. Any type of
-            ann_df object that can be processed by getEAWP
+            data object that can be processed by getEAWP
             is acceptable.
         design: the design matrix of the microarray experiment, with rows
             corresponding to arrays and columns to coefficients to be
@@ -98,19 +100,18 @@ def make_contrasts(contrasts: StrVector, levels: Any):
 
 def fit_contrasts(fit: Any, contrasts: Any):
     """
-     Given a linear model fit to microarray ann_df, compute estimated
-     coefficients and standard errors for a given set
-        of contrasts.
+    Given a linear model fit to microarray data, compute estimated coefficients
+    and standard errors for a given set of contrasts.
 
     See: https://rdrr.io/bioc/limma/man/contrasts.fit.html
 
     Args:
         fit: an MArrayLM object or a list object produced by the function
-        lm.series or equivalent. Must contain
-            components coefficients and stdev.unscaled.
+            lm.series or equivalent. Must contain components coefficients
+            and stdev.unscaled.
         contrasts: numeric matrix with rows corresponding to coefficients in
-        fit and columns containing contrasts.
-            May be a vector if there is only one contrast.
+            fit and columns containing contrasts. May be a vector if there is
+            only one contrast.
     """
     return r_limma.contrasts_fit(fit=fit, contrasts=contrasts)
 
@@ -120,16 +121,15 @@ def empirical_bayes(fit: Any, **kwargs):
     Empirical Bayes Statistics for Differential Expression
 
     Given a microarray linear model fit, compute moderated t-statistics,
-    moderated F-statistic, and log-odds of
-        differential expression by empirical Bayes moderation of the
-        standard errors towards a common value.
+    moderated F-statistic, and log-odds of differential expression by
+    empirical Bayes moderation of the standard errors towards a common value.
 
     See: https://rdrr.io/bioc/limma/man/ebayes.html
 
     Args:
         fit: an MArrayLM object or a list object produced by the function
-        lm.series or equivalent. Must contain
-            components coefficients and stdev.unscaled.
+            lm.series or equivalent. Must contain components coefficients
+            and stdev.unscaled.
     """
     return r_limma.eBayes(fit=fit, **kwargs)
 
@@ -137,17 +137,16 @@ def empirical_bayes(fit: Any, **kwargs):
 def decide_tests(obj: Any, **kwargs):
     """
     Identify which genes are significantly differentially expressed for each
-    contrast from a fit object containing
-        p-values and test statistics. A number of different multiple testing
-        strategies are offered that adjust for
-        multiple testing down the genes as well as across contrasts for each
-        gene.
+    contrast from a fit object containing p-values and test statistics.
+
+    A number of different multiple testing strategies are offered that adjust for
+    multiple testing down the genes as well as across contrasts for each gene.
 
     See: https://rdrr.io/bioc/limma/man/decideTests.html
 
-    Returns:
+    Args:
         obj: a numeric matrix of p-values or an MArrayLM object from which
-        p-values and t-statistics can be extracted.
+            p-values and t-statistics can be extracted.
     """
     return r_limma.decideTests(obj, **kwargs)
 
@@ -217,7 +216,7 @@ def top_table(fit: Any, **kwargs):
 
     Args:
         fit: list containing a linear model fit produced by lmFit,
-        lm.series, gls.series or mrlm. For topTable,
+            lm.series, gls.series or mrlm. For topTable,
             fit should be an object of class MArrayLM as produced by lmFit
             and eBayes.
     """

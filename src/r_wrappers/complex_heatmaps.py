@@ -5,9 +5,10 @@ All functions have pythonic inputs and outputs.
 
 Note that the arguments in python use "_" instead of ".".
 rpy2 does this transformation for us.
-Eg:
-    R --> ann_df.category
-    Python --> data_category
+
+Example:
+R --> data.category
+Python --> data_category
 """
 
 from pathlib import Path
@@ -73,11 +74,11 @@ def heatmap_annotation(
     """
     Creates a heatmap annotation object used to annotate heatmap columns.
 
-    *ref docs in https://rdrr.io/bioc/ComplexHeatmap/man/HeatmapAnnotation.html
+    See: https://rdrr.io/bioc/ComplexHeatmap/man/HeatmapAnnotation.html
 
     Args:
-        df: A ann_df frame where each column will be treated as a simple
-            annotation. The ann_df frame must have column names.
+        df: A DataFrame where each column will be treated as a simple
+            annotation. The DataFrame must have column names.
         col: A dictionary of dictionaries, where each element is a column
             name of df containing a mapping of column values and colors.
             See SingleAnnotation for how to set colors.
@@ -106,7 +107,7 @@ def anno_barplot(values: Union[Iterable[float], pd.DataFrame], **kwargs):
     """
     Using barplot as annotation.
 
-    *ref docs in https://rdrr.io/github/eilslabs/ComplexHeatmap/man/anno_barplot.html
+    See: https://rdrr.io/github/eilslabs/ComplexHeatmap/man/anno_barplot.html
 
     Args:
         values: A vector of numeric values. If the value is a matrix, columns of the

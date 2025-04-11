@@ -5,9 +5,10 @@ All functions have pythonic inputs and outputs.
 
 Note that the arguments in python use "_" instead of ".".
 rpy2 does this transformation for us.
-Eg:
-    R --> ann_df.category
-    Python --> data_category
+
+Example:
+R --> data.category
+Python --> data_category
 """
 
 from pathlib import Path
@@ -44,14 +45,14 @@ def save_gost_res(
     gost_res: Any, save_path: Path, sort_by: str = "p_value"
 ) -> pd.DataFrame:
     """
-        Saves gost results ann_df.frame as .RDS and .csv
+        Saves gost results dataframe as .RDS and .csv
 
         NOTE: gost_res (which is a named list), also contains metadata of
         the query, but this is not saved at the moment.
 
     Args:
         gost_res: Result of calling the gost function.
-        save_path: path to store the results ann_df frame
+        save_path: path to store the results dataframe
         sort_by: Column to sort returned dataframe by, must be convertible
             to numeric (float).
 

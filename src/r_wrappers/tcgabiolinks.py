@@ -5,9 +5,10 @@ All functions have pythonic inputs and outputs.
 
 Note that the arguments in python use "_" instead of ".".
 rpy2 does this transformation for us.
-Eg:
-    R --> annot_df.category
-    Python --> data_category
+
+Example:
+R --> data.category
+Python --> data_category
 """
 
 from typing import Any, Iterable
@@ -52,9 +53,9 @@ def get_query_results(query: rpy2.robjects.vectors.DataFrame, **kwargs) -> pd.Da
 
 def gdc_download(query: Any, **kwargs) -> bool:
     """
-    Uses GDC API or GDC transfer tool to download gdc data The user can
-    use query argument The annot_df from query will be
-        save in a folder: project/annot_df.category
+    Uses GDC API or GDC transfer tool to download gdc data. The user can
+    use query argument. The data from query will be saved in a folder:
+    project/data.category
 
     See: https://rdrr.io/bioc/TCGAbiolinks/man/GDCdownload.html
 

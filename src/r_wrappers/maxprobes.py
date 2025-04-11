@@ -5,9 +5,10 @@ All functions have pythonic inputs and outputs.
 
 Note that the arguments in python use "_" instead of ".".
 rpy2 does this transformation for us.
-Eg:
-    R --> ann_df.category
-    Python --> data_category
+
+Example:
+R --> data.category
+Python --> data_category
 """
 
 from typing import Any
@@ -19,13 +20,14 @@ r_maxprobes = importr("maxprobes")
 
 def xreactive_probes(array_type: str):
     """
+    Get information about cross-reactive probes.
 
-    *ref docs:
+    Reference documentation:
         https://rdrr.io/github/markgene/maxprobes/man/xreactive_probes.html
 
     Args:
         array_type: A character scalar. One of "EPIC", "450K". Defaults to
-        "EPIC".
+          "EPIC".
     """
     return r_maxprobes.xreactive_probes(array_type)
 
@@ -34,7 +36,7 @@ def drop_xreactive_loci(minfi_obj: Any):
     """
     Remove cross-reactive probes from a minfi object.
 
-    *ref docs:
+    Reference documentation:
         https://rdrr.io/github/markgene/maxprobes/man/dropXreactiveLoci.html
 
     Args:

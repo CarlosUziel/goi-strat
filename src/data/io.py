@@ -17,13 +17,13 @@ def unzip_gz(gz_file: Path, target_dir: Path):
     are located.
 
     Args:
-        root: root directory path
-        target_dir: new directory where files are moved to, defaults to root
-            if no path is provided.
-        pattern: pattern the files chosen should match
-            IMPORTANT NOTE: "**" must be present in order for the search to
-            be recursive.
-                Eg: "**/*.gz"
+        gz_file: Path to the gzip file to extract
+        target_dir: new directory where files are moved to, defaults to parent
+          directory of gz_file if no path is provided.
+
+    Note:
+        When using pattern matching, "**" must be present in order for the
+        search to be recursive. Example: ``**/*.gz``
     """
     # 1. Ensure target dir exists
     target_dir.mkdir(exist_ok=True, parents=True)

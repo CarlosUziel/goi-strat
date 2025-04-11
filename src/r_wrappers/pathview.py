@@ -5,9 +5,10 @@ All functions have pythonic inputs and outputs.
 
 Note that the arguments in python use "_" instead of ".".
 rpy2 does this transformation for us.
-Eg:
-    R --> ann_df.category
-    Python --> data_category
+
+Example:
+R --> data.category
+Python --> data_category
 """
 
 import os
@@ -38,7 +39,7 @@ def pathview(
     keggview.graph are the two viewer functions, and pathview is the main function
     providing a unified interface to downloader, parser, mapper and viewer functions.
 
-    *ref docs docs in https://rdrr.io/bioc/pathview/man/pathview.html
+    Reference documentation: https://rdrr.io/bioc/pathview/man/pathview.html
     """
     current_wd = os.getcwd()
     os.chdir(save_dir)

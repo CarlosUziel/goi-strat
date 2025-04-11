@@ -7,22 +7,23 @@ from data.utils import run_cmd
 
 
 class SlurmJobSubmitter(BaseModel):
-    metadata: Dict[str, str]
-    tmp_dir: Path = Path("/tmp")
-
     """
-        Submit jobs to a slurm system
+    Submit jobs to a slurm system
 
     Args:
         metadata: Contains slurm metadata to run a job. Only the keyword
-        argument (long format) and the value
-            is needed, the rest is formatted automatically. Each key-value
-            pair will be formatted as follows:
+            argument (long format) and the value is needed, the rest is
+            formatted automatically. Each key-value pair will be formatted
+            as follows:
+
                 {'--ntasks-per-node': '28'}  --> #SBATCH --ntasks-per-node=28
+
         tmp_dir: Where to temporarily store the script to be run by slurm.
-        It is automatically deleted after the job
-            has been submitted.
+            It is automatically deleted after the job has been submitted.
     """
+
+    metadata: Dict[str, str]
+    tmp_dir: Path = Path("/tmp")
 
     def submit(self, command: str, log_id: Union[str, int], log_path: Path = None):
         """

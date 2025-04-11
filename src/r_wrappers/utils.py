@@ -200,8 +200,8 @@ def filter_deseq_results(
         p_th: p-adjusted threshold to select the most significant genes
         lfc_level: genes to write, "up" for up-regulated, "down" for
             down-regulated, and "all" for all.
-        lfc_th: LFC threshold. Usually, results are considered to be
-            biologically significant when |LFC| > 2.
+        lfc_th: log2 fold change threshold. Usually, results are considered to be
+            biologically significant when absolute log2FoldChange > 2.
     """
     # 1. Filter by LFC level
     if lfc_level == "up":
@@ -233,16 +233,15 @@ def get_top_var_genes(data: rpy2.robjects.methods.RS4, top_n: int = 1000):
 
 def make_granges_from_dataframe(df: Any, **kwargs):
     """
-    Takes a ann_df-frame-like object as input and tries to automatically find
-        the columns that describe genomic ranges. It returns them as a GRanges
-        object.
+    Takes a data frame-like object as input and tries to automatically find
+    the columns that describe genomic ranges. It returns them as a GRanges
+    object.
 
-    *ref docs:
-        https://rdrr.io/bioc/GenomicRanges/man/makeGRangesFromDataFrame.html
+    See: https://rdrr.io/bioc/GenomicRanges/man/makeGRangesFromDataFrame.html
 
     Args:
-        df: A ann_df.frame or DataFrame object. If not, then the function first
-            tries to turn df into a ann_df frame with as.data.frame(df).
+        df: A data frame or DataFrame object. If not, then the function first
+            tries to turn df into a data frame with as.data.frame(df).
     """
     df = pd_df_to_rpy2_df(df) if isinstance(df, pd.DataFrame) else df
     return r_genomic_ranges.makeGRangesFromDataFrame(df, **kwargs)
@@ -337,16 +336,15 @@ def prepare_gene_list(
     """
     Loads a gene list from a .csv and prepares it to match the expected
     format of clusterProfiler. If both "from_type" and "to_type" are
-        provided, convert ID types from "from_type" to "to_type".
+    provided, convert ID types from "from_type" to "to_type".
 
-    The index of `deg_genes` should contain the sample IDs of type
-        `from_type`.
+    The index of `genes` should contain the sample IDs of type `from_type`.
 
     Functions needing this resulting gene list require that all genes
-        are in the same ID namespace, so genes not mapped are removed.
+    are in the same ID namespace, so genes not mapped are removed.
 
     Args:
-        deg_genes: A dataframe of at least two columns, containing gene IDs and
+        genes: A dataframe of at least two columns, containing gene IDs and
             a numeric column that can be used to rank them.
         org_db: Organism annotation database.
         from_type: Original ID naming scheme. Possible values: "ENSEMBL",

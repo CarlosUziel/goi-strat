@@ -5,9 +5,10 @@ All functions have pythonic inputs and outputs.
 
 Note that the arguments in python use "_" instead of ".".
 rpy2 does this transformation for us.
-Eg:
-    R --> ann_df.category
-    Python --> data_category
+
+Example:
+R --> data.category
+Python --> data_category
 """
 
 import logging
@@ -362,14 +363,14 @@ def pca_samples(
 
 def get_dd(methyl_obj: Any, condition_sample: Dict[str, Iterable[str]]) -> Any:
     """
-        Provides intermediate ann_df-frame needed for plotting.
+        Provides intermediate dataframe needed for plotting.
 
     Args:
         methyl_obj: A methylBase or methylBaseDB object.
         condition_sample: Mapping between sample names and the condition they belong to.
 
     Returns:
-        Intermediate ann_df-frame needed for plotting
+        Intermediate dataframe needed for plotting
     """
     df = rpy2_df_to_pd_df(r_source.getData(methyl_obj))
     sample_ids = ro.r("attr")(methyl_obj, "sample.ids")
@@ -430,7 +431,7 @@ def violin_plot(
                 scale_fill_manual(values=c("#a6cee3","#1f78b4","#b2df8a","#33a02c")) +
                 coord_flip() +
                 labs(x="Sample ID", y = "% mCpG") +
-                stat_summary(fun.ann_df=data_summary) +
+                stat_summary(fun.data=data_summary) +
                 geom_boxplot(width=0.1)
             )
         }
@@ -451,7 +452,7 @@ def get_cpg_neighbours(methyl_obj: Any) -> Tuple[pd.DataFrame, pd.DataFrame]:
     Args:
         methyl_obj: a methylBase or methylBaseDB object
     """
-    # 0. MehtylKit object to ann_df.frame
+    # 0. MehtylKit object to dataframe
     df = rpy2_df_to_pd_df(r_source.getData(methyl_obj))
 
     # 1. Get neighbours per chromosome
@@ -807,6 +808,7 @@ def meth_changes_anno_boxplot(
 ) -> None:
     """
     Methylation Changes with regard to CpG Islands Annotation.
+
     Args:
         methyl_obj: a methylBase or methylBaseDB object
         cpgs_ann: annotated cpgs.
@@ -1087,7 +1089,7 @@ def get_pos_neg_neighbours_inds(
         d_min_th: Minimum distance to position be considered neighbour.
         d_max_th: Maximum distance to position be considered neighbour.
     """
-    # 0. Extract methylation ann_df
+    # 0. Extract methylation dataframe
     data = r_source.getData(methyl_obj)
 
     # 1. Get GRanges object
@@ -1095,7 +1097,7 @@ def get_pos_neg_neighbours_inds(
         seqnames=data.rx2("chr"),
         ranges=ro.r("IRanges")(start=data.rx2("start"), end=data.rx2("end")),
     )
-    pos_df = rpy2_df_to_pd_df(ro.r("ann_df.frame")(pos))
+    pos_df = rpy2_df_to_pd_df(ro.r("data.frame")(pos))
 
     # 2. Obtain indices of positive and negative neighbours and convert to 0-indexing
     inds_pos = list(ro.r("precede")(pos))

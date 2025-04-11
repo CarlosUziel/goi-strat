@@ -5,9 +5,10 @@ All functions have pythonic inputs and outputs.
 
 Note that the arguments in python use "_" instead of ".".
 rpy2 does this transformation for us.
-Eg:
-    R --> data.category
-    Python --> data_category
+
+Example:
+R --> data.category
+Python --> data_category
 """
 
 from pathlib import Path
@@ -48,14 +49,13 @@ def build_annotations(genome: str, annotations: StrVector):
     Supported annotation codes are listed by builtin_annotations(). The basis for
     enhancer annotations are FANTOM5 data, the basis for CpG related annotations are
     CpG island tracks from AnnotationHub, and the basis for genic annotations are from
-    the TxDb.* and org.db group of packages.
+    the TxDb packages and org.db group of packages.
 
-    *ref docs in: https://rdrr.io/bioc/annotatr/man/build_annotations.html
+    Reference documentation: https://rdrr.io/bioc/annotatr/man/build_annotations.html
 
     Args:
         genome: The genome assembly.
         annotations: A character vector of annotations to build.
-
     """
     return r_annotatr.build_annotations(genome, annotations)
 

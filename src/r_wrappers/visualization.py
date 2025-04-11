@@ -5,9 +5,10 @@ All functions have pythonic inputs and outputs.
 
 Note that the arguments in python use "_" instead of ".".
 rpy2 does this transformation for us.
-Eg:
-    R --> annot_df.category
-    Python --> data_category
+
+Example:
+R --> data.category
+Python --> data_category
 """
 
 from pathlib import Path
@@ -65,7 +66,7 @@ def mean_sd_plot(
     """
     Plot row standard deviations versus row means
 
-    *ref docs in https://rdrr.io/bioc/vsn/man/meanSdPlot.html
+    Reference documentation: https://rdrr.io/bioc/vsn/man/meanSdPlot.html
 
     Args:
         data: DESeqDataSet or DESeqTransform
@@ -112,13 +113,13 @@ def mds_plot(
     **kwargs,
 ):
     """
-        Multidimensional scaling (MDS) plot. Classical multidimensional
-        scaling (MDS) of a annot_df matrix. Also known as
-            principal coordinates analysis (Gower, 1966).
+    Multidimensional scaling (MDS) plot. Classical multidimensional
+    scaling (MDS) of a data matrix. Also known as principal coordinates
+    analysis (Gower, 1966).
 
-        Underlying function docs:
-            https://www.rdocumentation.org/packages/stats/versions/3.6.2
-            /topics/cmdscale
+    Underlying function docs:
+        https://www.rdocumentation.org/packages/stats/versions/3.6.2
+        /topics/cmdscale
 
     Args:
          sample_dist: a distance structure, containing all sample
@@ -155,7 +156,10 @@ def gene_counts(
     **kwargs,
 ):
     """
-        (full docs in https://rdrr.io/bioc/DESeq2/man/plotCounts.html)
+    Plot gene counts for one gene across groups.
+
+    Reference documentation: https://rdrr.io/bioc/DESeq2/man/plotCounts.html
+
     Args:
         data: a DESeqDataSet object
         gene: gene for which counts amongst samples are shown
@@ -181,10 +185,10 @@ def ma_plot(
     A scatter plot of log2 fold changes (on the y-axis) versus the mean of
     normalized counts (on the x-axis).
 
-    *ref docs in https://rdrr.io/bioc/DESeq2/man/plotMA.html)
+    Reference documentation: https://rdrr.io/bioc/DESeq2/man/plotMA.html
 
     Makes use of "lfcShrink"
-        *ref docs in https://rdrr.io/bioc/DESeq2/man/lfcShrink.html
+    Reference documentation: https://rdrr.io/bioc/DESeq2/man/lfcShrink.html
 
     Args:
         deseq_result: a DESeqResults object, after lfcShrink.
@@ -210,20 +214,19 @@ def volcano_plot(
     **kwargs,
 ):
     """
-        (reference docs in
-            http://bioconductor.org/packages/release/bioc/vignettes
-            /EnhancedVolcano/inst/doc/EnhancedVolcano.html)
-        (full docs in https://rdrr.io/bioc/EnhancedVolcano/man
-        /EnhancedVolcano.html)
+    Enhanced volcano plot based on the EnhancedVolcano package in R.
 
+    Reference documentation:
+        http://bioconductor.org/packages/release/bioc/vignettes/EnhancedVolcano/inst/doc/EnhancedVolcano.html
+        https://rdrr.io/bioc/EnhancedVolcano/man/EnhancedVolcano.html
 
     Args:
-        data: A data-frame of test statistics (if not, a data frame,
-            annotate_deseq_resultan attempt will be made to convert it to one).
+        data: A data-frame of test statistics (if not a data frame,
+            an attempt will be made to convert it to one).
             Requires at least the following: column for variable names (can
             be rownames); a column for log2 fold
             changes; a column for nominal or adjusted p-value.
-        lab: A column name in annot_df containing variable names. Can be
+        lab: A column name in data containing variable names. Can be
             rownames (toptable).
         x: A column name in toptable containing log2 fold changes.
         y: A column name in toptable containing nominal or adjusted p-values.
@@ -248,7 +251,7 @@ def venn_diagram(
     This function takes a list and creates a publication-quality TIFF Venn
         Diagram.
 
-    *ref docs in https://rdrr.io/cran/VennDiagram/man/venn.diagram.html
+    Reference documentation: https://rdrr.io/cran/VennDiagram/man/venn.diagram.html
 
     Args:
         contrasts_degs: A mapping of contrast and DEGs. Length must be between 2 and 5.

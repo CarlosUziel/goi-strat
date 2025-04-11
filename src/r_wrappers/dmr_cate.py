@@ -5,9 +5,10 @@ All functions have pythonic inputs and outputs.
 
 Note that the arguments in python use "_" instead of ".".
 rpy2 does this transformation for us.
-Eg:
-    R --> ann_df.category
-    Python --> data_category
+
+Example:
+R --> data.category
+Python --> data_category
 """
 
 from pathlib import Path
@@ -28,18 +29,22 @@ def cpg_annotate(obj: Any, design: Any, **kwargs):
     """
     Annotate CpGs with their chromosome position and test statistic
 
-    Either: - Annotate a matrix of M-values (logit transform of beta)
-    representing 450K or EPIC ann_df with probe weights
-        (depending on analysis.type) and chromosomal position,
-        or - Standardise this information from DSS:::DMLtest()
-        to the same ann_df format.
+    Either:
+
+    - Annotate a matrix of M-values (logit transform of beta)
+      representing 450K or EPIC data with probe weights
+      (depending on analysis.type) and chromosomal position,
+    - Standardise this information from DSS:::DMLtest()
+      to the same data format.
 
     See: https://rdrr.io/bioc/DMRcate/man/cpg.annotate.html
 
     Args:
-        obj: Either: - A matrix of M-values, with unique Illumina probe IDs
-            as rownames and unique sample IDs as column
-            names or, - Output from DSS:::DMLtest().
+        obj: Either:
+
+            - A matrix of M-values, with unique Illumina probe IDs
+              as rownames and unique sample IDs as column names, or
+            - Output from DSS:::DMLtest().
         design: Study design matrix. Identical context to differential
             analysis pipeline in limma. Must have an
             intercept if contrasts=FALSE. Applies only when
@@ -53,8 +58,8 @@ def dmr_cate(obj: Any, **kwargs):
     """
     DMR identification
     The main function of this package. Computes a kernel estimate against a
-    null comparison to identify significantly
-        differentially (or variable) methylated regions.
+    null comparison to identify significantly differentially (or variable)
+    methylated regions.
 
     See: https://rdrr.io/bioc/DMRcate/man/dmrcate.html
 
@@ -68,7 +73,7 @@ def extract_ranges(dmrs: Any, **kwargs):
     """
     Takes a DMResults object and produces the corresponding GRanges object.
 
-     See: https://rdrr.io/bioc/DMRcate/man/extractRanges.html
+    See: https://rdrr.io/bioc/DMRcate/man/extractRanges.html
 
     Args:
         dmrs: A DMResults object.
@@ -89,24 +94,23 @@ def dmr_plot(
     """
     Plots an individual DMR (in context of possibly other DMRs) as found by
     dmrcate. Heatmaps are shown as well as proximal coding regions, smoothed
-        group means and chromosome ideogram.
+    group means and chromosome ideogram.
 
     See: https://rdrr.io/bioc/DMRcate/man/DMR.plot.html
 
     Args:
         ranges: A GRanges object (ostensibly created by extractRanges())
-        describing DMR coordinates.
+            describing DMR coordinates.
         dmr: Index of ranges (one integer only) indicating which DMR to be
-        plotted.
+            plotted.
         cpgs: Either:
+
             - A matrix of beta values for plotting, with unique Illumina
-            probe IDs as rownames.
-
+              probe IDs as rownames.
             - A GenomicRatioSet, annotated with the appropriate array and
-            ann_df types
-
+              data types
             - A BSseq object containing per-CpG methylation and coverage
-            counts for the samples to be plotted
+              counts for the samples to be plotted
         sample_groups: Targets sample groups
         save_path: where to save the generated plot
         width: width of saved figure

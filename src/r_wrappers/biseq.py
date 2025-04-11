@@ -5,9 +5,10 @@ All functions have pythonic inputs and outputs.
 
 Note that the arguments in python use "_" instead of ".".
 rpy2 does this transformation for us.
-Eg:
-    R --> data.category
-    Python --> data_category
+
+Example:
+R --> data.category
+Python --> data_category
 """
 
 from pathlib import Path
@@ -35,7 +36,7 @@ def bs_raw(
 ) -> Any:
     """
     The BSraw class is derived from RangedSummarizedExperiment and contains a SimpleList
-        of matrices named methReads and totalReads as assays.
+    of matrices named methReads and totalReads as assays.
 
     See: https://rdrr.io/bioc/BiSeq/man/BSraw-class.html
 
@@ -64,8 +65,8 @@ def bs_raw(
 def cov_statistics(biseq_obj: Any) -> Any:
     """
     This function produces information per samples about
-        1.) the covered CpG-sites
-        2.) the median of their coverages.
+    1.) the covered CpG-sites
+    2.) the median of their coverages.
 
     See: https://rdrr.io/bioc/BiSeq/man/covStatistics.html
 
@@ -79,9 +80,9 @@ def cov_boxplot(
     biseq_obj: Any, save_path: Path, width: int = 10, height: int = 10, **kwargs
 ) -> None:
     """
-     A boxplot per sample is plotted for the coverages of CpG-sites. It is constrained
-        to CpG-sites which are covered in the respective sample (coverage != 0 and not
-        NA).
+    A boxplot per sample is plotted for the coverages of CpG-sites. It is constrained
+    to CpG-sites which are covered in the respective sample (coverage != 0 and not
+    NA).
 
     See: https://rdrr.io/bioc/BiSeq/man/covBoxplots.html
 
@@ -106,13 +107,13 @@ def cluster_sites(
 ):
     """
     Within a BSraw object clusterSites searches for agglomerations of CpG sites across
-        all samples. In a first step the data is reduced to CpG sites covered in
-        round(perc.samples*ncol(object)) samples, these are called 'frequently covered
-        CpG sites'. In a second step regions are detected where not less than min.sites
-        frequently covered CpG sites are sufficiantly close to each other (max.dist).
-        Note, that the frequently covered CpG sites are considered to define the
-        boundaries of the CpG clusters only. For the subsequent analysis the methylation
-        data of all CpG sites within these clusters are used.
+    all samples. In a first step the data is reduced to CpG sites covered in
+    round(perc.samples*ncol(object)) samples, these are called 'frequently covered
+    CpG sites'. In a second step regions are detected where not less than min.sites
+    frequently covered CpG sites are sufficiantly close to each other (max.dist).
+    Note, that the frequently covered CpG sites are considered to define the
+    boundaries of the CpG clusters only. For the subsequent analysis the methylation
+    data of all CpG sites within these clusters are used.
 
     See: https://rdrr.io/bioc/BiSeq/man/clusterSites.html
 
@@ -139,9 +140,9 @@ def cluster_sites(
 
 
 def cluster_sites_to_gr(biseq_obj: Any) -> Any:
-    """c
+    """
     This function allows to get the start and end positions of CpG clusters from a
-        BSraw or BSrel object, when there is a cluster.id column in the rowRanges slot.
+    BSraw or BSrel object, when there is a cluster.id column in the rowRanges slot.
 
     See: https://rdrr.io/bioc/BiSeq/man/clusterSitesToGR.html
 

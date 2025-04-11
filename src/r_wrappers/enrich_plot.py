@@ -5,9 +5,10 @@ All functions have pythonic inputs and outputs.
 
 Note that the arguments in python use "_" instead of ".".
 rpy2 does this transformation for us.
-Eg:
-    R --> ann_df.category
-    Python --> data_category
+
+Example:
+R --> data.category
+Python --> data_category
 """
 
 from pathlib import Path
@@ -116,8 +117,7 @@ def ridgeplot(
     """
     Ridgeline plot for GSEA result
 
-    *ref docs:
-        https://rdrr.io/github/GuangchuangYu/enrichplot/man/ridgeplot.html
+    See: https://rdrr.io/github/GuangchuangYu/enrichplot/man/ridgeplot.html
     """
     with localconverter(ro.default_converter):
         plot = r_enrichplot.ridgeplot(enrich_result, **kwargs)

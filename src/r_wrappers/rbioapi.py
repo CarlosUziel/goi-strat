@@ -5,9 +5,10 @@ All functions have pythonic inputs and outputs.
 
 Note that the arguments in python use "_" instead of ".".
 rpy2 does this transformation for us.
-Eg:
-    R --> data.category
-    Python --> data_category
+
+Example:
+R --> data.category
+Python --> data_category
 """
 
 import logging
@@ -112,7 +113,8 @@ def string_interactions_network(
     api_lock: Lock = Lock(),  # type: ignore
     **kwargs,
 ) -> pd.DataFrame:
-    """This function will retrieve Sting interaction pairs among your input protein ids,
+    """
+    This function will retrieve Sting interaction pairs among your input protein ids,
     with the combined score and separate score for each STRING score channels. You can
     further expand your network to a defined size by providing "add_node" parameter.
 
@@ -125,15 +127,19 @@ def string_interactions_network(
         required_score: A minimum of interaction score for an interaction to be
             included. if not supplied, the threshold will be applied by STRING Based
             in the network.
+
             - low Confidence = 150
             - Medium Confidence = 400
             - High Confidence = 700
             - Highest confidence = 900
+
         network_type: Should be one of:
+
             - "functional": The edge's indicate both physical and functional
-                associations.
+              associations.
             - "physical": The edges indicate that two proteins have a physical
-                interaction or are parts of a complex.
+              interaction or are parts of a complex.
+
         api_lock: Multiprocessing lock to access STRINGDB API.
     """
     while True:
