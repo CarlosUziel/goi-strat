@@ -42,7 +42,7 @@
 
 ## About The Project
 
-This repository contains the implementation of *GoiStrat - Gene-of-interest-based sample stratification for the evaluation of functional differences*. See [publication](https://assets.researchsquare.com/files/rs-4075701/v1_covered_5cbc649f-2e86-4ab7-8ac3-cc7001fe3327.pdf) for details.
+This repository contains the implementation of *GoiStrat - Gene-of-interest-based sample stratification for the evaluation of functional differences*. See [publication](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-025-06109-0) for details.
 
 The implementation was done entirely in Python, using [*rpy2*](https://github.com/rpy2/rpy2) wrappers for all necessary R packages.
 
@@ -571,7 +571,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 [Carlos Uziel Pérez Malla](https://perez-malla.com/)
 
-[GitHub](https://github.com/CarlosUziel) - [Google Scholar](https://scholar.google.es/citations?user=tEz_OeIAAAAJ&hl=es&oi=ao) - [LinkedIn](https://at.linkedin.com/in/carlos-uziel-p%C3%A9rez-malla-323aa5124) - [Twitter](https://twitter.com/perez_malla)
+[GitHub](https://github.com/CarlosUziel) - [Google Scholar](https://scholar.google.co.uk/citations?user=tEz_OeIAAAAJ&hl) - [LinkedIn](https://www.linkedin.com/in/carlosuziel)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -583,13 +583,18 @@ This work was supported by grants provided by the FWF (National Science Foundati
 
 ## Citation
 
-If you have found the content of this repository useful, please consider citing [this work](https://assets.researchsquare.com/files/rs-4075701/v1_covered_5cbc649f-2e86-4ab7-8ac3-cc7001fe3327.pdf):
+If you have found the content of this repository useful, please consider citing [this work](hhttps://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-025-06109-0):
 
 ```raw
-@article{malla2024goistrat,
-  title={GoiStrat-Gene-of-interest-based sample stratification for the evaluation of functional differences},
-  author={Malla, Carlos Uziel P{\'e}rez and Kalla, Jessica and Tiefenbacher, Andreas and Wasinger, Gabriel and Kluge, Kilian and Egger, Gerda and Sheibani-Tezerji, Raheleh},
-  year={2024}
+@article{perez2025goistrat,
+  title={Goistrat: gene-of-interest-based sample stratification for the evaluation of functional differences},
+  author={P{\'e}rez Malla, Carlos Uziel and Kalla, Jessica and Tiefenbacher, Andreas and Wasinger, Gabriel and Kluge, Kilian and Egger, Gerda and Sheibani-Tezerji, Raheleh},
+  journal={BMC bioinformatics},
+  volume={26},
+  number={1},
+  pages={97},
+  year={2025},
+  publisher={Springer}
 }
 ```
 
