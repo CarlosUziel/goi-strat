@@ -51,7 +51,7 @@ TCGA_NAMES: Iterable[str] = [
 n_projects = len(TCGA_NAMES)
 for i, tcga_dataset in enumerate(TCGA_NAMES):
     current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"[{current_time}][{i}/{n_projects-1}] Downloading {tcga_dataset}...")
+    print(f"[{current_time}][{i}/{n_projects - 1}] Downloading {tcga_dataset}...")
 
     data_path = STORAGE.joinpath(tcga_dataset).joinpath("data")
     data_path.mkdir(parents=True, exist_ok=True)

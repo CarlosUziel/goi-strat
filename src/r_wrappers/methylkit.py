@@ -961,7 +961,7 @@ def meth_changes_anno_scatter3d(
 
             pdf(
                 str(save_path_prefix)
-                + f'_{anno_type}_{c0.replace(" ", "_")}_{c1.replace(" ", "_")}.pdf',
+                + f"_{anno_type}_{c0.replace(' ', '_')}_{c1.replace(' ', '_')}.pdf",
                 width=width,
                 height=height,
             )
@@ -1066,7 +1066,7 @@ def methylation_correlation(
         # 2.3. Plot and save figure
         pdf(
             str(save_path_prefix)
-            + f'_{c1.replace(" ", "")}__vs__{c1.replace(" ", "")}.pdf',
+            + f"_{c1.replace(' ', '')}__vs__{c1.replace(' ', '')}.pdf",
             width=width,
             height=height,
         )

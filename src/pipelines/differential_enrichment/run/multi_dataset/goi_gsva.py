@@ -91,7 +91,7 @@ n_projects = len(DATASETS_MARKERS)
 for i, (dataset_name, goi_symbol) in enumerate(DATASETS_MARKERS.items()):
     current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(
-        f"[{current_time}][{i}/{n_projects-1}] Processing inputs for {dataset_name}..."
+        f"[{current_time}][{i}/{n_projects - 1}] Processing inputs for {dataset_name}..."
     )
 
     GOI_SYMBOL = goi_symbol

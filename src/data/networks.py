@@ -25,9 +25,9 @@ def get_node_metrics(
     Returns:
         A pandas DataFrame object with metrics per node.
     """
-    assert not nx.is_directed(graph) and nx.is_connected(
-        graph
-    ), "Input graph must be connected"
+    assert not nx.is_directed(graph) and nx.is_connected(graph), (
+        "Input graph must be connected"
+    )
 
     metrics = pd.concat(
         [

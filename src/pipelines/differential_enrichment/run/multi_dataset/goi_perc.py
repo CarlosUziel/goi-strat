@@ -94,7 +94,7 @@ for i, ((dataset_name, goi_symbol), percentile) in enumerate(
 ):
     current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(
-        f"[{current_time}][{i}/{n_projects-1}][{percentile}] "
+        f"[{current_time}][{i}/{n_projects - 1}][{percentile}] "
         f"Processing inputs for {dataset_name}..."
     )
 

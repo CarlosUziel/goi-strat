@@ -549,12 +549,12 @@ def diff_meth_probes(
     # 0. Setup
     m_values = ro.r("getM")(mset)
     b_values = ro.r("getBeta")(mset)
-    assert all(
-        [lfc_level in ("hyper", "hypo", "all") for lfc_level in lfc_levels]
-    ), 'only "hyper", "hypo" and "all" are allowed lfc_level values'
-    assert all(
-        [p_col in ("P.Value", "adj.P.Val") for p_col in p_cols]
-    ), 'only "P.Value" and "adj.P.Val" are allowed p_col values'
+    assert all([lfc_level in ("hyper", "hypo", "all") for lfc_level in lfc_levels]), (
+        'only "hyper", "hypo" and "all" are allowed lfc_level values'
+    )
+    assert all([p_col in ("P.Value", "adj.P.Val") for p_col in p_cols]), (
+        'only "P.Value" and "adj.P.Val" are allowed p_col values'
+    )
     annots = {
         "cpg": build_annotations(genome=genome, annotations=f"{genome}_cpgs"),
         "gene": build_annotations(genome=genome, annotations=f"{genome}_basicgenes"),
@@ -1284,9 +1284,9 @@ def diff_meth_regions(
         ]
     )
 
-    assert all(
-        [lfc_level in ("hyper", "hypo", "all") for lfc_level in lfc_levels]
-    ), 'only "hyper", "hypo" and "all" are allowed lfc_level values'
+    assert all([lfc_level in ("hyper", "hypo", "all") for lfc_level in lfc_levels]), (
+        'only "hyper", "hypo" and "all" are allowed lfc_level values'
+    )
 
     # 1. Get differentially methylated regions and annotate cpgs and genes.
     for (test, control), p_th, mean_diff_level, mean_meth_diff_th in product(

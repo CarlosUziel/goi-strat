@@ -5,8 +5,6 @@ import rpy2.robjects as ro
 from pydantic import Field
 from pydantic.dataclasses import dataclass
 from rpy2.rinterface_lib.embedded import RRuntimeError
-from rpy2.robjects import pandas2ri
-from rpy2.robjects.conversion import localconverter
 
 from components.functional_analysis.base import FunctionalAnalysisBase
 from components.functional_analysis.orgdb import OrgDB

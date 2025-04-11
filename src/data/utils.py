@@ -89,7 +89,7 @@ def run_cmd(cmd: Iterable[str], log_path: Optional[Path] = None) -> Dict[str, st
         }
         if log_path is not None and log_path.suffix == ".log":
             log_path.write_text(
-                f'stderr:\n {logs["stderr"]} \n\n stdout:\n {logs["stdout"]}'
+                f"stderr:\n {logs['stderr']} \n\n stdout:\n {logs['stdout']}"
             )
 
         return logs
@@ -201,9 +201,9 @@ def select_data_classes(
     ]
 
     # 2. Check that the samples of the different classes do not intersect
-    assert (
-        len(set(metadata.index).intersection(*class_samples_ids)) == 0
-    ), "There are overlapping samples among classes, please check the class filters"
+    assert len(set(metadata.index).intersection(*class_samples_ids)) == 0, (
+        "There are overlapping samples among classes, please check the class filters"
+    )
 
     # 3. Return class ids
     return class_samples_ids
