@@ -552,7 +552,7 @@ This script runs ORA on many gene sets collections (e.g. MSigDB H and C1-C8, DO,
 Source files formatted using the following commands:
 
 ```bash
-ruff check . --fix && ruff format .
+ruff check . --fix && ruff format . && ruff check . --fix --select I
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
