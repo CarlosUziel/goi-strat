@@ -8,15 +8,29 @@
   <h1 align="center">GoiStrat</h1>
   <h4 align="center">Gene-of-interest-based sample stratification for the evaluation of functional differences</h4>
 
+  <!-- BADGES -->
+  <p align="center">
+    <a href="https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-025-06109-0"><img src="https://img.shields.io/badge/Publication-BMC%20Bioinformatics-blue" alt="Publication Badge"></a>
+    <a href="https://github.com/CarlosUziel/goi-strat/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License Badge"></a>
+    <a href="https://github.com/CarlosUziel/goi-strat/stargazers"><img src="https://img.shields.io/github/stars/CarlosUziel/goi-strat.svg?style=social" alt="Stars Badge"></a>
+  </p>
+  
+  <p align="center">
+    <a href="#getting-started">Getting Started</a> •
+    <a href="#quick-start">Quick Start</a> •
+    <a href="#tutorials">Tutorials</a> •
+    <a href="#contact">Contact</a>
+  </p>
 </div>
 
 <!-- TABLE OF CONTENTS -->
 <details>
-  <summary>Table of Contents</summary>
+  <summary>📋 Table of Contents</summary>
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
+        <li><a href="#key-features">Key Features</a></li>
         <li><a href="#data">Data</a></li>
       </ul>
     </li>
@@ -25,13 +39,18 @@
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
+        <li><a href="#quick-start">Quick Start</a></li>
         <li><a href="#usage">Usage</a></li>
         <li><a href="#file-descriptions">File descriptions</a></li>
       </ul>
     </li>
     <li><a href="#project-documentation">Project Documentation</a></li>
-    <li><a href="#tutorial-performing-sample-stratification-with-goistrat-and-the-topbottom-approach-plus-differential-analyses-on-multiple-datasets">Tutorial: Performing sample stratification with GoiStrat and the top/bottom approach, plus differential analyses, on multiple datasets</a></li>
-    <li><a href="#tutorial-downstream-analyses-on-the-folh1-use-case">Tutorial: Downstream analyses on the FOLH1 use case</a></li>
+    <li><a href="#tutorials">Tutorials</a>
+      <ul>
+        <li><a href="#tutorial-performing-sample-stratification-with-goistrat-and-the-topbottom-approach-plus-differential-analyses-on-multiple-datasets">Sample Stratification & Differential Analyses</a></li>
+        <li><a href="#tutorial-downstream-analyses-on-the-folh1-use-case">Downstream Analyses (FOLH1 Use Case)</a></li>
+      </ul>
+    </li>
     <li><a href="#additional-notes">Additional Notes</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -40,31 +59,39 @@
   </ol>
 </details>
 
-## About The Project
+## 🔍 About The Project
 
-This repository contains the implementation of *GoiStrat - Gene-of-interest-based sample stratification for the evaluation of functional differences*. See [publication](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-025-06109-0) for details.
+This repository contains the implementation of **GoiStrat** - *Gene-of-interest-based sample stratification for the evaluation of functional differences*. See [publication](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-025-06109-0) for details.
 
 The implementation was done entirely in Python, using [*rpy2*](https://github.com/rpy2/rpy2) wrappers for all necessary R packages.
+
+### Key Features
+
+- 🧬 **Sample Stratification**: Stratify samples based on gene-of-interest expression
+- 📊 **Differential Analyses**: Perform differential expression and enrichment analyses
+- 🔗 **PPI Networks**: Generate protein-protein interaction networks
+- 📈 **Functional Analysis**: Conduct gene set enrichment and over-representation analyses
+- 🧩 **Integrative Analysis**: Combine results from multiple data sources
+- 🔄 **Reproducibility**: End-to-end workflow with clearly defined steps
 
 ### Data
 
 This workflow was tested by applying it to *FOLH1* in prostate cancer. The data sources used were:
 
-- The Prostate Cancer Transcriptome Atlas (PCTA) [[Paper](https://www.nature.com/articles/s41467-021-26840-5)].
-- The Cancer Genome Atlas Prostate Adenocarcinoma (TCGA-PRAD) | [[Paper](https://pubmed.ncbi.nlm.nih.gov/26544944/)].
-- The West Coast Prostate Cancer Dream Team - Metastatic Castration Resistant Prostate Cancer (WCDT-MCRPC) | [[Paper 1](https://pubmed.ncbi.nlm.nih.gov/30033370/), [Paper 2](https://pubmed.ncbi.nlm.nih.gov/33077885/)].
+- The Prostate Cancer Transcriptome Atlas (PCTA) [[Paper](https://www.nature.com/articles/s41467-021-26840-5)]
+- The Cancer Genome Atlas Prostate Adenocarcinoma (TCGA-PRAD) [[Paper](https://pubmed.ncbi.nlm.nih.gov/26544944/)]
+- The West Coast Prostate Cancer Dream Team - Metastatic Castration Resistant Prostate Cancer (WCDT-MCRPC) [[Paper 1](https://pubmed.ncbi.nlm.nih.gov/30033370/), [Paper 2](https://pubmed.ncbi.nlm.nih.gov/33077885/)]
 
-If you wish you reproduce the results shown in the paper, you must obtain the permissions from the owners of the data when required. Downloading and processing of the data is also a pre-requisite. Helper functions and scripts under `src/pipelines/data` were used for such purposes.
+If you wish to reproduce the results shown in the paper, you must obtain the permissions from the owners of the data when required. Downloading and processing of the data is also a pre-requisite. Helper functions and scripts under `src/pipelines/data` were used for such purposes.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
-
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
-You should have an Anaconda environment installed in your UNIX system (currently only Ubuntu/CentOS has been tested). I recommend using `Miniforge3`:
+You should have an Anaconda environment installed in your UNIX system (currently only Ubuntu/CentOS has been tested). We recommend using `Miniforge3`:
 
 ```bash
 wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
@@ -79,43 +106,63 @@ Here's a step-by-step guide to setup the library:
 
 1. Clone this repository:
 
-  ```bash
-  git clone https://github.com/CarlosUziel/goi-strat
-  ```
+   ```bash
+   git clone https://github.com/CarlosUziel/goi-strat
+   ```
 
 2. Install mamba:
 
-```bash
-conda install -n base -c conda-forge mamba
-```
+   ```bash
+   conda install -n base -c conda-forge mamba
+   ```
 
 3. Create virtual environment:
 
-*Option 1:*
-```bash
-bash goi-strat/setup_env.sh
-```
+   *Option 1:*
+   ```bash
+   bash goi-strat/setup_env.sh
+   ```
 
-**Note**: Please keep in mind that `setup_env.sh` might include unnecessary dependencies, as this was a general environment we used for all our projects. You are invited to remove and add dependencies as you see fit.
+   **Note**: Please keep in mind that `setup_env.sh` might include unnecessary dependencies, as this was a general environment we used for all our projects. You are invited to remove and add dependencies as you see fit.
 
-*Option 2:*
-```bash
-mamba env create -f environment.yml # alternatively try environment_hist.yml
-mamba activate bioinfo
-```
+   *Option 2:*
+   ```bash
+   mamba env create -f environment.yml # alternatively try environment_hist.yml
+   mamba activate bioinfo
+   ```
 
-This will take a while, have patience.
+   This will take a while, have patience.
 
 4. Set `PYTHONPATH` variable (preferably in your `.bashrc` file or equivalent):
 
-```bash
-export PYTHONPATH="/home/{user}/goi-strat/src":$PYTHONPATH
-```
+   ```bash
+   export PYTHONPATH="/home/{user}/goi-strat/src":$PYTHONPATH
+   ```
 
 Now you are ready to start using the **GoiStrat** workflow!
 
-<!-- USAGE EXAMPLES -->
+### Quick Start
 
+To quickly get started with a basic analysis pipeline:
+
+```bash
+# Clone the repository
+git clone https://github.com/CarlosUziel/goi-strat
+cd goi-strat
+
+# Setup environment
+conda install -n base -c conda-forge mamba
+mamba env create -f environment.yml
+conda activate bioinfo
+
+# Set PYTHONPATH
+export PYTHONPATH="$PWD/src":$PYTHONPATH
+
+# Run a sample workflow (modify paths as needed)
+python src/pipelines/data/run/rna_seq/multi_dataset/download_data.py
+```
+
+<!-- USAGE EXAMPLES -->
 ### Usage
 
 While this library contains plenty of ready-to-use scripts to build complete pipelines, it also provides multiple utility functions that can be used individually as per user needs. A special effort has been put into making the design of the library highly modular and flexible for different use cases. Feel free to submerge yourself in the codebase.
@@ -146,11 +193,11 @@ This repository is organized as follows:
 
 <br>
 
-> This repository is an extract of all the code I developed during my PhD. While care has been taken to remove anything unrelated to `GoiStrat`, some artifacts might still be present. In any case, they can be safely ignored.
+> **Note**: This repository is an extract of all the code I developed during my PhD. While care has been taken to remove anything unrelated to `GoiStrat`, some artifacts might still be present. In any case, they can be safely ignored.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## Project Documentation
+## 📚 Project Documentation
 
 The documentation for the GoiStrat workflow entire codebase is generated using Sphinx. To build the documentation, navigate to the `docs` directory and run the following command:
 
@@ -158,20 +205,21 @@ The documentation for the GoiStrat workflow entire codebase is generated using S
 make html
 ```
 
-This will generate the HTML documentation in the `docs/build` directory. Open the `index.html` file in your browser to view the documentation or run the following command to open it in your default browser:
+This will generate the HTML documentation in the `docs/_build/html` directory. Open the `index.html` file in your browser to view the documentation or run the following command to open it in your default browser:
 
 ```bash
-open build/html/index.html
+open _build/html/index.html
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+## 🧪 Tutorials
 
-## Tutorial: Performing sample stratification with GoiStrat and the top/bottom approach, plus differential analyses, on multiple datasets
+### Tutorial 1: Performing Sample Stratification with GoiStrat
 
-This tutorial will guide you through the first phase of the GoiStrat workflow, which involves sample stratification, as well as the first part of the second phase. We will follow the scripts outlined `src/pipelines/multi_dataset_workflow.sh`.
+This tutorial will guide you through the first phase of the GoiStrat workflow, which involves sample stratification, as well as the first part of the second phase. We will follow the scripts outlined in `src/pipelines/multi_dataset_workflow.sh`.
 
-### 1. Download, Process, and Split Data
+#### 1. Download, Process, and Split Data
 
 The first step involves downloading, processing, and splitting the data. This is done using the following scripts:
 
@@ -252,7 +300,7 @@ This script annotates the samples based on top/bottom strategy for different qua
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-### 2. Differential Analyses
+#### 2. Differential Analyses
 
 The second step involves running differential analyses on the stratified samples. This is done using the following scripts:
 
@@ -386,10 +434,13 @@ This script performs differential enrichment analysis on the top/bottom splits. 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## Tutorial: Downstream analyses on the *FOLH1* use case
-This tutorial will guide you through the second phase of the GoiStrat workflow, after differential analyses. We will follow the scripts outlined the last section of`src/pipelines/psma_levels_workflow.sh.sh`.
+### Tutorial 2: Downstream Analyses on the *FOLH1* Use Case
 
-### `src/pipelines/integrative_analysis/run/rna_seq/pcta_wcdt/goi_intersect_degss_gsea.py`:
+This tutorial will guide you through the second phase of the GoiStrat workflow, after differential analyses. We will follow the scripts outlined in the last section of `src/pipelines/psma_levels_workflow.sh`.
+
+#### 1. Integrative Analysis
+
+##### `src/pipelines/integrative_analysis/run/rna_seq/pcta_wcdt/goi_intersect_degss_gsea.py`:
 
 This script combines enriched gene sets from different methods and datasets (i.e., Gene sets from D-GSVA, GSEA on DEGS, and GSEA on DMRs).
 
@@ -413,7 +464,9 @@ This script combines enriched gene sets from different methods and datasets (i.e
 - `MSIGDB_CATS`: An iterable of MSigDB categories used for analysis.
 - `PARALLEL`: A boolean indicating whether to run processes in parallel.
 
-### `src/pipelines/degss_genes_stats/run/rna_seq/pcta_wcdt/goi.py`:
+#### 2. Gene Statistics from DEGSs
+
+##### `src/pipelines/degss_genes_stats/run/rna_seq/pcta_wcdt/goi.py`:
 
 This script obtains gene statistics from differentially enriched gene sets (DEGSS), mainly z-score normalised gene occurrences.
 
@@ -440,7 +493,7 @@ This script obtains gene statistics from differentially enriched gene sets (DEGS
 - `MSIGDB_CATS`: An iterable of MSigDB categories used for analysis.
 - `BOOTSTRAP_ITERATIONS`: The number of bootstrap iterations for statistical analysis.
 
-### `src/pipelines/degss_genes_stats/run/rna_seq/pcta_wcdt/goi_metadata.py`:
+##### `src/pipelines/degss_genes_stats/run/rna_seq/pcta_wcdt/goi_metadata.py`:
 
 This script gathers all metadata for the genes within DEGSS.
 
@@ -466,7 +519,9 @@ This script gathers all metadata for the genes within DEGSS.
 - `LFC_THS`: An iterable of log fold change thresholds used for analysis.
 - `MSIGDB_CATS`: An iterable of MSigDB categories used for analysis.
 
-### `src/pipelines/degss_ppi_networks/run/rna_seq/pcta_wcdt/goi.py`:
+#### 3. PPI Network Analysis
+
+##### `src/pipelines/degss_ppi_networks/run/rna_seq/pcta_wcdt/goi.py`:
 
 This script generates PPI networks from the genes (filtered by significant z-scored normalised gene occurrences) within DEGSS. PPI relationships are extracted from *STRINGDB* using the R package **rbioapi**.
 
@@ -492,7 +547,9 @@ This script generates PPI networks from the genes (filtered by significant z-sco
 - `LFC_THS`: An iterable of log fold change thresholds used for analysis.
 - `MSIGDB_CATS`: An iterable of MSigDB categories used for analysis.
 
-### `src/pipelines/degss_ppi_networks_clustering/run/rna_seq/pcta_wcdt/goi.py`:
+#### 4. Network Clustering
+
+##### `src/pipelines/degss_ppi_networks_clustering/run/rna_seq/pcta_wcdt/goi.py`:
 
 This script clusters proteins in the PPI networks using **Node2Vec** embeddings and ensemble clustering.
 
@@ -518,7 +575,9 @@ This script clusters proteins in the PPI networks using **Node2Vec** embeddings 
 - `NETWORK_TYPES`: An iterable of network types used for PPI network analysis.
 - `PARALLEL`: A boolean indicating whether to run processes in parallel.
 
-### `src/pipelines/functional_analysis/run/rna_seq/pcta_wcdt/goi_clustering_ora.py`:
+#### 5. Functional Analysis of Clusters
+
+##### `src/pipelines/functional_analysis/run/rna_seq/pcta_wcdt/goi_clustering_ora.py`:
 
 This script runs ORA on many gene sets collections (e.g. MSigDB H and C1-C8, DO, GO, Reactome, KEGG, MKEGG, and NCG) for all genes in each PPI cluster, obtaining enriched gene sets in the process.
 
@@ -547,7 +606,7 @@ This script runs ORA on many gene sets collections (e.g. MSigDB H and C1-C8, DO,
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## Additional Notes
+## 📝 Additional Notes
 
 Source files formatted using the following commands:
 
@@ -559,7 +618,7 @@ ruff check . --fix && ruff format . && ruff check . --fix --select I
 
 <!-- LICENSE -->
 
-## License
+## 📄 License
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
@@ -567,25 +626,29 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 <!-- CONTACT -->
 
-## Contact
+## 👤 Contact
 
 [Carlos Uziel Pérez Malla](https://perez-malla.com/)
 
-[GitHub](https://github.com/CarlosUziel) - [Google Scholar](https://scholar.google.co.uk/citations?user=tEz_OeIAAAAJ&hl) - [LinkedIn](https://www.linkedin.com/in/carlosuziel)
+<div align="center">
+  <a href="https://github.com/CarlosUziel"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"></a>
+  <a href="https://scholar.google.co.uk/citations?user=tEz_OeIAAAAJ&hl"><img src="https://img.shields.io/badge/Google_Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white" alt="Google Scholar"></a>
+  <a href="https://www.linkedin.com/in/carlosuziel"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
+</div>
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
 This work was supported by grants provided by the FWF (National Science Foundation in Austria, grant no. P 32771) and DOC Fellowship of the Austrian Academy of Sciences (25276). The support from my PhD supervisors, Dr. Raheleh Sheibani and Prof. Dr. Gerda Egger was invaluable.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## Citation
+## 📊 Citation
 
-If you have found the content of this repository useful, please consider citing [this work](hhttps://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-025-06109-0):
+If you have found the content of this repository useful, please consider citing [this work](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-025-06109-0):
 
-```raw
+```bibtex
 @article{perez2025goistrat,
   title={Goistrat: gene-of-interest-based sample stratification for the evaluation of functional differences},
   author={P{\'e}rez Malla, Carlos Uziel and Kalla, Jessica and Tiefenbacher, Andreas and Wasinger, Gabriel and Kluge, Kilian and Egger, Gerda and Sheibani-Tezerji, Raheleh},
