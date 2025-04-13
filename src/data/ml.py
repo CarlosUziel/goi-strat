@@ -1,7 +1,14 @@
+"""Machine learning preprocessing utilities for genomic and expression data.
+
+This module provides functions for preparing gene expression, methylation, and gene set
+data for machine learning applications, including filtering, normalization, and
+extraction of relevant features.
+"""
+
 import logging
 from copy import deepcopy
 from pathlib import Path
-from typing import Iterable, Optional, Tuple, Union
+from typing import Iterable, List, Optional, Tuple, Union
 
 import pandas as pd
 import rpy2.robjects as ro
@@ -17,26 +24,45 @@ from r_wrappers.utils import map_gene_id, pd_df_to_rpy2_df, rpy2_df_to_pd_df
 
 def process_gene_count_data(
     counts_file: Path,
-    annot_df: Path,
+    annot_df: pd.DataFrame,
     contrast_factor: str,
     org_db: OrgDB,
-    custom_genes_file: Path = None,
-    exclude_genes: Iterable[str] = None,
-) -> Tuple[pd.DataFrame, Iterable[int], Iterable[str], pd.DataFrame]:
-    """Perform multiple pre-processing on gene expression data.
+    custom_genes_file: Optional[Path] = None,
+    exclude_genes: Optional[Iterable[str]] = None,
+) -> Tuple[
+    pd.DataFrame, List[int], Iterable[str], pd.DataFrame, preprocessing.LabelEncoder
+]:
+    """Preprocess gene count data for machine learning tasks.
+
+    Performs multiple preprocessing steps on gene expression data:
+    1. Loads gene counts and annotations
+    2. Filters to keep only common samples between counts and annotations
+    3. Encodes class labels
+    4. Applies gene filtering (optional custom genes or exclude specified genes)
+    5. Maps gene IDs to ENTREZID and filters duplicates
+    6. Removes features with overlapping ranges between classes
+    7. Applies min-max scaling to normalize feature values
 
     Args:
-        counts_file: A .csv file containing expression data of shape
-            [n_genes, n_samples]
-        annot_df: A pandas Dataframe containing samples annotations.
-        contrast_factor: Column name containing the classes used for classification.
-        org_db: Organism annotation database.
-        custom_genes_path: A .csv file where the first column is a list of relevant
-            ENSEMBL IDs genes, such as DEGs.
-        exclude_genes: ENSEMBL ID genes to remove from data.
+        counts_file: CSV file containing expression data with genes as rows and
+            samples as columns
+        annot_df: DataFrame containing sample annotations
+        contrast_factor: Column name in annot_df containing the class labels
+        org_db: Organism annotation database object
+        custom_genes_file: Optional file with specific genes to include (e.g., DEGs)
+        exclude_genes: Optional list of gene IDs to exclude
 
     Returns:
-        Processed data.
+        Tuple containing:
+            - pd.DataFrame: Processed counts data (samples × genes)
+            - List[int]: Encoded class labels
+            - Iterable[str]: Gene IDs with non-overlapping ranges between classes
+            - pd.DataFrame: Range information for each gene and class
+            - LabelEncoder: The encoder used to transform class labels
+
+    Raises:
+        AssertionError: If counts or annotation dataframes are empty or
+            if there aren't exactly two classes
     """
     # 1. Data
     # 1.1. Loading
@@ -115,31 +141,53 @@ def process_gene_count_data(
 
 def get_gene_set_expression_data(
     counts: Union[Path, pd.DataFrame],
-    annot_df: Path,
+    annot_df: pd.DataFrame,
     org_db: OrgDB,
     msigdb_cat: str,
     contrast_factor: Optional[str] = None,
-    custom_genes_file: Path = None,
-    exclude_genes: Iterable[str] = None,
+    custom_genes_file: Optional[Path] = None,
+    exclude_genes: Optional[Iterable[str]] = None,
     gsva_threads: int = 8,
     remove_overlapping: bool = False,
-) -> Tuple[pd.DataFrame, Iterable[int], Iterable[str], pd.DataFrame]:
-    """Transform a expression data matrix from a gene by sample matrix to a
-    gene-set by sample matrix.
+) -> Tuple[
+    pd.DataFrame,
+    Optional[List[int]],
+    Optional[Iterable[str]],
+    Optional[pd.DataFrame],
+    Optional[preprocessing.LabelEncoder],
+]:
+    """Transform gene-level expression data to gene set-level enrichment scores.
+
+    Processes gene expression data to generate gene set enrichment scores using GSVA,
+    with options for filtering and class-based feature selection.
 
     Args:
-        counts_file: A .csv file containing raw expression data of shape
-            [n_genes, n_samples].
-        annot_df: A pandas Dataframe containing samples annotations.
-        org_db: Organism annotation database.
-        msigdb_cat: Category of MSigDB to extract the gene sets from.
-        contrast_factor: Column name containing the classes used for classification.
-        custom_genes_path: A .csv file where the first column is a list of relevant
-            ENSEMBL IDs genes, such as DEGs.
-        exclude_genes: ENSEMBL ID genes to remove from data.
+        counts: Path to CSV file or DataFrame with gene expression counts
+            (genes as rows, samples as columns)
+        annot_df: DataFrame containing sample annotations
+        org_db: Organism annotation database object
+        msigdb_cat: MSigDB category to use for gene sets (e.g., "H", "C1", "C2")
+        contrast_factor: Optional column name in annot_df for class comparison
+        custom_genes_file: Optional file with specific genes to include
+        exclude_genes: Optional list of gene IDs to exclude
+        gsva_threads: Number of threads to use for parallel GSVA computation
+        remove_overlapping: Whether to remove gene sets with overlapping ranges between classes
 
     Returns:
-        Processed data.
+        Tuple containing:
+            - pd.DataFrame: Gene set enrichment scores (samples × gene sets)
+            - List[int] or None: Encoded class labels (None if contrast_factor is None)
+            - Iterable[str] or None: Gene set IDs with non-overlapping ranges
+            - pd.DataFrame or None: Range information for each gene set by class
+            - LabelEncoder or None: The encoder used to transform class labels
+
+    Raises:
+        AssertionError: If msigdb_cat is invalid, or if counts or annotation dataframes are empty,
+            or if fewer than 2 classes exist when contrast_factor is specified
+
+    Note:
+        This function performs variance stabilizing transformation on the input counts
+        before running GSVA to calculate gene set enrichment scores.
     """
     # 0. Setup
     assert msigdb_cat in (
@@ -249,27 +297,43 @@ def get_gene_set_expression_data(
 
 def process_probes_meth_data(
     meth_values_file: Path,
-    annot_df: Path,
+    annot_df: pd.DataFrame,
     contrast_factor: str,
     org_db: OrgDB,
     custom_meth_probes_file: Path,
-    exclude_genes: Iterable[str] = None,
-) -> Tuple[pd.DataFrame, Iterable[int], Iterable[str], pd.DataFrame]:
-    """Perform multiple pre-processing on gene expression data.
+    exclude_genes: Optional[Iterable[str]] = None,
+) -> Tuple[
+    pd.DataFrame, List[int], Iterable[str], pd.DataFrame, preprocessing.LabelEncoder
+]:
+    """Preprocess methylation probe data for machine learning tasks.
+
+    Processes DNA methylation data (beta or M values) to select and filter
+    methylation probes based on gene annotations and class-specific features.
 
     Args:
-        meth_values_file: A .csv file containing either methylation B-values or M-values
-            with shape [#probes, #samples]
-        annot_df: A pandas Dataframe containing samples annotations.
-        contrast_factor: Column name containing the classes used for classification.
-        org_db: Organism annotation database.
-        custom_meth_probes_file: A .csv file with pre-selected differentially methylated
-            probes, annotated to gene regions.
-        exclude_genes: ENTREZ ID genes to remove from data. Only has an effect if
-            `custom_meth_probes_file` is provided.
+        meth_values_file: CSV file containing methylation data with probes as columns
+            and samples as rows
+        annot_df: DataFrame containing sample annotations
+        contrast_factor: Column name in annot_df containing the class labels
+        org_db: Organism annotation database object
+        custom_meth_probes_file: CSV file with pre-selected differentially methylated
+            probes that are annotated to gene regions
+        exclude_genes: Optional list of ENTREZ IDs to exclude from the analysis
 
     Returns:
-        Processed data.
+        Tuple containing:
+            - pd.DataFrame: Processed methylation data (samples × probes)
+            - List[int]: Encoded class labels
+            - Iterable[str]: Probe IDs with non-overlapping ranges between classes
+            - pd.DataFrame: Range information for each probe and class
+            - LabelEncoder: The encoder used to transform class labels
+
+    Raises:
+        AssertionError: If methylation or annotation dataframes are empty
+
+    Note:
+        This function filters methylation probes by gene annotation and keeps only
+        probes with non-overlapping value ranges between classes.
     """
     # 1. Data
     # 1.1. Loading
@@ -342,24 +406,41 @@ def process_probes_meth_data(
 
 def process_gene_sets_data(
     data: pd.DataFrame,
-    annot_df: Path,
+    annot_df: pd.DataFrame,
     contrast_factor: str,
-    custom_gene_sets_file: Path = None,
-    exclude_gene_sets: Iterable[str] = None,
-) -> Tuple[pd.DataFrame, Iterable[int], pd.Series, pd.DataFrame]:
-    """Perform multiple pre-processing on gene sets enrichment data.
+    custom_gene_sets_file: Optional[Path] = None,
+    exclude_gene_sets: Optional[Iterable[str]] = None,
+) -> Tuple[
+    pd.DataFrame, List[int], Iterable[str], pd.DataFrame, preprocessing.LabelEncoder
+]:
+    """Preprocess gene set enrichment data for machine learning tasks.
+
+    Processes gene set enrichment scores (typically from GSVA output) to prepare
+    for machine learning analysis by filtering, selecting, and normalizing data.
 
     Args:
-        counts_file: A .csv file containing GSVA enrichment scores data of shape
-            [n_gene_sets, n_samples]
-        annot_df: A pandas Dataframe containing samples annotations.
-        contrast_factor: Column name containing the classes used for classification.
-        custom_gene_sets_file: A .csv file where the first column represent gene set
-            names.
-        exclude_gene_sets: Gene set names to remove from the data.
+        data: DataFrame containing gene set enrichment scores with gene sets as rows
+            and samples as columns
+        annot_df: DataFrame containing sample annotations
+        contrast_factor: Column name in annot_df containing the class labels
+        custom_gene_sets_file: Optional CSV file with specific gene sets to include
+        exclude_gene_sets: Optional list of gene set names to exclude
 
     Returns:
-        Processed data.
+        Tuple containing:
+            - pd.DataFrame: Processed gene set data (samples × gene sets)
+            - List[int]: Encoded class labels
+            - Iterable[str]: Gene set IDs with non-overlapping ranges between classes
+            - pd.DataFrame: Range information for each gene set by class
+            - LabelEncoder: The encoder used to transform class labels
+
+    Raises:
+        AssertionError: If data or annotation dataframes are empty or
+            if there aren't exactly two classes
+
+    Note:
+        This function applies min-max scaling to normalize the gene set enrichment
+        scores between 0 and 1 for better compatibility with machine learning algorithms.
     """
     # 1. Data
     # 1.1. Loading

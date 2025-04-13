@@ -1,3 +1,10 @@
+"""Network analysis utilities for processing graph data in genomic analyses.
+
+This module provides functions for analyzing graph/network data, particularly
+for computing node-level metrics in biological networks such as protein-protein
+interaction networks.
+"""
+
 from typing import Optional
 
 import networkx as nx
@@ -10,20 +17,31 @@ def get_node_metrics(
     sim_param: str,
     central_node: Optional[str] = None,
 ) -> pd.DataFrame:
-    """Compute node-level graph metrics such as centrality measures.
+    """Compute important node-level metrics for an undirected graph.
 
-    IMPORTANT: To be used only for undirected connected graphs.
+    Calculates various centrality and importance measures for each node in the graph,
+    including PageRank, degree centrality, harmonic centrality, betweenness centrality,
+    and clustering coefficient.
 
     Args:
-        graph: Graph to compute metrics for.
-        central_node: Node to calculate shortest path to from all other nodes.
-        distance_param: Node attribute to use for those metrics that accept a distance
-            (dissimilarity) measure.
-        sim_param: Node attribute to use for those metrics that accept a edge strength
-            (similarity) measure.
+        graph: Undirected, connected NetworkX graph object
+        distance_param: Edge attribute name representing dissimilarity/distance
+            (used for shortest path calculations)
+        sim_param: Edge attribute name representing similarity/strength
+            (used for PageRank and clustering)
+        central_node: Optional reference node for which to calculate distance to all
+            other nodes in the graph
 
     Returns:
-        A pandas DataFrame object with metrics per node.
+        pd.DataFrame: DataFrame where each row represents a node and columns
+            represent different metrics
+
+    Raises:
+        AssertionError: If the graph is directed or not connected
+
+    Note:
+        This function only works with undirected connected graphs. For disconnected
+        graphs, consider analyzing each connected component separately.
     """
     assert not nx.is_directed(graph) and nx.is_connected(
         graph

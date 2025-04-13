@@ -9,21 +9,21 @@ import pandas as pd
 from data.utils import parallelize_star
 
 
-def unzip_gz(gz_file: Path, target_dir: Path):
-    """
-    Given a root directory, unzip all ".gz" files contained in any level
-    of subdirectories matching pattern to the given target directory. If
-    target_dir is None, files are unzipped in the same directory where they
-    are located.
+def unzip_gz(gz_file: Path, target_dir: Path) -> None:
+    """Extracts a gzip file to a target directory.
+
+    Given a gzip file, extracts its contents to the specified target directory,
+    creating the directory if it doesn't exist.
 
     Args:
         gz_file: Path to the gzip file to extract
-        target_dir: new directory where files are moved to, defaults to parent
-          directory of gz_file if no path is provided.
+        target_dir: Directory where the extracted file will be placed
+
+    Returns:
+        None
 
     Note:
-        When using pattern matching, "**" must be present in order for the
-        search to be recursive. Example: ``**/*.gz``
+        The extracted file will have the same name as the gzip file without the .gz extension
     """
     # 1. Ensure target dir exists
     target_dir.mkdir(exist_ok=True, parents=True)
@@ -36,10 +36,21 @@ def unzip_gz(gz_file: Path, target_dir: Path):
         shutil.copyfileobj(s_file, d_file)
 
 
-def copy_file(file_path: Path, new_file_path: Path):
-    """
-    Copy a file from one path to another, ensuring that the parents of the new
-    path exist.
+def copy_file(file_path: Path, new_file_path: Path) -> None:
+    """Copy a file from one path to another.
+
+    Ensures that the parent directories of the destination path exist
+    before copying the file.
+
+    Args:
+        file_path: Source path of the file to copy
+        new_file_path: Destination path where the file will be copied to
+
+    Returns:
+        None
+
+    Raises:
+        shutil.SameFileError: If source and destination are the same file
     """
     new_file_path.parent.mkdir(exist_ok=True, parents=True)
     try:
@@ -48,10 +59,22 @@ def copy_file(file_path: Path, new_file_path: Path):
         logging.warning(e)
 
 
-def subset_star_counts(counts_file: Path, subset_col: int = 1):
-    """
-    Filter a STAR gene counts file by removing unnecessary rows and selecting the
-    relevant column.
+def subset_star_counts(counts_file: Path, subset_col: int = 1) -> None:
+    """Filter a STAR gene counts file by selecting only ENSG entries and relevant columns.
+
+    Reads a STAR counts file, filters rows to keep only those containing "ENSG" in the
+    index (Ensembl gene IDs), and keeps only the specified column.
+
+    Args:
+        counts_file: Path to the STAR gene counts file
+        subset_col: Column index (0-based) to keep in the filtered output, defaults to 1
+
+    Returns:
+        None: The input file is modified in-place
+
+    Note:
+        The function is idempotent - if the file has already been filtered,
+        it will return without changes
     """
     df = pd.read_csv(counts_file, sep="\t", comment="#", index_col=0, header=None)
 
@@ -66,10 +89,23 @@ def subset_star_counts(counts_file: Path, subset_col: int = 1):
     df.to_csv(counts_file, sep="\t", header=False)
 
 
-def clean_star_counts(star_path: Path, star_counts_path: Path):
-    """
-    Copy and rename star counts files after mapping. It is assumed that gene counts
-    files are inside directories named after the sample ID.
+def clean_star_counts(star_path: Path, star_counts_path: Path) -> None:
+    """Process STAR RNA-seq output files by copying and preprocessing count data.
+
+    Copies files with the name "ReadsPerGene.out.tab" from sample directories within star_path
+    to star_counts_path, renaming them based on the parent directory (sample ID).
+    Then filters the copied files to keep only relevant data.
+
+    Args:
+        star_path: Directory containing sample subdirectories with STAR output files
+        star_counts_path: Destination directory for the processed counts files
+
+    Returns:
+        None
+
+    Note:
+        This function assumes the parent directory name of each ReadsPerGene.out.tab
+        file corresponds to the sample ID.
     """
     star_counts_path.mkdir(exist_ok=True, parents=True)
 
@@ -89,27 +125,44 @@ def clean_star_counts(star_path: Path, star_counts_path: Path):
     )
 
 
-def rename_genes(counts_file: Path):
-    """
-    Given a counts file in .tsv format, which contain gene names
-    in each line, rename them to remove the decimal part of the name.
+def rename_genes(counts_file: Path) -> None:
+    """Remove decimal parts from Ensembl gene IDs in a counts file.
+
+    Reads a tab-separated counts file, removes decimal parts from Ensembl gene IDs
+    (e.g., ENSG00000123456.1 becomes ENSG00000123456), and writes the modified data
+    back to the original file.
 
     Args:
-        counts_file: tab-separated counts file.
+        counts_file: Path to the tab-separated counts file
+
+    Returns:
+        None: The input file is modified in-place
     """
     df = pd.read_csv(counts_file, sep="\t", header=None, index_col=0)
     df.index = [idx.split(".")[0] for idx in df.index]
     df.to_csv(counts_file, sep="\t", header=False)
 
 
-def intersect_raw_counts(counts_path: Path, pattern: str = "*.tsv"):
-    """
-    Replaces the genes contained in the raw count files in `counts_path`
-    so that all files contain the intersection set of genes. In other words,
-    makes sure that files only contain those genes available in all files.
+def intersect_raw_counts(counts_path: Path, pattern: str = "*.tsv") -> None:
+    """Filter gene count files to include only genes common to all files.
+
+    Processes multiple count files to ensure they all contain the same set of genes
+    by finding the intersection of genes across all files and updating each file
+    to contain only those genes.
 
     Args:
-        counts_path: Directory where the files to change can be located.
+        counts_path: Directory containing the count files to process
+        pattern: File pattern to match when looking for count files, defaults to "*.tsv"
+
+    Returns:
+        None: The input files are modified in-place
+
+    Raises:
+        AssertionError: If fewer than 2 files are found matching the pattern
+
+    Note:
+        The function reads each file into memory, processes them, and then writes
+        back to the original files. For large datasets, this may be memory-intensive.
     """
     # 0. Get list of files for each type
     counts_files = list(counts_path.glob(pattern))

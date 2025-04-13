@@ -1,6 +1,12 @@
+"""Visualization utilities for gene expression and genomic data analysis.
+
+This module provides functions to create and save visualizations of gene expression
+data and other genomic analysis results using Plotly.
+"""
+
 from copy import deepcopy
 from pathlib import Path
-from typing import Iterable
+from typing import List, Optional
 
 import pandas as pd
 import plotly.express as px
@@ -10,24 +16,34 @@ def gene_expression_plot(
     expr_df: pd.DataFrame,
     save_path: Path,
     title: str = "",
-    color_discrete_sequence: Iterable[str] = None,
+    color_discrete_sequence: Optional[List[str]] = None,
     gene_expr_col: str = "gene_expr",
     gene_expr_level: str = "gene_expr_level",
-):
-    """
-    Plots the expression values of a certain gene amongst many samples.
-    The first and last deciles are colored differently.
+) -> px.bar:
+    """Create and save a bar plot of gene expression values across samples.
+
+    Generates a bar plot showing gene expression values for each sample, with
+    bars colored according to expression level categories (low, mid, high).
 
     Args:
-        expr_df: Contains the log2 counts of gene expression, with as many
-            rows as samples involved.
-        save_path: File to save the generated plot to.
-        title: Plot title
-        color_discrete_sequence: List of three elements, each representing a
-            color for each category in the graph.
-        gene_expr_col: Column containing expression values.
-        gene_expr_level: Column name of the new column containing the
-            expression levels.
+        expr_df: DataFrame containing gene expression values with samples as rows
+        save_path: Path where the plot will be saved
+        title: Title for the plot
+        color_discrete_sequence: List of three colors for low, mid, and high expression
+            levels, defaults to ["red", "blue", "green"]
+        gene_expr_col: Column name containing expression values
+        gene_expr_level: Column name containing expression level categories
+
+    Returns:
+        px.bar: Plotly bar chart figure object
+
+    Raises:
+        ValueError: If save_path has an extension other than .pdf or .html
+
+    Note:
+        The function assumes expr_df has already been processed to contain
+        expression level categories. If not, use gene_expression_levels()
+        from data.utils first.
     """
     if not color_discrete_sequence:
         color_discrete_sequence = ["red", "blue", "green"]
