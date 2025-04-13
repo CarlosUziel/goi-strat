@@ -14,6 +14,7 @@ Python --> data_category
 import os
 import re
 from pathlib import Path
+from typing import Any
 
 import rpy2.robjects as ro
 from rpy2.robjects.conversion import localconverter
@@ -27,19 +28,48 @@ def pathview(
     pathway_id: str,
     pathway_name: str,
     save_dir: Path,
-    **kwargs,
-):
-    """
-    Pathview is a tool set for pathway based data integration and visualization. It
-    maps and renders user data on relevant pathway graphs. All users need is to supply
-    their gene or compound data and specify the target pathway. Pathview automatically
-    downloads the pathway graph data, parses the data file, maps user data to the
-    pathway, and render pathway graph with the mapped data. Pathview generates both
-    native KEGG view and Graphviz views for pathways. keggview.native and
-    keggview.graph are the two viewer functions, and pathview is the main function
-    providing a unified interface to downloader, parser, mapper and viewer functions.
+    **kwargs: Any,
+) -> None:
+    """Visualize gene expression data on KEGG pathway graphs.
 
-    Reference documentation: https://rdrr.io/bioc/pathview/man/pathview.html
+    Pathview maps and renders user data on relevant pathway graphs from the
+    KEGG database. It automatically downloads the pathway graph data, parses
+    the data file, maps the provided gene data to the pathway, and renders
+    a pathway graph with the mapped data overlaid on it.
+
+    Args:
+        gene_data: A named vector of gene expression values (typically log fold changes
+            or other statistics). The names should be gene IDs that can be mapped to
+            the KEGG pathway (usually Entrez gene IDs).
+        pathway_id: The KEGG pathway ID (e.g., "hsa04110" for human cell cycle pathway).
+        pathway_name: A descriptive name for the pathway, which will be used in the
+            output file name.
+        save_dir: Directory where the generated pathway images will be saved.
+        **kwargs: Additional arguments to pass to the pathview function.
+            Common parameters include:
+            - species: KEGG species code (default: determined from pathway_id).
+            - gene_idtype: Type of gene IDs provided (default: "entrez").
+            - out_suffix: Suffix to add to output file names.
+            - kegg_native: Whether to generate native KEGG view (default: TRUE).
+            - same_layer: Whether to draw all genes on the same layer (default: FALSE).
+            - map_color: Color scales for gene data.
+            - low: Lower bound of gene data for color mapping.
+            - mid: Midpoint of gene data for color mapping.
+            - high: Upper bound of gene data for color mapping.
+
+    Returns:
+        None: The function saves pathway visualization files to the specified directory
+        but doesn't return any value.
+
+    Notes:
+        This function changes the working directory to save_dir temporarily while
+        executing the pathview command, then changes back to the original directory.
+        It also renames the output files to include the pathway name in addition
+        to the pathway ID.
+
+    References:
+        https://rdrr.io/bioc/pathview/man/pathview.html
+        https://doi.org/10.1093/bioinformatics/btt285
     """
     current_wd = os.getcwd()
     os.chdir(save_dir)
@@ -54,5 +84,6 @@ def pathview(
         )
     os.chdir(current_wd)
 
+    # Rename output files to include the pathway name for better identification
     for f in save_dir.glob(f"{pathway_id}.*"):
         f.replace(str(f).replace(pathway_id, f"{pathway_id}_{pathway_name}"))

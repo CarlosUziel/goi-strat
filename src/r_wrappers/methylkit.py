@@ -1,20 +1,30 @@
 """
-Wrappers for R package methylkit
+Wrappers for R package methylKit.
 
-All functions have pythonic inputs and outputs.
+This module provides Python wrappers for the R methylKit package, which is a suite of tools
+for the analysis of DNA methylation data. All functions have pythonic inputs and outputs.
 
 Note that the arguments in python use "_" instead of ".".
-rpy2 does this transformation for us.
+rpy2 does this transformation automatically.
 
 Example:
-R --> data.category
-Python --> data_category
+    R --> data.category
+    Python --> data_category
+
+Attributes:
+    r_source: The imported methylKit R package.
+    r_ggplot: The imported ggplot2 R package.
+    r_granges: The imported GenomicRanges R package.
+    r_graphics: The imported graphics R package.
+    r_scatter3d: The imported scatterplot3d R package.
+    pdf: R function to create PDF files.
+    dev_off: R function to close the PDF device.
 """
 
 import logging
 from itertools import combinations
 from pathlib import Path
-from typing import Any, Dict, Iterable, Tuple
+from typing import Any, Dict, Iterable, List, Tuple
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -45,27 +55,38 @@ def process_bismark_aln(
     files: Iterable[Path], sample_ids: Iterable[str], assembly: str = "mm10", **kwargs
 ) -> Any:
     """
-    The function calls methylation percentage per base from sorted Bismark SAM or BAM
-        files and reads methylation information as methylKit objects. Bismark is a
-        popular aligner for high-throughput bisulfite sequencing experiments and it
-        outputs its results in SAM format by default, and can be converted to BAM.
-        Bismark SAM/BAM format contains aligner specific tags which are absolutely
-        necessary for methylation percentage calling using processBismarkAln.
-        SAM/BAM files from other aligners will not work with this function.
+    Process Bismark alignment files to extract methylation information.
 
-    See: https://rdrr.io/bioc/methylKit/man/processBismarkAln-methods.html
+    This function calls methylation percentage per base from sorted Bismark SAM or BAM
+    files and reads methylation information as methylKit objects. Bismark is a
+    popular aligner for high-throughput bisulfite sequencing experiments that
+    outputs its results in SAM format by default, which can be converted to BAM.
+    Bismark SAM/BAM format contains aligner-specific tags which are necessary
+    for methylation percentage calling.
 
     Args:
-        files: location of sam or bam file(s).
-        sample_ids: the id(s) of samples in the same order as file. Must be the same
-            length as files.
-        assembly: string that determines the genome assembly. Ex: mm9,hg18 etc.
-            This is just a string for book keeping. It can be any string. Although,
-            when using multiple files from the same assembly, this string should be
-            consistent in each object.
+        files: Iterable of Path objects pointing to SAM or BAM files containing
+            aligned bisulfite-treated reads.
+        sample_ids: Iterable of strings with the ID for each sample, in the same order
+            as files. Must have the same length as files.
+        assembly: String that determines the genome assembly (e.g., mm9, hg18).
+            This is a reference string for bookkeeping and can be any string, but
+            should be consistent when using multiple files from the same assembly.
+        **kwargs: Additional arguments passed to methylKit's processBismarkAln function.
 
     Returns:
-        methylRaw, methylRawList, methylRawDB, methylRawListDB object
+        Any: A methylRaw, methylRawList, methylRawDB, or methylRawListDB object
+            containing methylation information extracted from the input files.
+
+    Raises:
+        ValueError: If files and sample_ids have different lengths or if a file
+            does not exist or is a directory.
+
+    Note:
+        SAM/BAM files from aligners other than Bismark will not work with this function.
+    
+    Refrences:
+        https://rdrr.io/bioc/methylKit/man/processBismarkAln-methods.html
     """
     # 0. Check arguments
     if len(files) != len(sample_ids):
@@ -87,25 +108,33 @@ def meth_read(
     files: Iterable[Path], sample_ids: Iterable[str], assembly: str = "mm10", **kwargs
 ) -> Any:
     """
-    The function reads a list of files or single files with methylation information for
-        bases/region in the genome and creates a methylrawList or methylraw object.
-        The information can be stored as flat file database by creating a
-        methylrawlistDB or methylrawDB object.
+    Read methylation information from files into methylKit objects.
 
-    See: https://rdrr.io/bioc/methylKit/man/methRead-methods.html
+    This function reads a list of files containing methylation information for
+    bases/regions in the genome and creates a methylRawList or methylRaw object.
+    The information can also be stored as a flat file database by creating a
+    methylRawListDB or methylRawDB object.
 
     Args:
-        files: file location(s), either a list of locations (each a character string)
-            or one location string.
-        sample_ids: the id(s) of samples in the same order as file. Must be the same
-            length as files.
-        assembly: string that determines the genome assembly. Ex: mm9,hg18 etc.
-            This is just a string for book keeping. It can be any string. Although,
-            when using multiple files from the same assembly, this string should be
-            consistent in each object.
+        files: Iterable of Path objects pointing to methylation data files.
+        sample_ids: Iterable of strings with the ID for each sample, in the same order
+            as files. Must have the same length as files.
+        assembly: String that determines the genome assembly (e.g., mm9, hg18).
+            This is a reference string for bookkeeping and can be any string, but
+            should be consistent when using multiple files from the same assembly.
+        **kwargs: Additional arguments passed to methylKit's methRead function,
+            such as pipeline, header, context, resolution, treatment, etc.
 
     Returns:
-        methylRaw, methylRawList, methylRawDB, methylRawListDB object
+        Any: A methylRaw, methylRawList, methylRawDB, or methylRawListDB object
+            containing methylation information from the input files.
+
+    Raises:
+        ValueError: If files and sample_ids have different lengths or if a file
+            does not exist or is a directory.
+
+    References:
+        https://rdrr.io/bioc/methylKit/man/methRead-methods.html
     """
     # 0. Check arguments
     if len(files) != len(sample_ids):
@@ -125,37 +154,56 @@ def meth_read(
 
 def filter_by_coverage(methyl_obj: Any, **kwargs) -> Any:
     """
-    This function filters methylRaw, methylRawDB, methylRawList and methylRawListDB
-        objects. You can filter based on lower read cutoff or high read cutoff. Higher
-        read cutoff is usefull to eliminate PCR effects Lower read cutoff is usefull
-        for doing better statistical tests.
+    Filter methylation objects based on read coverage thresholds.
 
-    See: https://rdrr.io/bioc/methylKit/man/filterByCoverage-methods.html
+    This function filters methylRaw, methylRawDB, methylRawList and methylRawListDB
+    objects based on coverage criteria. You can filter using both lower and upper read
+    coverage thresholds. Upper read coverage cutoffs help eliminate PCR duplications
+    and other artifacts, while lower read cutoffs improve statistical power.
 
     Args:
-        methyl_obj: a methylRaw, methylRawDB, methylRawList or methylRawListDB object
+        methyl_obj: A methylRaw, methylRawDB, methylRawList or methylRawListDB object
+            containing methylation data.
+        **kwargs: Additional arguments passed to methylKit's filterByCoverage function:
+            - lo_count: Lower count threshold for coverage, default 10
+            - lo_perc: Lower percentage threshold for coverage, default NULL
+            - hi_count: Upper count threshold for coverage, default NULL
+            - hi_perc: Upper percentage threshold for coverage, default 99.9
 
     Returns:
-        methylRaw, methylRawDB, methylRawList or methylRawListDB object depending on
-            input object.
+        Any: A filtered version of the input object (methylRaw, methylRawDB,
+            methylRawList or methylRawListDB) containing only positions that pass
+            the coverage thresholds.
+
+    References:
+        https://rdrr.io/bioc/methylKit/man/filterByCoverage-methods.html
     """
     return r_source.filterByCoverage(methylObj=methyl_obj, **kwargs)
 
 
 def unite(methyl_obj: Any, **kwargs) -> Any:
     """
-    This functions unites methylRawList and methylRawListDB objects that only bases with
-        coverage from all samples are retained. The resulting object is either of class
-        methylBase or methylBaseDB depending on input.
+    Unite methylRawList or methylRawListDB objects by common genomic locations.
 
-    See: https://rdrr.io/bioc/methylKit/man/unite-methods.html
+    This function merges methylRawList and methylRawListDB objects, retaining only bases or
+    regions with coverage from all samples. The resulting object is either a methylBase
+    or methylBaseDB object, depending on the input.
 
     Args:
-        methyl_obj: a methylRawList or methylRawListDB object to be merged by common
-            locations covered by reads.
+        methyl_obj: A methylRawList or methylRawListDB object to be merged by common
+            genomic locations covered by reads.
+        **kwargs: Additional arguments passed to methylKit's unite function:
+            - destrand: If TRUE, merge reads on both strands
+            - min.per.group: Minimum number of samples per group to cover a region
+            - conv.rate.threshold: Conversion rate threshold, default 0 (no filtering)
+            - coverage.threshold: Minimum coverage threshold, default 0 (no filtering)
 
     Returns:
-        A methylBase or methylBaseDB object depending on input
+        Any: A methylBase or methylBaseDB object containing the merged methylation data
+            for positions covered in all samples.
+
+    References:
+        https://rdrr.io/bioc/methylKit/man/unite-methods.html
     """
     return r_source.unite(object=methyl_obj, **kwargs)
 
@@ -164,25 +212,30 @@ def reorganize(
     methyl_obj: Any, sample_ids: Iterable[str], treatment: IntVector, **kwargs
 ) -> Any:
     """
-    The function creates a new methylRawList, methylRawListDB, methylBase or
-        methylBaseDB object by selecting a subset of samples from the input object,
-        which is a methylRawList or methylBase object. You can use the function to
-        partition a large methylRawList or methylBase object to smaller object based
-        on sample ids or when you want to reorder samples and/or give a new treatmet
-        vector.
+    Reorganize a methylation object by selecting or reordering samples.
 
-    See: https://rdrr.io/bioc/methylKit/man/reorganize-methods.html
+    This function creates a new methylRawList, methylRawListDB, methylBase or
+    methylBaseDB object by selecting a subset of samples from the input object.
+    It can be used to partition a large methylation object into smaller objects
+    based on sample IDs, or to reorder samples and/or assign a new treatment vector.
 
     Args:
-        methyl_obj: a methylRawList, methylRawListDB, methylBase or methylBaseDB object
-        sample_ids: a vector for sample.ids to be subset. Order is important and the
-            order should be similar to treatment. sample.ids should be a subset or
-            reordered version of sample ids in the input object.
-        treatment: treatment vector, should be same length as sample.ids vector.
+        methyl_obj: A methylRawList, methylRawListDB, methylBase or methylBaseDB object
+            containing the original methylation data.
+        sample_ids: Iterable of strings with sample IDs to include in the new object.
+            Order is important and should correspond to the treatment vector.
+            Must be a subset or reordered version of sample IDs in the input object.
+        treatment: An IntVector of 0s and 1s indicating the treatment group of each
+            sample. Should have the same length as sample_ids.
+        **kwargs: Additional arguments passed to methylKit's reorganize function.
 
     Returns:
-        A methylRawList, methylRawListDB, methylBase or methylBaseDB object depending
-            on the input object
+        Any: A methylRawList, methylRawListDB, methylBase or methylBaseDB object
+            (same type as input) containing only the selected samples in the
+            specified order with the new treatment assignments.
+
+    References:
+        https://rdrr.io/bioc/methylKit/man/reorganize-methods.html
     """
     return r_source.reorganize(
         methylObj=methyl_obj, sample_ids=sample_ids, treatment=treatment, **kwargs
@@ -191,20 +244,28 @@ def reorganize(
 
 def calculate_diff_meth(methyl_obj: Any, **kwargs) -> Any:
     """
-    The function calculates differential methylation statistics between two groups of
-        samples. The function uses either logistic regression test or Fisher's Exact
-        test to calculate differential methylation. See the rest of the help page and
-        references for detailed explanation on statistics.
+    Calculate differential methylation statistics between two groups of samples.
 
-    See: https://rdrr.io/bioc/methylKit/man/calculateDiffMeth-methods.html
+    This function performs statistical tests to identify differentially methylated
+    regions or bases between two groups of samples. It uses either logistic regression
+    (default) or Fisher's Exact test to calculate differential methylation.
 
     Args:
-        methyl_obj: a methylBase or methylBaseDB object to calculate differential
-            methylation.
+        methyl_obj: A methylBase or methylBaseDB object containing the methylation
+            data for all samples to be compared.
+        **kwargs: Additional arguments passed to methylKit's calculateDiffMeth function:
+            - slim: Use SLIM method for p-value adjustment (default TRUE)
+            - weighted.mean: Use coverage-weighted means (default FALSE)
+            - test: Statistical test, either "Chisq" or "F" (default "F")
+            - overdispersion: String or character, "MN" or "shrinkMN"
+            - effect.size: Minimum absolute value of methylation difference (default 10)
 
     Returns:
-        A methylDiff object containing the differential methylation statistics and
-            locations for regions or bases.
+        Any: A methylDiff or methylDiffDB object containing differential methylation
+            statistics and genomic locations for all analyzed bases or regions.
+
+    References:
+        https://rdrr.io/bioc/methylKit/man/calculateDiffMeth-methods.html
     """
     return r_source.calculateDiffMeth(methyl_obj, **kwargs)
 
@@ -213,20 +274,28 @@ def get_methylation_stats(
     methyl_obj: Any, save_path: Path, width: int = 10, height: int = 10, **kwargs
 ) -> Any:
     """
-    Get Methylation stats from methylRaw or methylRawDB object.
+    Calculate and plot methylation statistics from methylation data.
 
-    See: https://rdrr.io/bioc/methylKit/man/getMethylationStats-methods.html
+    This function returns basic statistics about methylation percentages and can optionally
+    generate a histogram plot of methylation distribution.
 
     Args:
-        methyl_obj: a methylRaw or methylRawDB object.
-        save_path: where to save the generated plot.
-        width: width of saved figure.
-        height: height of saved figure.
+        methyl_obj: A methylRaw or methylRawDB object containing methylation data.
+        save_path: Path where to save the generated plot if plot=True.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+        **kwargs: Additional arguments passed to methylKit's getMethylationStats function:
+            - plot: Boolean indicating whether to plot the histogram (default FALSE)
+            - both.strands: Whether to process both strands together (default FALSE)
+            - labels: Labels for plot
 
     Returns:
-        A summary of Methylation statistics or plot a histogram of coverage.
-    """
+        Any: A vector of summary statistics including min, max, mean, standard deviation,
+            and various percentiles of methylation values.
 
+    References:
+        https://rdrr.io/bioc/methylKit/man/getMethylationStats-methods.html
+    """
     if kwargs.get("plot", False):
         pdf(str(save_path), width=width, height=height)
 
@@ -242,21 +311,28 @@ def get_coverage_stats(
     methyl_obj: Any, save_path: Path, width: int = 10, height: int = 10, **kwargs
 ) -> Any:
     """
-    The function returns basic statistics about read coverage per base. It can also plot
-        a histogram of read coverage values.
+    Calculate and plot read coverage statistics.
 
-    See: https://rdrr.io/bioc/methylKit/man/getCoverageStats-methods.html
+    This function returns basic statistics about read coverage per base and can optionally
+    generate a histogram plot of coverage distribution.
 
     Args:
-        methyl_obj: a methylRaw or methylRawDB object.
-        save_path: where to save the generated plot.
-        width: width of saved figure.
-        height: height of saved figure.
+        methyl_obj: A methylRaw or methylRawDB object containing methylation data.
+        save_path: Path where to save the generated plot if plot=True.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+        **kwargs: Additional arguments passed to methylKit's getCoverageStats function:
+            - plot: Boolean indicating whether to plot the histogram (default FALSE)
+            - both.strands: Whether to process both strands together (default FALSE)
+            - labels: Labels for plot
 
     Returns:
-        A summary of coverage statistics or plot a histogram of coverage.
-    """
+        Any: A vector of summary statistics including min, max, mean, standard deviation,
+            and various percentiles of coverage values.
 
+    References:
+        https://rdrr.io/bioc/methylKit/man/getCoverageStats-methods.html
+    """
     if kwargs.get("plot", False):
         pdf(str(save_path), width=width, height=height)
 
@@ -272,23 +348,30 @@ def get_correlation(
     methyl_obj: Any, save_path: Path, width: int = 10, height: int = 10, **kwargs
 ) -> Any:
     """
-    The functions returns a matrix of correlation coefficients and/or a set of
-        scatterplots showing the relationship between samples. The scatterplots will
-        contain also fitted lines using lm() for linear regression and lowess for
-        polynomial regression.
+    Calculate correlation between samples and optionally plot scatterplots.
 
-    See: https://rdrr.io/bioc/methylKit/man/getCorrelation-methods.html
+    This function returns a matrix of correlation coefficients between samples and can
+    generate scatterplots showing the relationship between samples. The scatterplots include
+    fitted lines using linear regression and LOWESS for polynomial regression.
 
     Args:
-        methyl_obj: a methylBase or methylBaseDB object
-        save_path: where to save the generated plot
-        width: width of saved figure
-        height: height of saved figure
+        methyl_obj: A methylBase or methylBaseDB object containing methylation data
+            from multiple samples.
+        save_path: Path where to save the generated plot if plot=True.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+        **kwargs: Additional arguments passed to methylKit's getCorrelation function:
+            - plot: Boolean indicating whether to plot scatterplots (default FALSE)
+            - method: Correlation method (e.g., "pearson", "spearman")
+            - new: Whether to open a new plotting window for each pair (default TRUE)
+            - noise.filter: Adds random jitter to avoid overplotting (default TRUE)
 
     Returns:
-        A correlation matrix object and plot scatterPlot
-    """
+        Any: A correlation matrix object showing pairwise correlations between samples.
 
+    References:
+        https://rdrr.io/bioc/methylKit/man/getCorrelation-methods.html
+    """
     if kwargs.get("plot", False):
         pdf(str(save_path), width=width, height=height)
 
@@ -304,23 +387,31 @@ def cluster_samples(
     methyl_obj: Any, save_path: Path, width: int = 10, height: int = 5, **kwargs
 ) -> Any:
     """
-    Hierarchical Clustering using methylation data. The function clusters samples
-        using hclust function and various distance metrics derived from percent
-        methylation per base or per region for each sample.
+    Perform hierarchical clustering on samples based on methylation data.
 
-    See: https://rdrr.io/bioc/methylKit/man/clusterSamples-methods.html
+    This function clusters samples using the hclust function and various distance metrics
+    derived from percent methylation per base or region for each sample. It can generate
+    a dendrogram showing the hierarchical relationship between samples.
 
     Args:
-        methyl_obj: a methylBase or methylBaseDB object.
-        save_path: where to save the generated plot.
-        width: width of saved figure.
-        height: height of saved figure.
+        methyl_obj: A methylBase or methylBaseDB object containing methylation data
+            from multiple samples.
+        save_path: Path where to save the generated plot if plot=True.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+        **kwargs: Additional arguments passed to methylKit's clusterSamples function:
+            - plot: Boolean indicating whether to plot the dendrogram (default FALSE)
+            - dist: Distance metric to use (default "correlation")
+            - method: Clustering method (default "ward.D")
+            - sd.filter: Whether to filter by standard deviation (default TRUE)
+            - sd.threshold: Standard deviation threshold for filtering (default 0.5)
 
     Returns:
-        A tree object of a hierarchical cluster analysis using a set of dissimilarities
-            for the n objects being clustered.
-    """
+        Any: A hierarchical cluster tree object containing clustering information.
 
+    References:
+        https://rdrr.io/bioc/methylKit/man/clusterSamples-methods.html
+    """
     if kwargs.get("plot", False):
         pdf(str(save_path), width=width, height=height)
 
@@ -334,24 +425,35 @@ def cluster_samples(
 
 def pca_samples(
     methyl_obj: Any, save_path: Path, width: int = 10, height: int = 10, **kwargs
-):
+) -> Any:
     """
-    The function does a PCA analysis using prcomp function using percent methylation
-        matrix as an input.
+    Perform principal component analysis (PCA) on methylation data and plot results.
 
-    See: https://rdrr.io/bioc/methylKit/man/PCASamples-methods.html
+    This function performs PCA using the prcomp function with percent methylation matrix
+    as input. It generates a plot showing sample relationships in the principal component
+    space.
 
     Args:
-        methyl_obj: a methylBase or methylBaseDB object.
-        save_path: where to save the generated plot.
-        width: width of saved figure.
-        height: height of saved figure.
+        methyl_obj: A methylBase or methylBaseDB object containing methylation data
+            from multiple samples.
+        save_path: Path where to save the generated PCA plot.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+        **kwargs: Additional arguments passed to methylKit's PCASamples function:
+            - screeplot: Whether to produce a scree plot instead (default FALSE)
+            - obj.return: Whether to return the PCA object (default TRUE)
+            - comp: Which components to plot (default c(1,2))
+            - sd.filter: Whether to filter by standard deviation (default TRUE)
+            - sd.threshold: Standard deviation threshold for filtering (default 0.5)
+            - adj.lim: Whether to adjust plot limits (default TRUE)
 
     Returns:
-        The form of the value returned by PCASamples is the summary of principal
-            component analysis by prcomp.
-    """
+        Any: A summary of principal component analysis containing loadings,
+            variance explained, etc.
 
+    References:
+        https://rdrr.io/bioc/methylKit/man/PCASamples-methods.html
+    """
     pdf(str(save_path), width=width, height=height)
 
     res = r_source.PCASamples(methyl_obj, **kwargs)
@@ -363,14 +465,19 @@ def pca_samples(
 
 def get_dd(methyl_obj: Any, condition_sample: Dict[str, Iterable[str]]) -> Any:
     """
-        Provides intermediate dataframe needed for plotting.
+    Format methylation data for plotting.
+
+    Provides an intermediate dataframe needed for plotting methylation data by
+    samples and conditions.
 
     Args:
-        methyl_obj: A methylBase or methylBaseDB object.
-        condition_sample: Mapping between sample names and the condition they belong to.
+        methyl_obj: A methylBase or methylBaseDB object containing methylation data.
+        condition_sample: Dictionary mapping condition names to lists of sample IDs
+            that belong to each condition.
 
     Returns:
-        Intermediate dataframe needed for plotting
+        Any: An R dataframe containing formatted methylation percentages with columns
+            for methylation levels (mCpG), sample IDs, and condition labels.
     """
     df = rpy2_df_to_pd_df(r_source.getData(methyl_obj))
     sample_ids = ro.r("attr")(methyl_obj, "sample.ids")
@@ -394,15 +501,21 @@ def violin_plot(
     height: int = 10,
 ) -> None:
     """
-        Global distributions of methylation levels.
+    Create a violin plot showing global distributions of methylation levels.
+
+    This function generates a violin plot to visualize the distribution of methylation
+    percentages across samples, grouped by experimental conditions.
 
     Args:
-        methyl_obj: a methylBase or methylBaseDB object
-        condition_sample: mapping between sample names and the condition they belong to
-        save_path: where to save the generated plot
-        width: width of saved figure
-        height: height of saved figure
-
+        methyl_obj: A methylBase or methylBaseDB object containing methylation data.
+        condition_sample: Dictionary mapping condition names to lists of sample IDs
+            that belong to each condition.
+        save_path: Path where to save the generated violin plot.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+    
+    Returns:
+        None: The function saves the generated plot to the specified path.
     """
     # 0. Get DD dataframe
     dd = get_dd(methyl_obj, condition_sample)
@@ -445,12 +558,19 @@ def violin_plot(
 
 def get_cpg_neighbours(methyl_obj: Any) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Obtains those methylated sites that are neighbours (whose positions are 1 distance
-        apart). The first neighbour (advancing the chromosome index from left to right)
-        is the 'forward' neighbour, whereas the second is the 'reverse' neighbour.
+    Identify neighboring methylated CpG sites in genomic data.
+
+    This function identifies methylated sites that are neighbors (positions separated by
+    exactly 1 base pair). It categorizes the first neighbor (advancing from left to right
+    along the chromosome) as the 'forward' neighbor and the second as the 'reverse' neighbor.
 
     Args:
-        methyl_obj: a methylBase or methylBaseDB object
+        methyl_obj: A methylBase or methylBaseDB object containing methylation data.
+
+    Returns:
+        Tuple[pd.DataFrame, pd.DataFrame]: A tuple containing:
+            - First element: DataFrame of forward neighbor CpG sites
+            - Second element: DataFrame of reverse neighbor CpG sites
     """
     # 0. MehtylKit object to dataframe
     df = rpy2_df_to_pd_df(r_source.getData(methyl_obj))
@@ -484,15 +604,21 @@ def global_strand_specific_scatter(
     methyl_obj: Any, save_path_prefix: Path, width: int = 10, height: int = 10
 ) -> None:
     """
-    Global strand-specific Effects. Check out strand-specific methylation status on CpGs
-        which are covered on both strands >10 in all samples.
+    Create strand-specific methylation scatter plots for each sample.
+
+    This function generates plots showing the relationship between methylation on the
+    forward strand versus the reverse strand for CpG sites that are covered on both
+    strands with coverage >10 in all samples.
 
     Args:
-        methyl_obj: A methylBase or methylBaseDB object.
-        save_path_prefix: Path prefix for each plot saved.
-            Final path: prefix + '_<sample_id>.pdf'.
-        width: Width of saved figure.
-        height: Height of saved figure.
+        methyl_obj: A methylBase or methylBaseDB object containing methylation data.
+        save_path_prefix: Path prefix for saving the plot files. Final path will be
+            prefix + '_<sample_id>.pdf'.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+
+    Returns:
+        None: The function saves the generated plots to the specified paths.
     """
     # 0. Get CpG neighbours
     cpg_neighbours_forward, cpg_neighbours_reverse = get_cpg_neighbours(methyl_obj)
@@ -525,17 +651,26 @@ def global_strand_specific_scatter(
 
 def get_methyl_diff(methyl_obj: Any, **kwargs) -> Any:
     """
-    The function subsets a methylDiff or methylDiffDB object in order to get
-        differentially methylated bases/regions satisfying thresholds.
+    Extract differentially methylated regions that meet specified thresholds.
 
-    See: https://rdrr.io/bioc/methylKit/man/getMethylDiff-methods.html
+    This function subsets a methylDiff or methylDiffDB object to extract differentially
+    methylated bases or regions that satisfy filtering thresholds (e.g., minimum difference
+    in methylation percentage, q-value cutoffs).
 
     Args:
-        methyl_obj: a methylDiff or methylDiffDB object
+        methyl_obj: A methylDiff or methylDiffDB object containing differential
+            methylation statistics.
+        **kwargs: Additional arguments passed to methylKit's getMethylDiff function:
+            - difference: Minimum absolute value of methylation difference (default 25)
+            - qvalue: Q-value threshold (default 0.01)
+            - type: Type of difference to return: "hyper", "hypo", or "all" (default)
 
     Returns:
-        A methylDiff or methylDiffDB object containing the differential methylated
-            locations satisfying the criteria.
+        Any: A methylDiff or methylDiffDB object containing only the differentially
+            methylated locations that satisfy the specified criteria.
+
+    References:
+        https://rdrr.io/bioc/methylKit/man/getMethylDiff-methods.html
     """
     return r_source.getMethylDiff(methyl_obj, **kwargs)
 
@@ -548,14 +683,21 @@ def methyl_diff_barplot(
     **kwargs,
 ) -> None:
     """
-        Plot number of differentially methylated CpG sites
+    Create a barplot showing the number of differentially methylated CpG sites.
+
+    This function generates a barplot visualization of the number of differentially
+    methylated CpG sites across different comparisons.
 
     Args:
-        methyl_diff_df: Dataframe containing the number of differentially methylated
+        methyl_diff_df: R DataFrame containing the counts of differentially methylated
             CpG sites per comparison.
-        save_path: where to save the generated plot.
-        width: width of saved figure.
-        height: height of saved figure.
+        save_path: Path where to save the generated plot.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+        **kwargs: Additional arguments passed to the R barplot function.
+
+    Returns:
+        None: The function saves the generated plot to the specified path.
     """
     pdf(str(save_path), width=width, height=height)
     r_graphics.barplot(methyl_diff_df, **kwargs)
@@ -566,14 +708,20 @@ def methyl_diff_density_plot(
     methyl_diffs: Dict[str, Any], save_path: Path, width: int = 20, height: int = 10
 ) -> None:
     """
-    Density plot of differentially methylated comparisons.
+    Create a density plot showing distributions of methylation changes.
+
+    This function generates a plot with the distribution curves of methylation differences
+    for multiple comparisons overlaid on the same graph.
 
     Args:
-        methyl_diffs: Mapping between comparisons (described as strings) and the
-            differentially methylated objects.
-        save_path: where to save the generated plot
-        width: width of saved figure
-        height: height of saved figure
+        methyl_diffs: Dictionary mapping comparison names (as strings) to their
+            corresponding methylDiff objects.
+        save_path: Path where to save the generated plot.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+
+    Returns:
+        None: The function saves the generated plot to the specified path.
     """
     # TODO: for some reason, colors has the wrong length the first time it is called,
     # but correct the second time
@@ -626,12 +774,24 @@ def methyl_diff_density_plot(
 
 def percentage_methylation(methyl_obj: Any, **kwargs) -> Any:
     """
-    Get percent methylation scores from methylBase or methylBaseDB object.
+    Calculate percent methylation scores for each base or region.
 
-    See: https://rdrr.io/bioc/methylKit/man/percMethylation-methods.html
+    This function extracts percent methylation values (0-100%) from a methylBase
+    or methylBaseDB object. The percentages represent the ratio of methylated reads
+    to the total coverage at each CpG site.
 
     Args:
-        methyl_obj: a methylBase or methylBaseDB object
+        methyl_obj: A methylBase or methylBaseDB object containing methylation data.
+        **kwargs: Additional arguments passed to methylKit's percMethylation function:
+            - rowids: Whether to include row IDs (default FALSE)
+            - save.txt: Whether to save output to a text file (default FALSE)
+
+    Returns:
+        Any: A data frame containing percent methylation values for each
+            CpG site (rows) across all samples (columns).
+
+    Refrences:
+        https://rdrr.io/bioc/methylKit/man/percMethylation-methods.html
     """
     return ro.r("as.data.frame")(r_source.percMethylation(methyl_obj, **kwargs))
 
@@ -644,25 +804,32 @@ def methylation_change_wrt_condition(
     save_path_prefix: Path,
     width: int = 20,
     height: int = 20,
-):
+) -> None:
     """
-    Does methylation change depend on methylation level in with respect to the chosen
-        condition?
+    Analyze how methylation changes relate to baseline methylation levels.
+
+    This function examines whether methylation changes depend on the baseline methylation
+    level in a reference condition. It generates scatter plots showing the relationship
+    between baseline methylation levels (x-axis) and methylation changes (y-axis),
+    and includes a fitted curve to visualize the trend.
 
     Args:
-        methyl_diffs: Mapping between comparisons (described as strings) and the
-            differentially methylated objects.
-        methyl_obj: a methylBase or methylBaseDB object.
-        condition_sample: mapping between sample names and the condition they belong to
-        wrt_condition: condition with respect to the change comparison is done.
-        save_path_prefix: path prefix for each plot saved.
-            Final path: prefix + '_<sample_id>.pdf'
-        width: width of saved figure.
-        height: height of saved figure.
+        methyl_obj: A methylBase or methylBaseDB object containing methylation data.
+        methyl_diffs: Dictionary mapping comparison names (as strings) to their
+            corresponding methylDiff objects.
+        condition_sample: Dictionary mapping condition names to lists of sample IDs
+            that belong to each condition.
+        wrt_condition: Reference condition name with respect to which the methylation
+            changes are compared.
+        save_path_prefix: Path prefix for saving the plot files. Final path will be
+            prefix + '_<test>_vs_<control>.pdf'.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
 
+    Returns:
+        None: The function saves the generated plots to the specified paths.
     """
     # 0. Setup ann_df inputs for plotting
-    # todo: added casting because PyCharm wrongly complains about types
     p_meth = pd.DataFrame(rpy2_df_to_pd_df(percentage_methylation(methyl_obj)) / 100)
     p_meth_condition = {
         condition: p_meth[samples].median(axis=1)
@@ -741,18 +908,26 @@ def meth_levels_anno_boxplot(
     height: int = 10,
 ) -> None:
     """
-    Methylation Levels with regard to CpG Islands Annotation.
+    Create boxplots showing methylation levels by CpG annotation categories.
+
+    This function generates boxplots that display methylation levels across different
+    genomic annotation categories (e.g., CpG islands, shores, shelves) for each
+    experimental condition. This visualization helps identify region-specific
+    methylation patterns.
 
     Args:
-        methyl_obj: a methylBase or methylBaseDB object
-        cpgs_ann: annotated cpgs
-        condition_sample: mapping between sample names and the condition they belong to
-        save_path_prefix: path prefix for each plot saved.
-            Final path: prefix + '_<sample_id>.pdf'
-        width: width of saved figure
-        height: height of saved figure
-    """
+        methyl_obj: A methylBase or methylBaseDB object containing methylation data.
+        cpgs_ann: A GRanges object containing genome annotations for CpG sites.
+        condition_sample: Dictionary mapping condition names to lists of sample IDs
+            that belong to each condition.
+        save_path_prefix: Path prefix for saving the plot files. Final path will be
+            prefix + '_<annotation_type>.pdf'.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
 
+    Returns:
+        None: The function saves the generated plots to the specified paths.
+    """
     # 0. Get needed inputs
     regions = homogeinize_seqlevels_style(
         make_granges_from_dataframe(
@@ -807,18 +982,27 @@ def meth_changes_anno_boxplot(
     height: int = 10,
 ) -> None:
     """
-    Methylation Changes with regard to CpG Islands Annotation.
+    Create boxplots showing methylation changes by CpG annotation categories.
+
+    This function generates boxplots that display methylation changes (differences)
+    across different genomic annotation categories (e.g., CpG islands, shores, shelves)
+    for each comparison relative to a reference condition. This visualization helps
+    identify region-specific differential methylation patterns.
 
     Args:
-        methyl_obj: a methylBase or methylBaseDB object
-        cpgs_ann: annotated cpgs.
-        wrt_condition: condition with respect to the change comparison is done.
-        methyl_diffs: Mapping between comparisons (described as strings) and the
-            differentially methylated objects.
-        save_path_prefix: path prefix for each plot saved.
-            Final path: prefix + '_<sample_id>.pdf'
-        width: width of saved figure.
-        height: height of saved figure.
+        methyl_obj: A methylBase or methylBaseDB object containing methylation data.
+        cpgs_ann: A GRanges object containing genome annotations for CpG sites.
+        wrt_condition: Reference condition name with respect to which the methylation
+            changes are measured.
+        methyl_diffs: Dictionary mapping comparison names (as strings) to their
+            corresponding methylDiff objects.
+        save_path_prefix: Path prefix for saving the plot files. Final path will be
+            prefix + '_<annotation_type>.pdf'.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+
+    Returns:
+        None: The function saves the generated plots to the specified paths.
     """
     # 0. Get needed inputs
     regions = homogeinize_seqlevels_style(
@@ -875,19 +1059,30 @@ def meth_changes_anno_scatter3d(
     height: int = 5,
 ) -> None:
     """
-    Methylation Changes with regard to CpG Islands Annotation, as a 3D scatter plot.
+    Create 3D scatter plots of methylation changes by annotation categories.
+
+    This function generates 3D scatter plots visualizing the relationship between
+    methylation changes from two different comparisons (X and Y axes) and the baseline
+    methylation level (Z axis) for different genomic annotation categories. The plots
+    help identify complex relationships between multiple methylation changes and
+    baseline methylation levels within specific genomic contexts.
 
     Args:
-        methyl_obj: a methylBase or methylBaseDB object
-        cpgs_ann: annotated cpgs
-        condition_sample: mapping between sample names and the condition they belong to
-        wrt_condition: condition with respect to the change comparison is done.
-        methyl_diffs: Mapping between comparisons (described as strings) and the
-            differentially methylated objects.
-        save_path_prefix: path prefix for each plot saved.
-            Final path: prefix + '_<sample_id>.pdf'
-        width: width of saved figure
-        height: height of saved figure
+        methyl_obj: A methylBase or methylBaseDB object containing methylation data.
+        cpgs_ann: A GRanges object containing genome annotations for CpG sites.
+        condition_sample: Dictionary mapping condition names to lists of sample IDs
+            that belong to each condition.
+        wrt_condition: Reference condition name with respect to which the methylation
+            changes are measured.
+        methyl_diffs: Dictionary mapping comparison names (as strings) to their
+            corresponding methylDiff objects.
+        save_path_prefix: Path prefix for saving the plot files. Final path will be
+            prefix + '_<annotation_type>_<comparison1>_<comparison2>.pdf'.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+
+    Returns:
+        None: The function saves the generated plots to the specified paths.
     """
     # 0. Get needed inputs
     # 0.1. Annotate regions and merge to original methylation object,
@@ -997,17 +1192,25 @@ def methylation_correlation(
     height: int = 10,
 ) -> None:
     """
-    Are Changes in different conditions correlated?
+    Analyze correlations between methylation changes in different conditions.
+
+    This function examines whether changes in methylation levels across different
+    experimental comparisons are correlated with each other. It generates scatter plots
+    with fitted curves to visualize relationships between methylation changes from
+    different comparisons that share the same reference condition.
 
     Args:
-        methyl_diffs: Mapping between comparisons (described as strings) and the
-            differentially methylated objects.
-        wrt_condition: condition with respect to the change comparison is done.
-        save_path_prefix: path prefix for each plot saved.
-            E.g. final path: prefix + '_<sample_id>.pdf'
-        width: width of saved figure
-        height: height of saved figure
+        methyl_diffs: Dictionary mapping comparison names (as strings) to their
+            corresponding methylDiff objects.
+        wrt_condition: Reference condition name with respect to which the methylation
+            changes are measured. Only comparisons using this as control will be analyzed.
+        save_path_prefix: Path prefix for saving the plot files. Final path will be
+            prefix + '_<comparison1>__vs__<comparison2>.pdf'.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
 
+    Returns:
+        None: The function saves the generated plots to the specified paths.
     """
     # 0. Get differential methylation objects where meth_diffs_wrt_condition is the
     # control
@@ -1078,16 +1281,28 @@ def methylation_correlation(
 
 def get_pos_neg_neighbours_inds(
     methyl_obj: Any, delta_th: int = 0, d_min_th: int = 0, d_max_th: int = 20
-) -> Tuple[Iterable[int], Iterable[int], Iterable[int]]:
+) -> Tuple[List[int], List[int], List[int]]:
     """
-    Obtain the indices where the positive and negative neighbours of each methylated
-        position are.
+    Find indices of positive and negative neighboring CpG sites.
+
+    This function identifies the positive (downstream) and negative (upstream) neighboring
+    CpG sites for each methylated position in the genome, applying distance thresholds to
+    control which neighbors are considered valid.
 
     Args:
-        methyl_obj: a methylBase or methylBaseDB object.
-        delta_th: Minimum distance between positive and negative neighbours.
-        d_min_th: Minimum distance to position be considered neighbour.
-        d_max_th: Maximum distance to position be considered neighbour.
+        methyl_obj: A methylBase or methylBaseDB object containing methylation data.
+        delta_th: Minimum required difference between the distances to positive and
+            negative neighbors (helps select positions with asymmetric neighbor distances).
+        d_min_th: Minimum distance threshold for a position to be considered a neighbor.
+            Positions closer than this will be filtered out.
+        d_max_th: Maximum distance threshold for a position to be considered a neighbor.
+            Positions further than this will be filtered out.
+
+    Returns:
+        Tuple[List[int], List[int], List[int]]: A tuple containing three lists of indices:
+            - First element: Indices of valid CpG positions
+            - Second element: Indices of corresponding positive neighbors
+            - Third element: Indices of corresponding negative neighbors
     """
     # 0. Extract methylation dataframe
     data = r_source.getData(methyl_obj)
@@ -1154,17 +1369,29 @@ def triplet_analysis(
     d_max_th: int = 20,
 ) -> None:
     """
-    For each sample, plot a triplet heatmap of the average methylation of negative and
-        positive neighbours.
+    Analyze methylation patterns in triplets of adjacent CpG sites.
+
+    This function examines how the methylation status of a CpG site relates to the
+    methylation status of its neighboring CpG sites. For each sample, it generates
+    a heatmap showing the average methylation level of a CpG site based on the
+    methylation levels of its positive (downstream) and negative (upstream) neighbors.
 
     Args:
-        methyl_obj: a methylBase or methylBaseDB object.
-        save_path_prefix: path prefix for each plot saved.
-            Final path: prefix + '_<sample_id>.pdf'.
-        delta_th: Minimum distance between positive and negative neighbours.
-        d_min_th: Minimum distance to position be considered neighbour.
-        d_max_th: Maximum distance to position be considered neighbour.
+        methyl_obj: A methylBase or methylBaseDB object containing methylation data.
+        save_path_prefix: Path prefix for saving the plot files. Final path will be
+            prefix + '_<sample_id>.pdf'.
+        delta_th: Minimum required difference between the distances to positive and
+            negative neighbors.
+        d_min_th: Minimum distance threshold for a position to be considered a neighbor.
+        d_max_th: Maximum distance threshold for a position to be considered a neighbor.
 
+    Returns:
+        None: The function saves the generated heatmaps to the specified paths.
+
+    Note:
+        The heatmap's x-axis represents methylation levels of positive neighbors,
+        the y-axis represents methylation levels of negative neighbors, and the
+        color represents the average methylation level of the central CpG site.
     """
     # 0. Setup
     df = rpy2_df_to_pd_df(r_source.getData(methyl_obj))

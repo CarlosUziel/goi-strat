@@ -1,14 +1,30 @@
 """
-Wrappers for R visualization tools
+Wrappers for R visualization packages.
 
-All functions have pythonic inputs and outputs.
+This module provides Python wrappers for various R visualization packages. All functions
+have pythonic inputs and outputs and are designed to make visualization of genomic data
+easier from Python.
 
 Note that the arguments in python use "_" instead of ".".
-rpy2 does this transformation for us.
+rpy2 does this transformation automatically.
 
 Example:
-R --> data.category
-Python --> data_category
+    R --> data.category
+    Python --> data_category
+
+Attributes:
+    r_deseq2: The imported DESeq2 R package.
+    r_enhanced_volcano: The imported EnhancedVolcano R package.
+    r_ggplot2: The imported ggplot2 R package.
+    r_pheatmap: The imported pheatmap R package.
+    r_venn_diagram: The imported VennDiagram R package.
+    r_color_brewer: The imported RColorBrewer R package.
+    r_vsn: The imported vsn R package.
+    r_stats: The imported stats R package.
+    r_graphics: The imported graphics R package.
+    r_grid: The imported grid R package.
+    pdf: R function to create PDF files.
+    dev_off: R function to close the PDF device.
 """
 
 from pathlib import Path
@@ -34,20 +50,22 @@ dev_off = ro.r("dev.off")
 
 def heatmap_sample_distance(
     sample_dist: Any, save_path: Path, width: int = 10, height: int = 10, **kwargs
-):
+) -> None:
     """
-    Color-coded plot of the sample distance between samples. Given N
-    number of samples, the plot shows a NxN grid color-coded depending on
-    the distance between the samples at a given i,j coordinates.
+    Creates a color-coded heatmap of the sample distances between samples.
 
-    See: https://rdrr.io/cran/pheatmap/man/pheatmap.html
+    Given N samples, the plot shows an NxN grid color-coded by the distance
+    between the samples at a given i,j coordinates.
 
     Args:
-        sample_dist: a distance structure, containing all sample
-            distances
-        save_path: where to save the generated plot
-        width: width of saved figure
-        height: height of saved figure
+        sample_dist: A distance structure, containing all sample distances.
+        save_path: Path where to save the generated plot.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+        **kwargs: Additional arguments to pass to pheatmap function.
+
+    Note:
+        For more details see: https://rdrr.io/cran/pheatmap/man/pheatmap.html
     """
     colors = ro.r("colorRampPalette(rev(brewer.pal(9, 'Blues')))(255)")
     plot = r_pheatmap.pheatmap(
@@ -62,17 +80,22 @@ def heatmap_sample_distance(
 
 def mean_sd_plot(
     data: ro.methods.RS4, save_path: Path, width: int = 10, height: int = 10, **kwargs
-):
+) -> None:
     """
-    Plot row standard deviations versus row means
+    Plots row standard deviations versus row means.
 
-    Reference documentation: https://rdrr.io/bioc/vsn/man/meanSdPlot.html
+    This plot is useful to visualize the mean-variance relationship in the data and
+    to check if variance stabilization was effective.
 
     Args:
-        data: DESeqDataSet or DESeqTransform
-        save_path: where to save the generated plot
-        width: width of saved figure
-        height: height of saved figure
+        data: A DESeqDataSet or DESeqTransform object.
+        save_path: Path where to save the generated plot.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+        **kwargs: Additional arguments to pass to meanSdPlot function.
+
+    Note:
+        For more details see: https://rdrr.io/bioc/vsn/man/meanSdPlot.html
     """
     plot = r_vsn.meanSdPlot(ro.r("assay")(data), **kwargs).rx2("gg")
     r_ggplot2.ggsave(str(save_path), plot, width=width, height=height)
@@ -85,19 +108,24 @@ def pca_plot(
     width: int = 10,
     height: int = 10,
     **kwargs,
-):
+) -> None:
     """
-    Principal component analysis plot.
+    Creates a principal component analysis (PCA) plot.
 
-    See: https://rdrr.io/bioc/DESeq2/man/plotPCA.html
+    This function generates a PCA plot from transformed count data, with points colored
+    by variables of interest.
 
     Args:
-        data: data used to compute and plot PCA
-        intgroup: interesting groups: a character vector of names in
-            colData(x) to use for grouping
-        save_path: where to save the generated plot
-        width: width of saved figure
-        height: height of saved figure
+        data: A DESeqTransform object used to compute and plot PCA.
+        intgroup: Interesting groups: a character vector of names in
+            colData(x) to use for grouping samples.
+        save_path: Path where to save the generated plot.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+        **kwargs: Additional arguments to pass to plotPCA function.
+
+    Note:
+        For more details see: https://rdrr.io/bioc/DESeq2/man/plotPCA.html
     """
     plot = r_deseq2.plotPCA_DESeqTransform(data, intgroup=StrVector(intgroup), **kwargs)
     r_ggplot2.ggsave(str(save_path), plot, width=width, height=height)
@@ -111,25 +139,26 @@ def mds_plot(
     width: int = 10,
     height: int = 10,
     **kwargs,
-):
+) -> None:
     """
-    Multidimensional scaling (MDS) plot. Classical multidimensional
-    scaling (MDS) of a data matrix. Also known as principal coordinates
-    analysis (Gower, 1966).
+    Creates a multidimensional scaling (MDS) plot.
 
-    Underlying function docs:
-        https://www.rdocumentation.org/packages/stats/versions/3.6.2
-        /topics/cmdscale
+    Classical multidimensional scaling (MDS) of a data matrix, also known as principal
+    coordinates analysis (Gower, 1966). The plot shows the samples in 2D space based
+    on their distances.
 
     Args:
-         sample_dist: a distance structure, containing all sample
-            distances
-         data: data the sample_dist_matrix comes from.
-         color: factor that defines the color (each factor level will have a
-            different color)
-         save_path: where to save the generated plot
-        width: width of saved figure
-        height: height of saved figure
+        sample_dist: A distance structure containing all sample distances.
+        data: The data object the sample_dist matrix comes from (e.g., DESeqDataSet).
+        color: Factor that defines the color groups (each factor level will have a
+            different color).
+        save_path: Path where to save the generated plot.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+        **kwargs: Additional arguments to pass to qplot function.
+
+    Note:
+        For more details see: https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/cmdscale
     """
     # 1. Get MDS matrix
     mds = ro.r("data.frame")(r_stats.cmdscale(ro.r("as.matrix")(sample_dist)))
@@ -154,20 +183,25 @@ def gene_counts(
     width: int = 10,
     height: int = 10,
     **kwargs,
-):
+) -> None:
     """
-    Plot gene counts for one gene across groups.
+    Plots gene counts for one gene across sample groups.
 
-    Reference documentation: https://rdrr.io/bioc/DESeq2/man/plotCounts.html
+    This function generates a plot showing the normalized counts for a single gene
+    across different sample groups.
 
     Args:
-        data: a DESeqDataSet object
-        gene: gene for which counts amongst samples are shown
-        intgroup: interesting groups: a character vector of names in
-            colData(x) to use for grouping
-        save_path: where to save the generated plot
-        width: width of saved figure
-        height: height of saved figure
+        data: A DESeqDataSet object containing count data.
+        gene: The gene identifier for which counts amongst samples will be shown.
+        intgroup: Interesting groups: a character vector of names in
+            colData(x) to use for grouping.
+        save_path: Path where to save the generated plot.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+        **kwargs: Additional arguments to pass to plotCounts function.
+
+    References:
+        https://rdrr.io/bioc/DESeq2/man/plotCounts.html
     """
     pdf(str(save_path), width=width, height=height)
     r_deseq2.plotCounts(data, gene, StrVector(intgroup), **kwargs)
@@ -180,21 +214,24 @@ def ma_plot(
     width: int = 10,
     height: int = 10,
     **kwargs,
-):
+) -> None:
     """
-    A scatter plot of log2 fold changes (on the y-axis) versus the mean of
-    normalized counts (on the x-axis).
+    Creates an MA plot of DESeq2 results.
 
-    Reference documentation: https://rdrr.io/bioc/DESeq2/man/plotMA.html
-
-    Makes use of "lfcShrink"
-    Reference documentation: https://rdrr.io/bioc/DESeq2/man/lfcShrink.html
+    An MA plot shows the log2 fold changes (on the y-axis) versus the mean of
+    normalized counts (on the x-axis). It's useful for visualizing the relationship
+    between expression change and expression magnitude.
 
     Args:
-        deseq_result: a DESeqResults object, after lfcShrink.
-        save_path: where to save the generated plot
-        width: width of saved figure
-        height: height of saved figure
+        deseq_result: A DESeqResults object, ideally after lfcShrink.
+        save_path: Path where to save the generated plot.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+        **kwargs: Additional arguments to pass to plotMA function.
+
+    References:
+        - https://rdrr.io/bioc/DESeq2/man/plotMA.html
+        - https://rdrr.io/bioc/DESeq2/man/lfcShrink.html
     """
     # 1. MA plot
     pdf(str(save_path), width=width, height=height)
@@ -212,27 +249,30 @@ def volcano_plot(
     width: int = 10,
     height: int = 10,
     **kwargs,
-):
+) -> None:
     """
-    Enhanced volcano plot based on the EnhancedVolcano package in R.
+    Creates an enhanced volcano plot of differential expression results.
 
-    Reference documentation:
-        http://bioconductor.org/packages/release/bioc/vignettes/EnhancedVolcano/inst/doc/EnhancedVolcano.html
-        https://rdrr.io/bioc/EnhancedVolcano/man/EnhancedVolcano.html
+    A volcano plot displays statistical significance versus magnitude of change.
+    The EnhancedVolcano package provides publication-ready volcano plots with
+    customizable features.
 
     Args:
-        data: A data-frame of test statistics (if not a data frame,
-            an attempt will be made to convert it to one).
-            Requires at least the following: column for variable names (can
-            be rownames); a column for log2 fold
-            changes; a column for nominal or adjusted p-value.
-        lab: A column name in data containing variable names. Can be
-            rownames (toptable).
-        x: A column name in toptable containing log2 fold changes.
-        y: A column name in toptable containing nominal or adjusted p-values.
-        save_path: where to save the generated plot
-        width: width of saved figure
-        height: height of saved figure
+        data: A data frame of test statistics. Requires at least:
+            - A column for variable names (can be rownames)
+            - A column for log2 fold changes
+            - A column for nominal or adjusted p-values
+        lab: Column name in data containing variable names (can be "rownames").
+        x: Column name in data containing log2 fold changes.
+        y: Column name in data containing nominal or adjusted p-values.
+        save_path: Path where to save the generated plot.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+        **kwargs: Additional arguments to pass to EnhancedVolcano function.
+
+   References:
+        - http://bioconductor.org/packages/release/bioc/vignettes/EnhancedVolcano/inst/doc/EnhancedVolcano.html
+        - https://rdrr.io/bioc/EnhancedVolcano/man/EnhancedVolcano.html
     """
     plot = r_enhanced_volcano.EnhancedVolcano(
         toptable=data, lab=lab, x=x, y=y, **kwargs
@@ -246,20 +286,30 @@ def venn_diagram(
     width: int = 10,
     height: int = 10,
     **kwargs,
-):
+) -> None:
     """
-    This function takes a list and creates a publication-quality TIFF Venn
-        Diagram.
+    Creates a publication-quality Venn diagram.
 
-    Reference documentation: https://rdrr.io/cran/VennDiagram/man/venn.diagram.html
+    This function takes a dictionary of lists and creates a TIFF or PDF Venn diagram
+    showing the intersections between different sets of genes.
 
     Args:
-        contrasts_degs: A mapping of contrast and DEGs. Length must be between 2 and 5.
-        save_path: where to save the generated plot
-        width: width of saved figure
-        height: height of saved figure
+        contrasts_degs: A mapping of contrast names to lists of DEGs.
+            Length must be between 2 and 5.
+        save_path: Path where to save the generated plot.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+        **kwargs: Additional arguments to pass to venn.diagram function.
 
+    Raises:
+        ValueError: If the length of contrasts_degs is not between 2 and 5.
+
+    References:
+        https://rdrr.io/cran/VennDiagram/man/venn.diagram.html
     """
+    if not (2 <= len(contrasts_degs) <= 5):
+        raise ValueError("The number of sets must be between 2 and 5.")
+
     contrasts_degs = {
         k: StrVector(filtered_genes) for k, filtered_genes in contrasts_degs.items()
     }

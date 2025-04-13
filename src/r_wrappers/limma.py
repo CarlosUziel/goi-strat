@@ -27,11 +27,27 @@ pdf = ro.r("pdf")
 dev_off = ro.r("dev.off")
 
 
-def kegga(gene_names: StrVector, **kwargs):
-    """
-    KEGG over-representation analysis
+def kegga(gene_names: StrVector, **kwargs: Any) -> rpy2.robjects.DataFrame:
+    """Perform KEGG pathway over-representation analysis.
 
-    See: https://rdrr.io/bioc/limma/man/goana.html
+    This function tests for over-representation of KEGG pathways in a set of genes.
+
+    Args:
+        gene_names: A vector of gene identifiers (usually Entrez gene IDs).
+        **kwargs: Additional arguments to pass to the kegga function.
+            Common parameters include:
+            - species: Species name (e.g., "Hs" for human).
+            - universe: Background genes to use for enrichment analysis.
+            - de: Vector of differentially expressed genes from gene_names.
+            - trend: Whether to adjust for gene length or abundance bias.
+            - sort: How to sort the results.
+
+    Returns:
+        rpy2.robjects.DataFrame: A DataFrame where rows represent KEGG pathways and
+        columns contain statistics on the pathway enrichment.
+
+    References:
+        https://rdrr.io/bioc/limma/man/goana.html
     """
     return r_limma.kegga(gene_names, **kwargs)
 
@@ -40,15 +56,21 @@ def top_kegg(
     kegg_result: rpy2.robjects.DataFrame,
     filter_by: str = "P.DE",
     filter_thr: float = 0.05,
-):
-    """
-    Get top kegg pathways from a kegg_result.
+) -> rpy2.robjects.DataFrame:
+    """Filter and sort KEGG pathway enrichment results.
+
+    This function filters KEGG pathway enrichment results based on a specified
+    significance threshold and returns them sorted by significance.
 
     Args:
-        kegg_result: Kegg result
-        filter_by: Name of column by which to filter
-        filter_thr: Value used for filtering. Rows must have a value lower
-            than this.
+        kegg_result: Result from the kegga function.
+        filter_by: Name of the column by which to filter (default: "P.DE").
+        filter_thr: P-value threshold for filtering. Rows must have a value
+            lower than this threshold (default: 0.05).
+
+    Returns:
+        rpy2.robjects.DataFrame: A filtered and sorted DataFrame containing
+        significant KEGG pathway enrichment results.
     """
     # 0. Convert R dataframe to Pandas
     df = rpy2_df_to_pd_df(kegg_result)
@@ -61,109 +83,165 @@ def top_kegg(
     return pd_df_to_rpy2_df(df)
 
 
-def linear_model_fit(obj: Any, design: Any, **kwargs):
-    """
-    Fit linear model for each gene given a series of arrays
+def linear_model_fit(obj: Any, design: Any, **kwargs: Any) -> Any:
+    """Fit a linear model for each gene given a series of arrays.
 
-    See: https://rdrr.io/bioc/limma/man/lmFit.html
+    This function fits a linear model for each gene (row) in a matrix of expression data,
+    allowing for gene-wise variance estimation.
 
     Args:
-        obj: A matrix-like data object containing log-ratios or
-            log-expression values for a series of arrays, with rows
-            corresponding to genes and columns to samples. Any type of
-            data object that can be processed by getEAWP
-            is acceptable.
-        design: the design matrix of the microarray experiment, with rows
-            corresponding to arrays and columns to coefficients to be
-            estimated. Defaults to the unit vector meaning that the arrays are
-            treated as replicates.
+        obj: A matrix-like data object containing log-ratios or log-expression
+            values for a series of arrays, with rows corresponding to genes and
+            columns to samples. Any type of data object that can be processed
+            by getEAWP is acceptable.
+        design: The design matrix of the experiment, with rows corresponding to arrays
+            and columns to coefficients to be estimated. Defaults to the unit vector
+            meaning that the arrays are treated as replicates.
+        **kwargs: Additional arguments to pass to the lmFit function.
+            Common parameters include:
+            - weights: Optional numeric matrix of weights to use in the fitting process.
+            - method: Method for computing standard errors ("ls" or "robust").
+
+    Returns:
+        Any: An MArrayLM object containing the fitted linear model, with components:
+        - coefficients: Matrix of estimated coefficients
+        - stdev.unscaled: Matrix of unscaled standard errors
+        - sigma: Vector of residual standard deviations
+        - df.residual: Vector of residual degrees of freedom
+
+    References:
+        https://rdrr.io/bioc/limma/man/lmFit.html
     """
     return r_limma.lmFit(obj, design, **kwargs)
 
 
-def make_contrasts(contrasts: StrVector, levels: Any):
-    """
-    Construct the contrast matrix corresponding to specified contrasts of a
-    set of parameters.
+def make_contrasts(contrasts: StrVector, levels: Any) -> Any:
+    """Construct a contrast matrix for specified comparisons.
 
-    See: https://rdrr.io/bioc/limma/man/makeContrasts.html
+    This function constructs a contrast matrix corresponding to specified contrasts
+    of a set of parameters, which can then be used for differential expression analysis.
 
     Args:
-        contrasts: character vector specifying contrasts
-        levels: character vector or factor giving the names of the
-        parameters of which contrasts are desired, or a
-            design matrix or other object with the parameter names as column
-            names.
+        contrasts: Character vector specifying contrasts, e.g., "GroupA-GroupB".
+        levels: Character vector or factor giving the names of the parameters
+            of which contrasts are desired, or a design matrix or other object
+            with the parameter names as column names.
+
+    Returns:
+        Any: A numeric matrix with rows corresponding to parameters (levels) and
+        columns corresponding to contrasts. Each column defines a contrast as
+        a linear combination of the parameters.
+
+    References:
+        https://rdrr.io/bioc/limma/man/makeContrasts.html
     """
     return r_limma.makeContrasts(contrasts=contrasts, levels=levels)
 
 
-def fit_contrasts(fit: Any, contrasts: Any):
-    """
-    Given a linear model fit to microarray data, compute estimated coefficients
-    and standard errors for a given set of contrasts.
+def fit_contrasts(fit: Any, contrasts: Any) -> Any:
+    """Compute estimated coefficients and standard errors for a given set of contrasts.
 
-    See: https://rdrr.io/bioc/limma/man/contrasts.fit.html
+    Given a linear model fit to microarray data, this function computes estimated
+    coefficients and standard errors for a given set of contrasts.
 
     Args:
-        fit: an MArrayLM object or a list object produced by the function
-            lm.series or equivalent. Must contain components coefficients
-            and stdev.unscaled.
-        contrasts: numeric matrix with rows corresponding to coefficients in
-            fit and columns containing contrasts. May be a vector if there is
-            only one contrast.
+        fit: An MArrayLM object produced by the function linear_model_fit or equivalent.
+            Must contain components coefficients and stdev.unscaled.
+        contrasts: Numeric matrix with rows corresponding to coefficients in fit
+            and columns containing contrasts. May be a vector if there is only one contrast.
+            Typically produced by make_contrasts.
+
+    Returns:
+        Any: An MArrayLM object containing the estimated coefficients and standard
+        errors for the contrasts.
+
+    References:
+        https://rdrr.io/bioc/limma/man/contrasts.fit.html
     """
     return r_limma.contrasts_fit(fit=fit, contrasts=contrasts)
 
 
-def empirical_bayes(fit: Any, **kwargs):
-    """
-    Empirical Bayes Statistics for Differential Expression
+def empirical_bayes(fit: Any, **kwargs: Any) -> Any:
+    """Apply empirical Bayes moderation of standard errors for differential expression.
 
-    Given a microarray linear model fit, compute moderated t-statistics,
-    moderated F-statistic, and log-odds of differential expression by
-    empirical Bayes moderation of the standard errors towards a common value.
-
-    See: https://rdrr.io/bioc/limma/man/ebayes.html
+    This function computes moderated t-statistics, moderated F-statistics, and log-odds
+    of differential expression by empirical Bayes moderation of the standard errors
+    towards a common value. This increases statistical power, especially for
+    experiments with small numbers of replicates.
 
     Args:
-        fit: an MArrayLM object or a list object produced by the function
-            lm.series or equivalent. Must contain components coefficients
-            and stdev.unscaled.
+        fit: An MArrayLM object produced by linear_model_fit or fit_contrasts.
+            Must contain components coefficients and stdev.unscaled.
+        **kwargs: Additional arguments to pass to the eBayes function.
+            Common parameters include:
+            - trend: Whether to fit a mean-variance trend.
+            - robust: Whether to use robust estimation of the prior variance.
+            - proportion: Prior proportion of differentially expressed genes.
+
+    Returns:
+        Any: An MArrayLM object with added components:
+        - t: Moderated t-statistics
+        - p.value: P-values corresponding to the t-statistics
+        - lods: Log-odds of differential expression
+        - F: Moderated F-statistics (if coef is NULL)
+        - F.p.value: P-values corresponding to the F-statistics
+
+    References:
+        https://rdrr.io/bioc/limma/man/ebayes.html
     """
     return r_limma.eBayes(fit=fit, **kwargs)
 
 
-def decide_tests(obj: Any, **kwargs):
-    """
-    Identify which genes are significantly differentially expressed for each
-    contrast from a fit object containing p-values and test statistics.
+def decide_tests(obj: Any, **kwargs: Any) -> Any:
+    """Identify significantly differentially expressed genes for each contrast.
 
-    A number of different multiple testing strategies are offered that adjust for
-    multiple testing down the genes as well as across contrasts for each gene.
-
-    See: https://rdrr.io/bioc/limma/man/decideTests.html
+    This function identifies which genes are significantly differentially expressed
+    for each contrast from a fit object containing p-values and test statistics.
+    It adjusts for multiple testing across both genes and contrasts.
 
     Args:
-        obj: a numeric matrix of p-values or an MArrayLM object from which
-            p-values and t-statistics can be extracted.
+        obj: A numeric matrix of p-values or an MArrayLM object from which p-values
+            and t-statistics can be extracted.
+        **kwargs: Additional arguments to pass to the decideTests function.
+            Common parameters include:
+            - method: Multiple testing method ("separate", "global", "hierarchical", "nestedF").
+            - adjust.method: P-value adjustment method ("BH", "fdr", "none", etc.).
+            - p.value: P-value cutoff (default: 0.05).
+            - lfc: Log fold-change threshold.
+
+    Returns:
+        Any: A numeric matrix containing -1, 0, or 1 for each gene and contrast,
+        indicating significantly down-regulated, not significant, or significantly
+        up-regulated, respectively.
+
+    References:
+        https://rdrr.io/bioc/limma/man/decideTests.html
     """
     return r_limma.decideTests(obj, **kwargs)
 
 
 def venn_diagram(
-    obj: Any, save_path: Path, width: int = 10, height: int = 10, **kwargs
-):
-    """
-    Compute classification counts and draw a Venn diagram.
+    obj: Any, save_path: Path, width: int = 10, height: int = 10, **kwargs: Any
+) -> None:
+    """Create a Venn diagram showing overlaps between significant gene sets.
 
-    See: https://rdrr.io/bioc/limma/man/venn.html
+    This function computes classification counts and draws a Venn diagram showing
+    the overlaps between genes that are significant in different contrasts.
 
     Args:
-        obj: object to plot
-        save_path: where to save the generated plot
-        width: width of saved figure
-        height: height of saved figure
+        obj: Object to plot, typically the result from decide_tests.
+        save_path: Path where the generated plot will be saved.
+        width: Width of the saved figure in inches.
+        height: Height of the saved figure in inches.
+        **kwargs: Additional arguments to pass to the vennDiagram function.
+            Common parameters include:
+            - include: Which columns of the object to include.
+            - names: Names for the circles in the Venn diagram.
+            - circle.col: Vector of colors for the circles.
+            - counts.col: Color for the counts.
+
+    References:
+        https://rdrr.io/bioc/limma/man/venn.html
     """
     pdf(str(save_path), width=width, height=height)
     r_limma.vennDiagram(obj, **kwargs)
@@ -171,72 +249,110 @@ def venn_diagram(
 
 
 def volcano_plot(
-    obj: Any, save_path: Path, width: int = 10, height: int = 10, **kwargs
-):
-    """
-    Creates a volcano plot for a specified coefficient of a linear model.
+    obj: Any, save_path: Path, width: int = 10, height: int = 10, **kwargs: Any
+) -> None:
+    """Create a volcano plot for a specified coefficient of a linear model.
 
-    See: https://rdrr.io/bioc/limma/man/volcanoplot.html
+    This function creates a volcano plot showing the relationship between log-fold
+    changes and statistical significance for all genes in a differential expression analysis.
 
     Args:
-        obj: object to plot
-        save_path: where to save the generated plot
-        width: width of saved figure
-        height: height of saved figure
+        obj: Object to plot, typically an MArrayLM object from empirical_bayes.
+        save_path: Path where the generated plot will be saved.
+        width: Width of the saved figure in inches.
+        height: Height of the saved figure in inches.
+        **kwargs: Additional arguments to pass to the volcanoplot function.
+            Common parameters include:
+            - coef: Which coefficient/contrast to plot.
+            - style: Style of the plot ("p-value" or "B-statistic").
+            - highlight: Vector of gene IDs to highlight.
+            - names: Vector of gene names to display on the plot.
+
+    References:
+        https://rdrr.io/bioc/limma/man/volcanoplot.html
     """
     pdf(str(save_path), width=width, height=height)
     r_limma.volcanoplot(obj, **kwargs)
     dev_off()
 
 
-def plot_md(obj: Any, save_path: Path, width: int = 10, height: int = 10, **kwargs):
-    """
-     Creates a mean-difference plot (aka MA plot) with color coding for
-     highlighted points.
+def plot_md(
+    obj: Any, save_path: Path, width: int = 10, height: int = 10, **kwargs: Any
+) -> None:
+    """Create a mean-difference plot (MA plot) with color coding for highlighted points.
 
-    See: https://rdrr.io/bioc/limma/man/plotMD.html
+    This function creates an MA plot showing the log-fold changes against the mean
+    log-expression values for all genes in a differential expression analysis.
 
     Args:
-        obj: object to plot
-        save_path: where to save the generated plot
-        width: width of saved figure
-        height: height of saved figure
+        obj: Object to plot, typically an MArrayLM object from empirical_bayes.
+        save_path: Path where the generated plot will be saved.
+        width: Width of the saved figure in inches.
+        height: Height of the saved figure in inches.
+        **kwargs: Additional arguments to pass to the plotMD function.
+            Common parameters include:
+            - column: Which column of coefficients to plot.
+            - status: Vector indicating which points to highlight.
+            - values: Whether to plot log-fold-changes or coefficients.
+            - hl.col: Color for highlighted points.
+
+    References:
+        https://rdrr.io/bioc/limma/man/plotMD.html
     """
     pdf(str(save_path), width=width, height=height)
     r_limma.plotMD(obj, **kwargs)
     dev_off()
 
 
-def top_table(fit: Any, **kwargs):
-    """
-    Table of Top Genes from Linear Model Fit. Extract a table of the
-    top-ranked genes from a linear model fit.
+def top_table(fit: Any, **kwargs: Any) -> rpy2.robjects.DataFrame:
+    """Extract a table of the top-ranked genes from a linear model fit.
 
-    See: https://rdrr.io/bioc/limma/man/toptable.html
+    This function extracts a table of the top-ranked genes from a linear model fit,
+    sorted by adjusted p-value or other criteria.
 
     Args:
-        fit: list containing a linear model fit produced by lmFit,
-            lm.series, gls.series or mrlm. For topTable,
-            fit should be an object of class MArrayLM as produced by lmFit
-            and eBayes.
+        fit: An MArrayLM object as produced by linear_model_fit and empirical_bayes.
+        **kwargs: Additional arguments to pass to the topTable function.
+            Common parameters include:
+            - coef: Which coefficient/contrast to extract results for.
+            - sort.by: How to sort the results ("p", "B", "logFC", etc.).
+            - number: Maximum number of genes to return.
+            - adjust.method: Method for adjusting p-values.
+            - p.value: P-value cutoff for filtering.
+            - lfc: Log fold-change threshold for filtering.
+
+    Returns:
+        rpy2.robjects.DataFrame: A DataFrame containing the top-ranked genes
+        with statistics such as log-fold changes, p-values, and adjusted p-values.
+
+    References:
+        https://rdrr.io/bioc/limma/man/toptable.html
     """
     return r_limma.topTable(fit, **kwargs)
 
 
-def remove_batch_effect(x: Any, **kwargs):
-    """
-    Remove batch effects from expression data.
+def remove_batch_effect(x: Any, **kwargs: Any) -> Any:
+    """Remove batch effects from expression data.
 
-    See: https://rdrr.io/bioc/limma/man/removeBatchEffect.html
+    This function removes batch effects and other unwanted variation from expression data,
+    while preserving biological variation of interest.
 
     Args:
-        x: numeric matrix, or any data object that can be processed by getEAWP
+        x: Numeric matrix, or any data object that can be processed by getEAWP,
             containing log-expression values for a series of samples. Rows correspond
-            to probes and columns to samples.
+            to genes and columns to samples.
+        **kwargs: Additional arguments to pass to the removeBatchEffect function.
+            Common parameters include:
+            - batch: Factor or numeric vector specifying batches.
+            - batch2: Optional second batch factor.
+            - covariates: Matrix of additional covariates to adjust for.
+            - design: Design matrix for outcome of interest (preserved variation).
 
     Returns:
-        A numeric matrix of log-expression values with batch and covariate effects
-            removed.
+        Any: A numeric matrix of log-expression values with batch and covariate effects
+        removed, having the same dimensions as the input matrix.
 
+    References:
+        https://rdrr.io/bioc/limma/man/removeBatchEffect.html
     """
     return r_limma.removeBatchEffect(x, **kwargs)

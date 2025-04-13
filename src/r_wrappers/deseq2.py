@@ -14,7 +14,7 @@ Python --> data_category
 import logging
 import re
 from pathlib import Path
-from typing import Iterable
+from typing import Any, Iterable
 
 import pandas as pd
 import rpy2
@@ -35,19 +35,35 @@ def get_deseq_dataset_matrix(
     annot_df: pd.DataFrame,
     factors: Iterable[str],
     design_factors: Iterable[str],
-    **kwargs,
+    **kwargs: Any,
 ) -> rpy2.robjects.methods.RS4:
-    """
-    Creates a dataset for DESeq2 from a counts matrix.
+    """Create a DESeqDataSet object from a counts matrix.
 
-    See: https://rdrr.io/bioc/DESeq2/man/DESeqDataSet.html
+    This function creates a DESeqDataSet object for differential expression analysis
+    from a counts matrix and sample annotation data.
 
     Args:
-        counts_matrix: A matrix representing counts of shape [n_features, n_samples]
-        annot_df: Annotated data dataframe, whose index is the sample/replicate
-            name.
-        factors: Columns to be added to the dseq_dataset.
-        design_factors: Define columns whose values are used for comparison.
+        counts_matrix: A matrix representing read counts with shape [n_features, n_samples].
+            Rows represent genes/features and columns represent samples.
+        annot_df: Annotation dataframe with sample metadata, whose index is the
+            sample/replicate name. Must match the column names in counts_matrix.
+        factors: Columns from annot_df to be included in the DESeq dataset's colData.
+        design_factors: Columns whose values are used in the design formula for
+            the differential expression model.
+        **kwargs: Additional arguments to pass to the DESeqDataSetFromMatrix function.
+            Common parameters include:
+            - tidy: Whether the counts are in tidy format.
+            - ignoreRank: Whether to ignore rank deficiency in the design matrix.
+
+    Returns:
+        rpy2.robjects.methods.RS4: A DESeqDataSet object ready for differential
+        expression analysis.
+
+    Raises:
+        ValueError: If any of the specified factors are not found in annot_df columns.
+
+    References:
+        https://rdrr.io/bioc/DESeq2/man/DESeqDataSet.html
     """
     # 1. Check factors and build design formula
     # 1.1. Check available factors
@@ -60,7 +76,7 @@ def get_deseq_dataset_matrix(
         )
 
     # 1.2. Build design formula
-    def sanitize_factor(factor: str):
+    def sanitize_factor(factor: str) -> str:
         return re.sub(r"\W|^(?=\d)", "_", factor)
 
     rename_map = {f: sanitize_factor(f) for f in design_factors}
@@ -90,26 +106,38 @@ def get_deseq_dataset_htseq(
     factors: Iterable[str],
     design_factors: Iterable[str],
     counts_files_pattern: str = "*.tsv",
-    **kwargs,
+    **kwargs: Any,
 ) -> rpy2.robjects.methods.RS4:
-    """
-    Creates a dataset for DESeq2 from htseq files.
+    """Create a DESeqDataSet object from HTSeq count files.
 
-    See: https://rdrr.io/bioc/DESeq2/man/DESeqDataSet.html
-
-    Format of sample table:
-        A data.frame with two or more columns. Each row describes one
-        sample. The first column is the sample name and the remaining columns are
-        sample metadata which will be stored in colData.
+    This function creates a DESeqDataSet object for differential expression analysis
+    from HTSeq count files and sample annotation data.
 
     Args:
-        annot_df: annotated data dataframe, whose index is the sample/replicate
-            name.
-        ID is used to uniquely identify samples.
-        htseq_path: path where the htseq files can be located.
-        factors: columns to be added to the dseq_dataset.
-        design_factors: define columns whose values are used for comparison.
-        htseq_files_pattern: pattern followed by the files storing htseq data.
+        annot_df: Annotation dataframe with sample metadata, whose index is the
+            sample/replicate name.
+        counts_path: Path to the directory containing the HTSeq count files.
+        factors: Columns from annot_df to be included in the DESeq dataset's colData.
+        design_factors: Columns whose values are used in the design formula for
+            the differential expression model.
+        counts_files_pattern: Glob pattern to match the HTSeq count files. Default is "*.tsv".
+        **kwargs: Additional arguments to pass to the DESeqDataSetFromHTSeqCount function.
+
+    Returns:
+        rpy2.robjects.methods.RS4: A DESeqDataSet object ready for differential
+        expression analysis.
+
+    Raises:
+        ValueError: If any of the specified factors are not found in annot_df columns.
+        AssertionError: If no count files are found in the specified path.
+
+    Notes:
+        Format of sample table: A data.frame with two or more columns. Each row
+        describes one sample. The first column is the sample name and the remaining
+        columns are sample metadata which will be stored in colData.
+
+    References:
+        https://rdrr.io/bioc/DESeq2/man/DESeqDataSet.html
     """
     # 1. Check factors and build design formula
     # 1.1. Check available factors
@@ -122,7 +150,7 @@ def get_deseq_dataset_htseq(
         )
 
     # 1.2. Build design formula
-    def sanitize_factor(factor: str):
+    def sanitize_factor(factor: str) -> str:
         return re.sub(r"\W|^(?=\d)", "_", factor)
 
     rename_map = {f: sanitize_factor(f) for f in design_factors}
@@ -184,12 +212,19 @@ def get_deseq_dataset_htseq(
 def filter_dds(
     dds: rpy2.robjects.methods.RS4, filter_count: int = 1
 ) -> rpy2.robjects.methods.RS4:
-    """
-    Keep genes whose average expression across samples is bigger than `filter_count`.
+    """Filter out genes with low expression counts.
+
+    This function filters the DESeqDataSet to keep only genes whose average
+    expression across samples is greater than the specified threshold.
 
     Args:
-        dds: deseq2 dataset
-        filter_count: count to filter the values of dds by.
+        dds: A DESeqDataSet object.
+        filter_count: Minimum average count threshold for keeping genes.
+            Default is 1.
+
+    Returns:
+        rpy2.robjects.methods.RS4: A filtered DESeqDataSet object with low-expressed
+        genes removed.
     """
     f = ro.r(
         """
@@ -201,73 +236,93 @@ def filter_dds(
     return f(dds, filter_count)
 
 
-def run_dseq2(dds: rpy2.robjects.methods.RS4, **kwargs) -> rpy2.robjects.methods.RS4:
-    """
-    This function performs a default analysis through the steps:
+def run_dseq2(
+    dds: rpy2.robjects.methods.RS4, **kwargs: Any
+) -> rpy2.robjects.methods.RS4:
+    """Run the DESeq2 differential expression analysis workflow.
 
-    1) Estimation of size factors: estimateSizeFactors
-    2) Estimation of dispersion: estimateDispersions
-    3) Negative Binomial GLM fitting and Wald statistics: nbinomWaldTest
-
-    For complete details on each step, see the manual pages of the respective
-    functions. After the DESeq function returns a DESeqDataSet object, results
-    tables (log2 fold changes and p-values) can be generated using the results
-    function. Shrunken LFC can then be generated using the lfcShrink function.
-
-    (full docs in https://rdrr.io/bioc/DESeq2/man/DESeq.html)
+    This function performs a default DESeq2 analysis through the following steps:
+    1) Estimation of size factors (normalization)
+    2) Estimation of dispersion
+    3) Negative Binomial GLM fitting and Wald statistics testing
 
     Args:
-        dds: deseq2 dataset
+        dds: A DESeqDataSet object.
+        **kwargs: Additional arguments to pass to the DESeq function.
+            Common parameters include:
+            - fitType: Method for dispersion estimation (default: "parametric").
+            - test: Statistical test to use ("Wald" or "LRT").
+            - betaPrior: Whether to use beta prior for fold changes (default: TRUE).
+            - quiet: Whether to suppress messages (default: FALSE).
+
+    Returns:
+        rpy2.robjects.methods.RS4: A DESeqDataSet object with results from the
+        differential expression analysis.
+
+    References:
+        https://rdrr.io/bioc/DESeq2/man/DESeq.html
+
+    Notes:
+        After this function returns, results tables (log2 fold changes and p-values)
+        can be generated using the `deseq_results` function. Shrunken log fold changes
+        can then be generated using the `lfc_shrink` function.
     """
     return r_deseq2.DESeq(dds, **kwargs)
 
 
-def norm_transform(data: rpy2.robjects.methods.RS4, **kwargs):
-    """
-    A simple function for creating a DESeqTransform object after applying:
-    f(count(dds,normalized=TRUE) + pc).
+def norm_transform(
+    data: rpy2.robjects.methods.RS4, **kwargs: Any
+) -> rpy2.robjects.methods.RS4:
+    """Apply a simple normalization transformation to count data.
 
-    (full docs in https://rdrr.io/bioc/DESeq2/man/normTransform.html)
+    This function creates a DESeqTransform object by applying a formula to normalized
+    counts: f(count(dds, normalized=TRUE) + pc), where pc is a pseudocount.
 
     Args:
-        data: DESeqDataSet
+        data: A DESeqDataSet object.
+        **kwargs: Additional arguments to pass to the normTransform function.
+            Common parameters include:
+            - pc: Pseudocount to add to normalized counts (default: 1).
+            - f: Function to apply to the normalized counts (default: log).
+
+    Returns:
+        rpy2.robjects.methods.RS4: A DESeqTransform object containing the transformed data.
+
+    References:
+        https://rdrr.io/bioc/DESeq2/man/normTransform.html
     """
     return r_deseq2.normTransform(data, **kwargs)
 
 
 def vst_transform(
-    dds: rpy2.robjects.methods.RS4, **kwargs
+    dds: rpy2.robjects.methods.RS4, **kwargs: Any
 ) -> rpy2.robjects.methods.RS4:
-    """
-    [vst]
-    This is a wrapper for the varianceStabilizingTransformation (VST) that
-    provides much faster estimation of the dispersion trend used to
-    determine the formula for the VST. The speed-up is accomplished by
-    subsetting to a smaller number of genes in order to estimate this
-    dispersion trend. The subset of genes is chosen deterministically,
-    to span the range of genes' mean normalized count. This wrapper for the
-    VST is not blind to the experimental design: the sample covariate
-    information is used to estimate the global trend of genes' dispersion
-    values over the genes' mean normalized count. It can be made strictly
-    blind to experimental design by first assigning a design of ~1 before
-    running this function, or by avoiding subsetting and using
-    varianceStabilizingTransformation.
+    """Apply variance stabilizing transformation to count data.
 
-    [varianceStabilizingTransformation]
-    This function calculates a variance stabilizing transformation (VST) from the
-    fitted dispersion-mean relation(s) and then transforms the count data (normalized
-    by division by the size factors or normalization factors), yielding a matrix of
-    values which are now approximately homoskedastic (having constant variance along
-    the range of mean values). The transformation also normalizes with respect to
-    library size. The rlog is less sensitive to size factors, which can be an issue
-    when size factors vary widely. These transformations are useful when checking for
-    outliers or as input for machine learning techniques such as clustering or linear
-    discriminant analysis.
-
-    (full docs in https://rdrr.io/bioc/DESeq2/man/vst.html)
+    This function applies a variance stabilizing transformation (VST) to normalize
+    count data, producing values with approximately constant variance across the
+    range of mean values. It's useful for visualization, clustering, and other
+    downstream analyses. This is a faster implementation that estimates the dispersion
+    trend on a subset of genes.
 
     Args:
-        dds: a DESeqDataSet or a matrix of counts
+        dds: A DESeqDataSet object.
+        **kwargs: Additional arguments to pass to the vst function.
+            Common parameters include:
+            - blind: Whether the transformation should be blind to sample covariates
+              (default: TRUE).
+            - nsub: Number of genes to use for dispersion trend estimation (default: 1000).
+            - fitType: Method used for dispersion trend fitting (default: "parametric").
+
+    Returns:
+        rpy2.robjects.methods.RS4: A DESeqTransform object containing the transformed data.
+
+    Notes:
+        If the rapid vst function fails, this function will fall back to using the more
+        thorough but slower varianceStabilizingTransformation function.
+
+    References:
+        https://rdrr.io/bioc/DESeq2/man/vst.html
     """
     try:
         return r_deseq2.vst(dds, **kwargs)
@@ -277,70 +332,136 @@ def vst_transform(
 
 
 def rlog_transform(
-    dds: rpy2.robjects.methods.RS4, **kwargs
+    dds: rpy2.robjects.methods.RS4, **kwargs: Any
 ) -> rpy2.robjects.methods.RS4:
-    """
-    This function transforms the count data to the log2 scale in a way which
-    minimizes differences between samples for rows with small counts,
-    and which normalizes with respect to library size. The rlog
-    transformation produces a similar variance stabilizing effect as
-    varianceStabilizingTransformation, though rlog is more robust in the
-    case when the size factors vary widely. The transformation is useful
-    when checking for outliers or as input for machine learning techniques
-    such as clustering or linear discriminant analysis. rlog takes as input
-    a DESeqDataSet and returns a RangedSummarizedExperiment object.
+    """Apply regularized logarithm transformation to count data.
 
-
-    (full docs in https://rdrr.io/bioc/DESeq2/man/rlog.html)
+    This function transforms count data to the log2 scale using a regularized
+    logarithm transformation (rlog). It minimizes differences between samples
+    for genes with small counts and normalizes with respect to library size.
 
     Args:
-        dds: a DESeqDataSet or a matrix of counts
+        dds: A DESeqDataSet object.
+        **kwargs: Additional arguments to pass to the rlog function.
+            Common parameters include:
+            - blind: Whether the transformation should be blind to sample covariates
+              (default: TRUE).
+            - fitType: Method used for dispersion trend fitting (default: "parametric").
+
+    Returns:
+        rpy2.robjects.methods.RS4: A DESeqTransform object containing the transformed data.
+
+    Notes:
+        The rlog transformation is more robust than VST when size factors vary widely,
+        but is generally slower to compute.
+
+    References:
+        https://rdrr.io/bioc/DESeq2/man/rlog.html
     """
     return r_deseq2.rlog(dds, **kwargs)
 
 
-def deseq_results(dds: rpy2.robjects.methods.RS4, **kwargs):
-    """
-    Extracts a result table from a DESeq analysis giving base means across
-    samples, log2 fold changes, standard errors, test statistics, p-values
+def deseq_results(
+    dds: rpy2.robjects.methods.RS4, **kwargs: Any
+) -> rpy2.robjects.methods.RS4:
+    """Extract differential expression results from a DESeq analysis.
+
+    This function extracts a result table from a DESeq2 analysis, providing base means
+    across samples, log2 fold changes, standard errors, test statistics, p-values
     and adjusted p-values.
 
-    (full docs in https://rdrr.io/bioc/DESeq2/man/results.html)
-
     Args:
-        dds: a DESeqDataSet object, coming from "run_dseq2"
+        dds: A DESeqDataSet object, coming from the `run_dseq2` function.
+        **kwargs: Additional arguments to pass to the results function.
+            Common parameters include:
+            - contrast: Vector of length 3 specifying the contrast to extract.
+            - name: Name of the results to extract (alternative to contrast).
+            - lfcThreshold: Log2 fold change threshold for null hypothesis.
+            - altHypothesis: Alternative hypothesis to test.
+            - pAdjustMethod: Method for multiple testing adjustment (default: "BH").
+            - alpha: Significance level for independent filtering (default: 0.1).
+
+    Returns:
+        rpy2.robjects.methods.RS4: A DESeqResults object containing differential
+        expression statistics.
+
+    References:
+        https://rdrr.io/bioc/DESeq2/man/results.html
     """
     return r_deseq2.results(dds, **kwargs)
 
 
-def lfc_shrink(dds: rpy2.robjects.methods.RS4, **kwargs):
-    """
-    Adds shrunken log2 fold changes (LFC) and SE to a results table from
-    DESeq run without LFC shrinkage.
+def lfc_shrink(
+    dds: rpy2.robjects.methods.RS4, **kwargs: Any
+) -> rpy2.robjects.methods.RS4:
+    """Apply log fold change shrinkage to DESeq2 results.
 
-    (full docs in https://rdrr.io/bioc/DESeq2/man/lfcShrink.html)
+    This function adds shrunken log2 fold changes (LFC) and standard errors to a
+    results table from DESeq run without LFC shrinkage. Shrinking helps reduce
+    the noise in log fold change estimates for genes with low counts or high
+    variability.
+
+    Args:
+        dds: A DESeqDataSet object that has been run through `run_dseq2`.
+        **kwargs: Additional arguments to pass to the lfcShrink function.
+            Common parameters include:
+            - coef: Coefficient or contrast to apply shrinkage to.
+            - contrast: Vector of length 3 specifying the contrast to shrink.
+            - type: Shrinkage type ("normal", "apeglm", "ashr", "none").
+            - lfcThreshold: Log2 fold change threshold for null hypothesis.
+            - res: A DESeqResults object to shrink (if not specifying coef or contrast).
+
+    Returns:
+        rpy2.robjects.methods.RS4: A DESeqResults object with shrunken log fold changes.
+
+    References:
+        https://rdrr.io/bioc/DESeq2/man/lfcShrink.html
     """
     return r_deseq2.lfcShrink(dds, **kwargs)
 
 
-def fpkm(dds: rpy2.robjects.methods.RS4, **kwargs):
-    """
-    The following function returns fragment counts normalized per kilobase of feature
-    length per million mapped fragments (by default using a robust estimate of the
-    library size, as in estimateSizeFactors).
+def fpkm(dds: rpy2.robjects.methods.RS4, **kwargs: Any) -> Any:
+    """Calculate FPKM (Fragments Per Kilobase of transcript per Million mapped reads).
 
-    See: https://rdrr.io/bioc/DESeq2/man/fpkm.html
+    This function returns fragment counts normalized per kilobase of feature length
+    per million mapped fragments. FPKM is commonly used for normalizing RNA-seq data
+    to allow comparison of transcript abundances both within and between samples.
+
+    Args:
+        dds: A DESeqDataSet object.
+        **kwargs: Additional arguments to pass to the fpkm function.
+            Common parameters include:
+            - robust: Whether to use the robust size factors (default: TRUE).
+            - norm.factors: Optional normalization factors.
+
+    Returns:
+        Any: A matrix of FPKM values with the same dimensions as the original count
+        matrix (genes as rows, samples as columns).
+
+    References:
+        https://rdrr.io/bioc/DESeq2/man/fpkm.html
     """
     return r_deseq2.fpkm(dds, **kwargs)
 
 
-def fpm(dds: rpy2.robjects.methods.RS4, **kwargs):
-    """
-    Calculates either a robust version (default) or the traditional matrix of
-    fragments/counts per million mapped fragments (FPM/CPM). Note: this
-    function is written very simply and can be easily altered to produce other
-    behavior by examining the source code.
+def fpm(dds: rpy2.robjects.methods.RS4, **kwargs: Any) -> Any:
+    """Calculate FPM/CPM (Fragments/Counts Per Million mapped reads).
 
-    See: https://rdrr.io/bioc/DESeq2/man/fpm.html
+    This function calculates either a robust version (default) or the traditional
+    matrix of fragments/counts per million mapped fragments (FPM/CPM).
+
+    Args:
+        dds: A DESeqDataSet object.
+        **kwargs: Additional arguments to pass to the fpm function.
+            Common parameters include:
+            - robust: Whether to use the robust size factors (default: TRUE).
+            - norm.factors: Optional normalization factors.
+
+    Returns:
+        Any: A matrix of FPM/CPM values with the same dimensions as the original count
+        matrix (genes as rows, samples as columns).
+
+    References:
+        https://rdrr.io/bioc/DESeq2/man/fpm.html
     """
     return r_deseq2.fpm(dds, **kwargs)

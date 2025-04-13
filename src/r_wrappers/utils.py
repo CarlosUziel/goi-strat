@@ -1,3 +1,16 @@
+"""
+Utility functions for R package integration via rpy2.
+
+This module provides utility functions that help with the interaction between Python and R
+through rpy2. It includes functions for data conversion, file operations, and gene ID mapping.
+
+Attributes:
+    r_annotation_dbi: The imported AnnotationDbi R package.
+    r_pdist: The imported parallelDist R package.
+    r_utils: The imported utils R package.
+    r_genomic_ranges: The imported GenomicRanges R package.
+"""
+
 import logging
 import re
 from copy import deepcopy
@@ -23,9 +36,19 @@ r_genomic_ranges = importr("GenomicRanges")
 
 def rpy2_df_to_pd_df(rpy2_df: Any) -> pd.DataFrame:
     """
-    Converts a rpy2 DataFrame object to a pandas Dataframe object.
+    Converts a rpy2 DataFrame object to a pandas DataFrame object.
 
-    (docs in https://rpy2.github.io/doc/latest/html/pandas.html)
+    Uses the rpy2 conversion utilities to transform R dataframes into pandas dataframes.
+
+    Args:
+        rpy2_df: An R dataframe to be converted to pandas. Will be coerced to
+            a data.frame if it isn't one.
+
+    Returns:
+        A pandas DataFrame containing the converted data.
+
+    Note:
+        For more information see: https://rpy2.github.io/doc/latest/html/pandas.html
     """
     # 0. Ensure rpy2 object is (or is convertible to) an R dataframe
     rpy2_df = ro.r("as.data.frame")(rpy2_df)
@@ -38,9 +61,18 @@ def rpy2_df_to_pd_df(rpy2_df: Any) -> pd.DataFrame:
 
 def rpy2_df_to_pd_df_manual(rpy2_df: Any) -> pd.DataFrame:
     """
-    Manually converts a rpy2 DataFrame object to a pandas Dataframe object.
+    Manually converts a rpy2 DataFrame object to a pandas DataFrame object.
+
     This is a somewhat more robust approach for dataframes that have complex
-    values.
+    values that may cause issues with the automatic conversion.
+
+    Args:
+        rpy2_df: An R dataframe to be converted to pandas. Will be coerced to
+            a data.frame if it isn't one.
+
+    Returns:
+        A pandas DataFrame containing the converted data with NA_integer_ values
+        replaced with numpy's np.nan.
     """
     # 0. Ensure rpy2 object is (or is convertible to) an R dataframe
     rpy2_df = ro.r("data.frame")(rpy2_df)
@@ -60,11 +92,19 @@ def rpy2_df_to_pd_df_manual(rpy2_df: Any) -> pd.DataFrame:
 
 def pd_df_to_rpy2_df(pd_df: pd.DataFrame) -> ro.DataFrame:
     """
-    Converts a pandas DataFrame object to a rpy2 Dataframe object.
+    Converts a pandas DataFrame object to a rpy2 DataFrame object.
 
-        (docs in https://rpy2.github.io/doc/latest/html/pandas.html)
+    Uses the rpy2 conversion utilities to transform pandas dataframes into R dataframes.
+
+    Args:
+        pd_df: A pandas DataFrame to be converted to R.
+
+    Returns:
+        An R DataFrame containing the converted data.
+
+    Note:
+        For more information see: https://rpy2.github.io/doc/latest/html/pandas.html
     """
-
     with localconverter(ro.default_converter + pandas2ri.converter):
         r_from_pd_df = ro.conversion.py2rpy(pd_df)
     return r_from_pd_df
@@ -73,13 +113,28 @@ def pd_df_to_rpy2_df(pd_df: pd.DataFrame) -> ro.DataFrame:
 def assay_to_df(data: Any) -> pd.DataFrame:
     """
     Transforms an object that can be converted to an assay into a DataFrame.
+
+    Args:
+        data: An R object that has an assay method (e.g., SummarizedExperiment).
+
+    Returns:
+        A pandas DataFrame containing the assay data.
     """
     return rpy2_df_to_pd_df(ro.r("assay")(data))
 
 
 def read_rds(load_path: Path) -> Any:
     """
-    Reads a .RDS file and loads it into an R object
+    Reads a .RDS file and loads it into an R object.
+
+    Args:
+        load_path: Path to the .RDS file to be loaded.
+
+    Returns:
+        The R object stored in the .RDS file.
+
+    Raises:
+        ValueError: If the file extension is not .RDS or the file doesn't exist.
     """
     # 0. Ensure path has the right extension
     if load_path.suffix.upper() != ".RDS" and load_path.is_file():
@@ -88,9 +143,16 @@ def read_rds(load_path: Path) -> Any:
     return ro.r.readRDS(str(load_path))
 
 
-def save_rds(obj: Any, save_path: Path):
+def save_rds(obj: Any, save_path: Path) -> None:
     """
     Saves a given R object into an .RDS file.
+
+    Args:
+        obj: R object to save.
+        save_path: Path where to save the .RDS file.
+
+    Raises:
+        ValueError: If the file extension is not .RDS.
     """
     # 0. Ensure path has the right extension
     if save_path.suffix != ".RDS":
@@ -99,9 +161,16 @@ def save_rds(obj: Any, save_path: Path):
     ro.r.saveRDS(obj, file=str(save_path))
 
 
-def save_csv(obj: Any, save_path: Path):
+def save_csv(obj: Any, save_path: Path) -> None:
     """
-    Saves a given R object into an .csv file.
+    Saves a given R object into a .csv file.
+
+    Args:
+        obj: R object to save, typically a data.frame.
+        save_path: Path where to save the .csv file.
+
+    Raises:
+        ValueError: If the file extension is not .csv.
     """
     # 0. Ensure path has the right extension
     if save_path.suffix != ".csv":
@@ -111,22 +180,27 @@ def save_csv(obj: Any, save_path: Path):
     r_utils.write_csv(obj, str(save_path))
 
 
-def df_to_file(obj: Any, save_path: Path, sep: str = ","):
+def df_to_file(obj: Any, save_path: Path, sep: str = ",") -> None:
     """
-    Saves a given R data frame into a file, with a given separator between
-        columns.
+    Saves a given R data frame into a file, with a given separator between columns.
+
+    Args:
+        obj: R object to save, typically a data.frame.
+        save_path: Path where to save the file.
+        sep: Separator character to use between columns. Defaults to comma.
     """
     r_utils.write_table(obj, str(save_path), sep=sep)
 
 
-def sample_distance(data: Any):
+def sample_distance(data: Any) -> Any:
     """
-    Computes the sample distances for given annot_df and returns it plus the
-    necessary rows and col for annot_df clustering.
+    Computes the sample distances for given data and returns the distance matrix.
 
     Args:
-         data: can be a DESeqDataSet or a DESeqTransform (from rlog or vst
-            transforms)
+        data: Can be a DESeqDataSet or a DESeqTransform (from rlog or vst transforms).
+
+    Returns:
+        An R distance matrix object containing pairwise distances between samples.
     """
     with localconverter(ro.default_converter):
         return r_pdist.parDist(ro.r("t")(ro.r("assay")(data)))
@@ -139,18 +213,19 @@ def annotate_deseq_result(
     replace_na: bool = False,
 ) -> pd.DataFrame:
     """
-        Annotates a result object, adding a column with SYMBOL gene ids.
+    Annotates a DESeq result object, adding columns with additional gene information.
 
     Args:
-        result: a DESeqResults object
+        result: A DESeqResults object.
         org_db: Organism annotation database.
         from_type: Original ID naming scheme. Possible values: "ENSEMBL",
             "ENTREZID" and "SYMBOL".
-        replace_na: whether to replace NA values (due to failed mapping)
+        replace_na: Whether to replace NA values (due to failed mapping)
             with original gene ids.
 
     Returns:
-        An annotated result
+        A pandas DataFrame with the DESeq results annotated with additional gene
+        information (ENTREZID, SYMBOL, GENENAME, GENETYPE).
     """
     # 1. Results object to pandas dataframe
     result_df = rpy2_df_to_pd_df(result)
@@ -190,18 +265,21 @@ def filter_deseq_results(
     p_th: float = 0.05,
     lfc_level: str = "all",
     lfc_th: float = 2.0,
-):
+) -> pd.DataFrame:
     """
-    Filter deseq results according to statistics metrics.
+    Filter DESeq results according to statistical metrics.
 
     Args:
-        result: pandas dataframe of deseq results
-        p_filter: by which column to filter, usually "pvalue" or "padj"
-        p_th: p-adjusted threshold to select the most significant genes
-        lfc_level: genes to write, "up" for up-regulated, "down" for
-            down-regulated, and "all" for all.
-        lfc_th: log2 fold change threshold. Usually, results are considered to be
+        result: Pandas dataframe of DESeq results.
+        p_filter: Column to filter by, usually "pvalue" or "padj".
+        p_th: P-value threshold to select the most significant genes.
+        lfc_level: Genes to include: "up" for up-regulated, "down" for
+            down-regulated, and "all" for all DE genes.
+        lfc_th: Log2 fold change threshold. Usually, results are considered to be
             biologically significant when absolute log2FoldChange > 2.
+
+    Returns:
+        A filtered pandas DataFrame containing only the genes that meet the specified criteria.
     """
     # 1. Filter by LFC level
     if lfc_level == "up":
@@ -217,39 +295,52 @@ def filter_deseq_results(
     return result
 
 
-def get_top_var_genes(data: rpy2.robjects.methods.RS4, top_n: int = 1000):
+def get_top_var_genes(
+    data: rpy2.robjects.methods.RS4, top_n: int = 1000
+) -> ro.IntVector:
     """
-    Get the genes with the highest variance estimate in DESeqDataSet or
-        DESeqTransform objects.
+    Get the genes with the highest variance estimate in DESeqDataSet or DESeqTransform objects.
 
     Args:
-        data: data to extract the top var genes from
-        top_n: number of top genes to return
+        data: Data to extract the top var genes from (DESeqDataSet or DESeqTransform).
+        top_n: Number of top genes to return.
+
+    Returns:
+        An R IntVector of gene indices with the highest variance.
     """
     return ro.r("head")(
         ro.r("order")(ro.r("rowVars")(ro.r("assay")(data))), top_n, decreasing=True
     )
 
 
-def make_granges_from_dataframe(df: Any, **kwargs):
+def make_granges_from_dataframe(df: Any, **kwargs) -> Any:
     """
-    Takes a data frame-like object as input and tries to automatically find
-    the columns that describe genomic ranges. It returns them as a GRanges
-    object.
+    Creates a GRanges object from a dataframe.
 
-    See: https://rdrr.io/bioc/GenomicRanges/man/makeGRangesFromDataFrame.html
+    Takes a data frame-like object as input and tries to automatically find
+    the columns that describe genomic ranges. It returns them as a GRanges object.
 
     Args:
         df: A data frame or DataFrame object. If not, then the function first
             tries to turn df into a data frame with as.data.frame(df).
+        **kwargs: Additional arguments to pass to makeGRangesFromDataFrame.
+
+    Returns:
+        A GRanges object containing genomic ranges from the dataframe.
+
+    Note:
+        For more details see: https://rdrr.io/bioc/GenomicRanges/man/makeGRangesFromDataFrame.html
     """
     df = pd_df_to_rpy2_df(df) if isinstance(df, pd.DataFrame) else df
     return r_genomic_ranges.makeGRangesFromDataFrame(df, **kwargs)
 
 
-def clear_open_devices():
+def clear_open_devices() -> None:
     """
-    Clear open devices, useful before plotting functions.
+    Clear open graphic devices, useful before creating new plots.
+
+    This function ensures no previous R plotting devices are active,
+    which can sometimes cause issues when generating new plots.
     """
     f = ro.r(
         """
@@ -270,9 +361,8 @@ def map_gene_id(
     to_type: str = "ENTREZID",
     multiple_values: str = "list",
 ) -> pd.Series:
-    """Changes the ID naming scheme of the given gene set.
-
-    See: https://rdrr.io/bioc/ensembldb/man/EnsDb-AnnotationDbi.html
+    """
+    Changes the ID naming scheme of the given gene set.
 
     Args:
         genes: Set of gene names. Should be a string vector.
@@ -281,12 +371,18 @@ def map_gene_id(
             "ENTREZID" and "SYMBOL".
         to_type: Resulting ID naming scheme. Possible values: "ENSEMBL",
             "ENTREZID" and "SYMBOL".
-        multiple_values: what to do when multiple values are mapped.
-            Options are: "first", "list", (default) "filter", "asNA".
+        multiple_values: What to do when multiple values are mapped.
+            Options are: "first", "list" (default), "filter", "asNA".
 
     Returns:
-        A pandas series containing with the original gene ids as index (from_type) and
+        A pandas Series containing the original gene ids as index (from_type) and
         the new gene ids (to_type) as values.
+
+    Raises:
+        ValueError: If from_type or to_type is not a valid column in the organism database.
+
+    Note:
+        For more details see: https://rdrr.io/bioc/ensembldb/man/EnsDb-AnnotationDbi.html
     """
     # 0. Check arguments
     allowed_tyes = ro.r("columns")(org_db.db)
@@ -323,25 +419,22 @@ def map_gene_id(
 
 def prepare_gene_list(
     genes: pd.DataFrame,
-    org_db: OrgDB = None,
-    from_type: str = None,
-    to_type: str = None,
+    org_db: Optional[OrgDB] = None,
+    from_type: Optional[str] = None,
+    to_type: Optional[str] = None,
     p_col: str = "padj",
-    p_th: float = None,
+    p_th: Optional[float] = None,
     lfc_col: str = "log2FoldChange",
     lfc_level: str = "all",
-    lfc_th: float = None,
+    lfc_th: Optional[float] = None,
     numeric_col: str = "log2FoldChance",
 ) -> ro.FloatVector:
     """
-    Loads a gene list from a .csv and prepares it to match the expected
+    Prepares a gene list for functional analysis with clusterProfiler.
+
+    Loads a gene list from a dataframe and prepares it to match the expected
     format of clusterProfiler. If both "from_type" and "to_type" are
     provided, convert ID types from "from_type" to "to_type".
-
-    The index of `genes` should contain the sample IDs of type `from_type`.
-
-    Functions needing this resulting gene list require that all genes
-    are in the same ID namespace, so genes not mapped are removed.
 
     Args:
         genes: A dataframe of at least two columns, containing gene IDs and
@@ -354,7 +447,7 @@ def prepare_gene_list(
         p_col: Name of p-value column.
         p_th: Optionally filter by p_col.
         lfc_col: Name of LFC column.
-        lfc_level: genes to write, "up" for up-regulated, "down" for
+        lfc_level: Genes to include: "up" for up-regulated, "down" for
             down-regulated, and "all" for all.
         lfc_th: Optionally filter by lfc_col.
         numeric_col: Column that should be used to retrieve the numeric vector
@@ -362,12 +455,14 @@ def prepare_gene_list(
             column or any other the user decides in order to sort and, later if
             decided, threshold and filter the list.
 
-            E.g. (for DESeq2 results): 'baseMean', 'log2FoldChange',
-            'lfcSE', 'stat', 'pvalue', 'padj'
-
     Returns:
         Float vector (R object) with sorted numeric values and names equal to
             gene ids.
+
+    Note:
+        The index of `genes` should contain the sample IDs of type `from_type`.
+        Functions needing this resulting gene list require that all genes
+        are in the same ID namespace, so genes not mapped are removed.
     """
     genes_list = deepcopy(genes)
     # 1. Annotate genes if appropriate arguments are provided
@@ -415,15 +510,22 @@ def get_design_matrix(
     factors: Iterable[str],
     id_col: Optional[str] = None,
     **kwargs,
-):
+) -> Any:
     """
-    Get design matrix for differential analysis.
+    Creates a design matrix for differential analysis.
 
     Args:
-        targets: R dataframe containing samples annotations.
-        factors: factors used for differential analysis. Must be
+        targets: Pandas DataFrame containing sample annotations.
+        factors: Factors used for differential analysis. Must be
             columns available in "targets". Duplicates will be ignored.
-        id_col: Column containing sample ids
+        id_col: Column containing sample ids.
+        **kwargs: Additional arguments to pass to the model.matrix function.
+
+    Returns:
+        An R model matrix object suitable for differential expression analysis.
+
+    Raises:
+        AssertionError: If not all factors are columns in the targets DataFrame.
     """
     rpy2_targets = pd_df_to_rpy2_df(targets)
 
@@ -457,16 +559,18 @@ def get_design_matrix(
     return design_matrix
 
 
-def homogeinize_seqlevels_style(granges_obj: Any, annotations: Any):
+def homogeinize_seqlevels_style(granges_obj: Any, annotations: Any) -> Any:
     """
-    Change seqlevels style of input granges accordingly so they match the style of the
-        annotations.
+    Standardizes sequence level styles between two GRanges objects.
+
+    Changes seqlevels style of input granges accordingly so they match the style of the
+    annotations. This is important when working with genome annotations from different sources.
 
     Args:
         granges_obj: GRanges object whose seqlevels will be changed.
-        annotations: Annotation GRanges object.
+        annotations: Annotation GRanges object with the desired seqlevel style.
 
-    Return:
+    Returns:
         GRanges object with annotation-matching seqlevels.
     """
     return ro.r(

@@ -3,12 +3,16 @@ Wrappers for R package DMRcate
 
 All functions have pythonic inputs and outputs.
 
+DMRcate is a package for the discovery and annotation of differentially methylated
+regions (DMRs) from both array and sequencing data, using a kernel-based approach.
+DMRcate can accommodate complex experimental designs.
+
 Note that the arguments in python use "_" instead of ".".
 rpy2 does this transformation for us.
 
 Example:
-R --> data.category
-Python --> data_category
+    R --> data.category
+    Python --> data_category
 """
 
 from pathlib import Path
@@ -25,58 +29,90 @@ pdf = robjects.r("pdf")
 dev_off = robjects.r("dev.off")
 
 
-def cpg_annotate(obj: Any, design: Any, **kwargs):
-    """
-    Annotate CpGs with their chromosome position and test statistic
+def cpg_annotate(obj: Any, design: Any, **kwargs: Any) -> Any:
+    """Annotate CpGs with their chromosome position and test statistic.
 
-    Either:
+    This function performs one of two tasks:
 
-    - Annotate a matrix of M-values (logit transform of beta)
-      representing 450K or EPIC data with probe weights
-      (depending on analysis.type) and chromosomal position,
-    - Standardise this information from DSS:::DMLtest()
-      to the same data format.
-
-    See: https://rdrr.io/bioc/DMRcate/man/cpg.annotate.html
+    1. Annotate a matrix of M-values (logit transform of beta) representing 450K or EPIC data
+       with probe weights (depending on analysis.type) and chromosomal position, or
+    2. Standardize information from DSS:::DMLTest() to the same data format.
 
     Args:
         obj: Either:
-
-            - A matrix of M-values, with unique Illumina probe IDs
-              as rownames and unique sample IDs as column names, or
+            - A matrix of M-values, with unique Illumina probe IDs as rownames and unique
+              sample IDs as column names, or
             - Output from DSS:::DMLtest().
-        design: Study design matrix. Identical context to differential
-            analysis pipeline in limma. Must have an
-            intercept if contrasts=FALSE. Applies only when
-            analysis.type="differential". Only applicable when
-            datatype="array".
+        design: Study design matrix. Identical context to differential analysis pipeline
+            in limma. Must have an intercept if contrasts=FALSE. Applies only when
+            analysis.type="differential". Only applicable when datatype="array".
+        **kwargs: Additional arguments to pass to the cpg.annotate function.
+            Common parameters include:
+            - datatype: Type of methylation data, either "array" or "sequencing".
+            - what: Type of differential methylation analysis, either "M" (default) or "Beta".
+            - analysis.type: Either "differential" (default) or "variability".
+            - contrasts: Whether design matrix should be converted to contrasts.
+            - cont.matrix: Contrast matrix to be used if contrasts=TRUE.
+            - coef: Coefficient(s) to test against 0 if analysis.type="differential".
+            - fdr: FDR cutoff for significant probes if analysis.type="differential".
+
+    Returns:
+        Any: An annotation object with CpG information, including chromosomal
+        coordinates and test statistics. This object can be passed to dmr_cate().
+
+    References:
+        https://rdrr.io/bioc/DMRcate/man/cpg.annotate.html
     """
     return r_dmrcate.cpg_annotate(object=obj, design=design, **kwargs)
 
 
-def dmr_cate(obj: Any, **kwargs):
-    """
-    DMR identification
-    The main function of this package. Computes a kernel estimate against a
-    null comparison to identify significantly differentially (or variable)
+def dmr_cate(obj: Any, **kwargs: Any) -> Any:
+    """Identify differentially methylated regions.
+
+    The main function of the DMRcate package. Computes a kernel estimate against
+    a null comparison to identify significantly differentially (or variable)
     methylated regions.
 
-    See: https://rdrr.io/bioc/DMRcate/man/dmrcate.html
-
     Args:
-        obj: A class of type "annot", created from cpg.annotate.
+        obj: A class of type "annot", created from cpg_annotate().
+        **kwargs: Additional arguments to pass to the dmrcate function.
+            Common parameters include:
+            - lambda: Gaussian kernel bandwidth (default: 1000).
+            - C: Scaling factor for bandwidth (default: 2).
+            - min.cpgs: Minimum number of CpGs for DMR (default: 2).
+            - pcutoff: FDR cutoff for DMR significance (default: 0.05).
+            - consec: Whether significant CpGs should be consecutive (default: FALSE).
+            - conseclambda: Consecutive distance for DMRS (default: lambda).
+
+    Returns:
+        Any: A DMResults object containing the identified differentially methylated regions.
+        This object can be further processed using extract_ranges().
+
+    References:
+        https://rdrr.io/bioc/DMRcate/man/dmrcate.html
     """
     return r_dmrcate.dmrcate(object=obj, **kwargs)
 
 
-def extract_ranges(dmrs: Any, **kwargs):
-    """
-    Takes a DMResults object and produces the corresponding GRanges object.
+def extract_ranges(dmrs: Any, **kwargs: Any) -> Any:
+    """Extract GRanges object from DMResults object.
 
-    See: https://rdrr.io/bioc/DMRcate/man/extractRanges.html
+    Takes a DMResults object and produces the corresponding GRanges object
+    containing the genomic coordinates of identified DMRs.
 
     Args:
-        dmrs: A DMResults object.
+        dmrs: A DMResults object from dmr_cate().
+        **kwargs: Additional arguments to pass to the extractRanges function.
+            Common parameters include:
+            - genome: Genome build to use for annotations (default: "hg19").
+            - threshold: Significance threshold for DMRs (default: 0.05).
+
+    Returns:
+        Any: A GRanges object containing the genomic coordinates and metadata
+        for the identified differentially methylated regions.
+
+    References:
+        https://rdrr.io/bioc/DMRcate/man/extractRanges.html
     """
     return r_dmrcate.extractRanges(dmrs, **kwargs)
 
@@ -89,32 +125,38 @@ def dmr_plot(
     save_path: Path,
     width: int = 10,
     height: int = 10,
-    **kwargs,
-):
-    """
+    **kwargs: Any,
+) -> None:
+    """Plot an individual DMR with genomic context and methylation patterns.
+
     Plots an individual DMR (in context of possibly other DMRs) as found by
     dmrcate. Heatmaps are shown as well as proximal coding regions, smoothed
     group means and chromosome ideogram.
 
-    See: https://rdrr.io/bioc/DMRcate/man/DMR.plot.html
-
     Args:
-        ranges: A GRanges object (ostensibly created by extractRanges())
+        ranges: A GRanges object (typically created by extract_ranges())
             describing DMR coordinates.
-        dmr: Index of ranges (one integer only) indicating which DMR to be
-            plotted.
+        dmr: Index of ranges (one integer only) indicating which DMR to be plotted.
         cpgs: Either:
+            - A matrix of beta values for plotting, with unique Illumina probe IDs as rownames.
+            - A GenomicRatioSet, annotated with the appropriate array and data types.
+            - A BSseq object containing per-CpG methylation and coverage counts for the samples.
+        sample_groups: Target sample groups for color coding in the plot.
+        save_path: Path where the generated plot will be saved.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+        **kwargs: Additional arguments to pass to the DMR.plot function.
+            Common parameters include:
+            - genome: Genome build to use for annotations (default: "hg19").
+            - CpGs.disp: Number of CpGs to display (default: 50).
+            - mainCol: Color for main plot title.
+            - stat: Test statistic for coloring DMR (default: "beta").
 
-            - A matrix of beta values for plotting, with unique Illumina
-              probe IDs as rownames.
-            - A GenomicRatioSet, annotated with the appropriate array and
-              data types
-            - A BSseq object containing per-CpG methylation and coverage
-              counts for the samples to be plotted
-        sample_groups: Targets sample groups
-        save_path: where to save the generated plot
-        width: width of saved figure
-        height: height of saved figure
+    Raises:
+        RRuntimeError: If there is an error in the R function call.
+
+    References:
+        https://rdrr.io/bioc/DMRcate/man/DMR.plot.html
     """
     # 0. Setup
     get_colors = robjects.r(

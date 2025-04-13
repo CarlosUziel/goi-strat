@@ -12,7 +12,7 @@ Python --> data_category
 """
 
 from pathlib import Path
-from typing import Dict, Iterable, Optional, Union
+from typing import Any, Dict, Iterable, Optional, Union
 
 import pandas as pd
 from rpy2 import robjects as ro
@@ -32,20 +32,41 @@ def complex_heatmap(
     height: int = 20,
     heatmap_legend_side: str = "right",
     annotation_legend_side: str = "right",
-    **kwargs,
-):
-    """
-    Plots a heatmap of a dataframe.
+    **kwargs: Any,
+) -> None:
+    """Create a complex heatmap visualization and save it to a file.
 
-    See: https://rdrr.io/bioc/ComplexHeatmap/man/Heatmap.html
+    This function creates a heatmap visualization from a dataframe of numeric values,
+    with many customization options for clustering, color scales, annotations, etc.
 
     Args:
         counts_matrix: A pandas dataframe containing the numeric values for
-            the heatmap.
-        save_path: where to save the generated plot
-        width: width of saved figure
-        height: height of saved figure
+            the heatmap. Rows typically represent features (genes, proteins, etc.)
+            and columns represent samples or conditions.
+        save_path: Path where the generated plot will be saved.
+        width: Width of the saved figure in inches.
+        height: Height of the saved figure in inches.
+        heatmap_legend_side: Position of the heatmap legend ("right", "left",
+            "bottom", or "top").
+        annotation_legend_side: Position of the annotation legend ("right", "left",
+            "bottom", or "top").
+        **kwargs: Additional arguments to pass to the Heatmap function.
+            Common parameters include:
+            - name: Name of the heatmap, used as the title for the color legend.
+            - cluster_rows: Whether to cluster rows (default: TRUE).
+            - cluster_columns: Whether to cluster columns (default: TRUE).
+            - show_row_names: Whether to show row names (default: TRUE).
+            - show_column_names: Whether to show column names (default: TRUE).
+            - row_names_side: Side to place the row names ("left" or "right").
+            - column_names_side: Side to place the column names ("top" or "bottom").
+            - top_annotation: Annotation to add to the top of the heatmap.
+            - right_annotation: Annotation to add to the right of the heatmap.
+            - col: Color mapping function for the heatmap.
+            - row_split: Splits rows into different groups.
+            - column_split: Splits columns into different groups.
 
+    References:
+        https://rdrr.io/bioc/ComplexHeatmap/man/Heatmap.html
     """
     # 0. Compute heatmap
     mat = ro.r("as.matrix")(pd_df_to_rpy2_df(counts_matrix))
@@ -69,19 +90,38 @@ def complex_heatmap(
 
 
 def heatmap_annotation(
-    df: pd.DataFrame, col: Optional[Dict[str, Dict[str, str]]] = ro.NULL, **kwargs
-):
-    """
-    Creates a heatmap annotation object used to annotate heatmap columns.
+    df: pd.DataFrame, col: Optional[Dict[str, Dict[str, str]]] = ro.NULL, **kwargs: Any
+) -> Any:
+    """Create a heatmap annotation object for annotating heatmap columns.
 
-    See: https://rdrr.io/bioc/ComplexHeatmap/man/HeatmapAnnotation.html
+    This function creates a HeatmapAnnotation object that can be used to add
+    annotations to the columns (or rows) of a heatmap. These annotations can
+    represent categorical variables, continuous variables, or other data types.
 
     Args:
-        df: A DataFrame where each column will be treated as a simple
-            annotation. The DataFrame must have column names.
-        col: A dictionary of dictionaries, where each element is a column
-            name of df containing a mapping of column values and colors.
-            See SingleAnnotation for how to set colors.
+        df: A DataFrame where each column will be treated as a simple annotation.
+            The DataFrame must have column names. Each column creates one row of
+            annotation in the heatmap.
+        col: A dictionary of dictionaries, where each element is a column name
+            of df containing a mapping of column values to colors. For example:
+            {"condition": {"treatment": "red", "control": "blue"}}
+        **kwargs: Additional arguments to pass to the HeatmapAnnotation function.
+            Common parameters include:
+            - name: Name of the annotation, used as the title for legends.
+            - show_legend: Whether to show the annotation legend.
+            - show_annotation_name: Whether to show the annotation name.
+            - annotation_name_side: Side to place annotation names.
+            - annotation_legend_param: List of parameters for annotation legends.
+
+    Returns:
+        Any: A HeatmapAnnotation object that can be passed to the complex_heatmap
+        function as top_annotation, bottom_annotation, etc.
+
+    Raises:
+        ValueError: If any keys in col are not column names in df.
+
+    References:
+        https://rdrr.io/bioc/ComplexHeatmap/man/HeatmapAnnotation.html
     """
     if col is not ro.NULL:
         # 0. Process colors
@@ -103,17 +143,32 @@ def heatmap_annotation(
     )
 
 
-def anno_barplot(values: Union[Iterable[float], pd.DataFrame], **kwargs):
-    """
-    Using barplot as annotation.
+def anno_barplot(values: Union[Iterable[float], pd.DataFrame], **kwargs: Any) -> Any:
+    """Create a barplot annotation for a heatmap.
 
-    See: https://rdrr.io/github/eilslabs/ComplexHeatmap/man/anno_barplot.html
+    This function creates a barplot annotation that can be added to a heatmap
+    to show the distribution of a continuous variable across samples or features.
 
     Args:
-        values: A vector of numeric values. If the value is a matrix, columns of the
-            matrix will be represented as stacked barplots. Note for stacked barplots,
-            each row in the matrix should only contain values with same sign (either
-            all positive or all negative).
+        values: A vector of numeric values or a DataFrame. If the value is a DataFrame,
+            columns of the DataFrame will be represented as stacked barplots. For stacked
+            barplots, each row in the DataFrame should only contain values with the same
+            sign (either all positive or all negative).
+        **kwargs: Additional arguments to pass to the anno_barplot function.
+            Common parameters include:
+            - gp: Graphical parameters for the bars.
+            - border: Whether to draw borders around bars.
+            - bar_width: Width of bars.
+            - height: Height of the annotation.
+            - axis: Whether to add axis to the barplot.
+            - axis_param: Parameters for the axis.
+            - ylim: Y-limits for the barplot.
+
+    Returns:
+        Any: An annotation function that can be used in HeatmapAnnotation.
+
+    References:
+        https://rdrr.io/bioc/ComplexHeatmap/man/anno_barplot.html
     """
     values = (
         ro.r("as.matrix")(pd_df_to_rpy2_df(values))
