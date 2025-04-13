@@ -84,7 +84,7 @@ def process_bismark_aln(
 
     Note:
         SAM/BAM files from aligners other than Bismark will not work with this function.
-    
+
     Refrences:
         https://rdrr.io/bioc/methylKit/man/processBismarkAln-methods.html
     """
@@ -513,7 +513,7 @@ def violin_plot(
         save_path: Path where to save the generated violin plot.
         width: Width of saved figure in inches.
         height: Height of saved figure in inches.
-    
+
     Returns:
         None: The function saves the generated plot to the specified path.
     """

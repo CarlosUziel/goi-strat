@@ -1,7 +1,7 @@
 from datetime import date
 from itertools import chain
 from pathlib import Path
-from typing import Dict, Iterable, Union, Any
+from typing import Any, Dict, Iterable, Union
 
 from tqdm.rich import tqdm
 
@@ -17,8 +17,8 @@ def submit_batches(
 ) -> None:
     """Submit batches of Python scripts to a SLURM cluster.
 
-    This function organizes Python scripts into batches and submits each batch as a 
-    separate SLURM job. It creates appropriate log directories with date-based 
+    This function organizes Python scripts into batches and submits each batch as a
+    separate SLURM job. It creates appropriate log directories with date-based
     organization and configures each job with proper SLURM directives.
 
     Args:
