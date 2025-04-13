@@ -1,7 +1,7 @@
 from datetime import date
 from itertools import chain
 from pathlib import Path
-from typing import Dict, Iterable
+from typing import Dict, Iterable, Union, Any
 
 from tqdm.rich import tqdm
 
@@ -13,17 +13,31 @@ def submit_batches(
     src_path: Path,
     logs_path: Path,
     common_kwargs: Dict[str, str],
-    slurm_kwargs: Dict[str, str],
-):
-    """
-    Given an iterable of batches of python scripts, submit each to a slurm node.
+    slurm_kwargs: Dict[str, Union[str, Any]],
+) -> None:
+    """Submit batches of Python scripts to a SLURM cluster.
+
+    This function organizes Python scripts into batches and submits each batch as a 
+    separate SLURM job. It creates appropriate log directories with date-based 
+    organization and configures each job with proper SLURM directives.
 
     Args:
-        batches: An iterable of python scripts batches.
-        src_path: Python path and parent of scripts.
-        logs_path: Where to store logs.
-        common_kwargs: Common scripts kwargs.
-        slurm_kwargs: A dictionary of SLURM cluster batch job options.
+        batches: Dictionary mapping batch names to iterables of Python script paths.
+            Each batch will be submitted as a separate SLURM job.
+        src_path: Path to the source code directory, used as the PYTHONPATH and
+            parent directory for script paths.
+        logs_path: Directory path where log files should be stored.
+        common_kwargs: Dictionary of common command-line arguments to pass to all
+            Python scripts in all batches.
+        slurm_kwargs: Dictionary of SLURM directives to use for job submission
+            (e.g., {'--ntasks-per-node': '48', '--partition': 'skylake_0384'}).
+
+    Returns:
+        None
+
+    Note:
+        For each batch, a new directory is created under logs_path with the current
+        date and batch name. SLURM output and error logs are stored in this directory.
     """
     # 0. Setup
     logs_root = logs_path.joinpath(date.today().strftime("%Y_%m_%d"))
