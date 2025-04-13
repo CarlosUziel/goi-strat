@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 import rpy2.robjects as ro
 from pydantic.dataclasses import dataclass
@@ -26,6 +26,12 @@ from r_wrappers.utils import rpy2_df_to_pd_df, save_rds
 
 
 class Config:
+    """Configuration class for Pydantic dataclasses.
+
+    This class enables the use of arbitrary types in dataclasses
+    decorated with @dataclass(config=Config).
+    """
+
     arbitrary_types_allowed = True
 
 
@@ -34,11 +40,20 @@ class FunctionalAnalysisBase:
     """
     Base class for functional analyses of gene lists.
 
+    This class provides common functionality for over-representation analysis (ORA)
+    and gene set enrichment analysis (GSEA) approaches. It includes methods for
+    saving results and creating various visualization plots.
+
     Args:
-        background_genes: All genes considered for the experiment.
+        background_genes: All genes considered for the experiment, typically as ranked gene list.
+        org_db: Organism database object containing annotation data.
         filtered_genes: Differentially expressed genes, filtered by user criteria.
-        files_prefix: Path to be prefixed to all generated files.
-        plots_prefix: Path to be prefixed to all generated files.
+        files_prefix: Path prefix for all generated data files.
+        plots_prefix: Path prefix for all generated plot files.
+
+    Attributes:
+        func_result: Raw functional analysis result from R.
+        func_result_df: DataFrame representation of the functional analysis result.
     """
 
     background_genes: ro.FloatVector
@@ -47,7 +62,13 @@ class FunctionalAnalysisBase:
     files_prefix: Path = Path("")
     plots_prefix: Path = Path("")
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
+        """
+        Post-initialization processing.
+
+        Converts functional analysis results to readable format and creates necessary directories.
+        Should be called by child classes after their initialization.
+        """
         # 1. Get dataframe of result
         # TODO: fix this
         try:
@@ -63,7 +84,12 @@ class FunctionalAnalysisBase:
         self.files_prefix.parent.mkdir(exist_ok=True, parents=True)
         self.plots_prefix.parent.mkdir(exist_ok=True, parents=True)
 
-    def save_rds(self):
+    def save_rds(self) -> None:
+        """
+        Save functional analysis result as R data file (.RDS).
+
+        The file will be saved with the path specified by files_prefix with .RDS extension.
+        """
         if not (self.func_result_df is None or self.func_result_df.empty):
             save_rds(self.func_result, self.files_prefix.with_suffix(".RDS"))
         else:
@@ -72,7 +98,12 @@ class FunctionalAnalysisBase:
                 "Functional result is None or empty."
             )
 
-    def save_csv(self):
+    def save_csv(self) -> None:
+        """
+        Save functional analysis result as CSV file.
+
+        The file will be saved with the path specified by files_prefix with .csv extension.
+        """
         if not (self.func_result_df is None or self.func_result_df.empty):
             self.func_result_df.to_csv(self.files_prefix.with_suffix(".csv"))
         else:
@@ -81,15 +112,25 @@ class FunctionalAnalysisBase:
                 "Functional result is None or empty."
             )
 
-    def save_all(self):
+    def save_all(self) -> None:
+        """
+        Save functional analysis results in all available formats (RDS and CSV).
+        """
         self.save_rds()
         self.save_csv()
 
-    def barplot(self, **kwargs):
+    def barplot(self, **kwargs: Any) -> None:
         """
-        Bar plot is the most widely used method to visualize enriched terms.
-        It depicts the enrichment scores (e.g. p values) color-coded and
+        Create a bar plot visualizing enriched terms.
+
+        This plot depicts the enrichment scores (e.g. p-values) color-coded and
         gene count or ratio as bar height.
+
+        Args:
+            **kwargs: Additional arguments passed to the R barplot function.
+                Common options include:
+                - showCategory: Number of categories to show (default: 10)
+                - x: Value for x-axis, either "Count" or "GeneRatio"
         """
         if not (self.func_result_df is None or self.func_result_df.empty):
             try:
@@ -105,10 +146,17 @@ class FunctionalAnalysisBase:
                 "Functional result is None or empty."
             )
 
-    def dotplot(self, **kwargs):
+    def dotplot(self, **kwargs: Any) -> None:
         """
-        Dot plot is similar to bar plot with the capability to encode another
-        score as dot size.
+        Create a dot plot visualizing enriched terms.
+
+        Similar to bar plot with the capability to encode another score as dot size.
+
+        Args:
+            **kwargs: Additional arguments passed to the R dotplot function.
+                Common options include:
+                - showCategory: Number of categories to show (default: 10)
+                - x: Value for x-axis, either "Count" or "GeneRatio"
         """
         if not (self.func_result_df is None or self.func_result_df.empty):
             try:
@@ -124,17 +172,19 @@ class FunctionalAnalysisBase:
                 "Functional result is None or empty."
             )
 
-    def gene_concept_net(self, **kwargs):
+    def gene_concept_net(self, **kwargs: Any) -> None:
         """
-        Both the barplot and dotplot only displayed most significant
-        enriched terms, while users may want to know which genes are
-        involved in these significant terms. In order to consider the
-        potentially biological complexities in which a gene may belong to
-        multiple annotation categories and provide information of numeric
-        changes if available, we developed cnetplot function to extract the
-        complex association. The cnetplot depicts the linkages of genes and
-        biological concepts (e.g. GO terms or KEGG pathways) as a network.
-        GSEA result is also supported with only core enriched genes displayed.
+        Create a gene-concept network visualization.
+
+        Depicts the linkages of genes and biological concepts (e.g., GO terms or KEGG pathways)
+        as a network. Handles both ORA and GSEA results, with only core enriched genes displayed
+        for GSEA results.
+
+        Args:
+            **kwargs: Additional arguments passed to the R gene_concept_net function.
+                Common options include:
+                - foldChange: Gene fold changes vector for coloring nodes
+                - categorySize: Control the node size of enriched terms
         """
         if not (self.func_result_df is None or self.func_result_df.empty):
             try:
@@ -155,13 +205,18 @@ class FunctionalAnalysisBase:
                 "Functional result is None or empty."
             )
 
-    def heatplot(self, **kwargs):
+    def heatplot(self, **kwargs: Any) -> None:
         """
-        The heatplot is similar to cnetplot, while displaying the
-        relationships as a heatmap. The gene-concept network may become too
-        complicated if user want to show a large number significant terms.
-        The heatplot can simplify the result and more easy to identify
-        expression patterns.
+        Create a heatmap visualization of gene-concept relationships.
+
+        Similar to gene concept network, but displays relationships as a heatmap.
+        Useful for visualizing large numbers of significant terms more clearly.
+
+        Args:
+            **kwargs: Additional arguments passed to the R heatplot function.
+                Common options include:
+                - foldChange: Gene fold changes vector for coloring
+                - showCategory: Number of categories to show
         """
         if not (self.func_result_df is None or self.func_result_df.empty):
             try:
@@ -181,12 +236,18 @@ class FunctionalAnalysisBase:
                 "Functional result is None or empty."
             )
 
-    def emapplot(self, **kwargs):
+    def emapplot(self, **kwargs: Any) -> None:
         """
-        Enrichment map organizes enriched terms into a network with edges
-        connecting overlapping gene sets. In this way, mutually overlapping
-        gene sets tend to cluster together, making it easy to identify
-        functional module.
+        Create an enrichment map visualization.
+
+        Organizes enriched terms into a network with edges connecting overlapping gene sets.
+        Mutually overlapping gene sets cluster together, making it easy to identify functional modules.
+
+        Args:
+            **kwargs: Additional arguments passed to the R emapplot function.
+                Common options include:
+                - layout: Layout algorithm for network visualization
+                - showCategory: Number of categories to show
         """
         if not (self.func_result_df is None or self.func_result_df.empty):
             try:
@@ -202,16 +263,18 @@ class FunctionalAnalysisBase:
                 "Functional result is None or empty."
             )
 
-    def upsetplot(self, **kwargs):
+    def upsetplot(self, **kwargs: Any) -> None:
         """
-        The upsetplot is an alternative to cnetplot for visualizing the
-        complex association between genes and gene sets. It emphasizes the
-        gene overlapping among different gene sets.
+        Create an upset plot visualization.
 
-        For over-representation analysis, upsetplot will calculate the
-        overlaps among different gene sets. For GSEA result, it will plot the
-        fold change distributions of different categories (e.g. unique to
-        pathway, overlaps among different pathways).
+        Alternative to gene concept network for visualizing complex associations between genes
+        and gene sets. Emphasizes gene overlapping among different gene sets.
+
+        For ORA, calculates overlaps among different gene sets. For GSEA results,
+        plots the fold change distributions of different categories.
+
+        Args:
+            **kwargs: Additional arguments passed to the R upsetplot function.
         """
         if not (self.func_result_df is None or self.func_result_df.empty):
             try:
@@ -227,11 +290,18 @@ class FunctionalAnalysisBase:
                 "Functional result is None or empty."
             )
 
-    def ridgeplot(self, **kwargs):
+    def ridgeplot(self, **kwargs: Any) -> None:
         """
-        The ridgeplot will visualize expression distributions of core
-        enriched genes for GSEA enriched categories. It helps users to
-        interpret up/down-regulated pathways.
+        Create a ridge plot visualization.
+
+        Visualizes expression distributions of core enriched genes for GSEA enriched categories.
+        Helps users to interpret up/down-regulated pathways.
+
+        Args:
+            **kwargs: Additional arguments passed to the R ridgeplot function.
+                Common options include:
+                - showCategory: Number of categories to show
+                - fill: Color scheme for filling ridges
         """
         if not (self.func_result_df is None or self.func_result_df.empty):
             try:
@@ -247,12 +317,19 @@ class FunctionalAnalysisBase:
                 "Functional result is None or empty."
             )
 
-    def gseaplot(self, gene_set_id: int = 1, **kwargs):
+    def gseaplot(self, gene_set_id: int = 1, **kwargs: Any) -> None:
         """
-        Running score and preranked list are traditional methods for
-        visualizing GSEA result. The enrichplot package supports both of
-        them to visualize the distribution of the gene set and the
-        enrichment score.
+        Create a GSEA plot visualization.
+
+        Visualizes running score and preranked gene list for GSEA results.
+        Shows the distribution of the gene set and the enrichment score.
+
+        Args:
+            gene_set_id: Index of the gene set to visualize (1-based). Default is 1 (first gene set).
+            **kwargs: Additional arguments passed to the R gseaplot function.
+                Common options include:
+                - title: Plot title
+                - color: Colors for line and points
         """
         if not (self.func_result_df is None or self.func_result_df.empty):
             try:
@@ -268,14 +345,19 @@ class FunctionalAnalysisBase:
                 "Functional result is None or empty."
             )
 
-    def pmcplot(self, **kwargs):
+    def pmcplot(self, **kwargs: Any) -> None:
         """
-        One of the problem of enrichment analysis is to find pathways for
-        further investigation. Here, we provide pmcplot function to plot the
-        number/proportion of publications trend based on the query result
-        from PubMed Central. Of course, users can use pmcplot in other
-        scenarios. All text that can be queried on PMC is valid as input of
-        pmcplot.
+        Create a PubMed Central publication trend plot.
+
+        Plots the number/proportion of publications trend based on query results from PubMed Central.
+        Uses the top enriched terms as queries.
+
+        Args:
+            **kwargs: Additional arguments passed to the R pmcplot function.
+                Common options include:
+                - by: Either "proportion" or "number" to visualize publication counts
+                - from: Start year for the publication trend
+                - to: End year for the publication trend
         """
         if not (self.func_result_df is None or self.func_result_df.empty):
             terms = ro.StrVector(self.func_result_df["Description"][:5].tolist())
@@ -292,11 +374,17 @@ class FunctionalAnalysisBase:
                 "Functional result is None or empty."
             )
 
-    def goplot(self, **kwargs):
+    def goplot(self, **kwargs: Any) -> None:
         """
-        Bar plot is the most widely used method to visualize enriched terms.
-        It depicts the enrichment scores (e.g. p values) color-coded and
-        gene count or ratio as bar height.
+        Create a GO plot visualization.
+
+        Visualizes Gene Ontology enrichment results with hierarchical structures.
+
+        Args:
+            **kwargs: Additional arguments passed to the R goplot function.
+                Common options include:
+                - showCategory: Number of categories to show
+                - color: Color for dots and lines
         """
         if not (self.func_result_df is None or self.func_result_df.empty):
             try:
@@ -312,9 +400,18 @@ class FunctionalAnalysisBase:
                 "Functional result is None or empty."
             )
 
-    def pathview(self, gene_data: ro.FloatVector, **kwargs):
+    def pathview(self, gene_data: ro.FloatVector, **kwargs: Any) -> None:
         """
-        Map and render enriched pathways.
+        Map and render enriched pathways using Pathview.
+
+        Creates pathway visualizations with gene expression data overlaid on KEGG pathway maps.
+
+        Args:
+            gene_data: Gene expression data to overlay on pathways.
+            **kwargs: Additional arguments passed to the R pathview function.
+                Common options include:
+                - species: KEGG species code (e.g., "hsa" for human)
+                - kegg.dir: Directory to store KEGG pathway data
         """
         if not (self.func_result_df is None or self.func_result_df.empty):
             save_path_root = Path(f"{self.plots_prefix}_pathview")
@@ -346,19 +443,43 @@ class FunctionalAnalysisBase:
                 "Functional result is None or empty."
             )
 
-    def plot_all_common(self, **kwargs):
+    def plot_all_common(self, **kwargs: Any) -> None:
+        """
+        Generate a set of common plots suitable for all analysis types.
+
+        Creates dotplot, emapplot, upsetplot, and pmcplot.
+
+        Args:
+            **kwargs: Additional arguments passed to individual plotting functions.
+        """
         self.dotplot(showCategory=10, x="Count", **kwargs)
         self.emapplot(**kwargs)
         self.upsetplot(**kwargs)
         self.pmcplot(**kwargs)
 
-    def plot_all_ora(self, **kwargs):
+    def plot_all_ora(self, **kwargs: Any) -> None:
+        """
+        Generate all plots suitable for Over-Representation Analysis (ORA).
+
+        Creates barplot, common plots, gene-concept network, and heatplot.
+
+        Args:
+            **kwargs: Additional arguments passed to individual plotting functions.
+        """
         self.barplot(showCategory=10, x="Count", **kwargs)
         self.plot_all_common(**kwargs)
         self.gene_concept_net(**kwargs, foldChange=self.filtered_genes)
         self.heatplot(**kwargs, foldChange=self.filtered_genes)
 
-    def plot_all_gsea(self, **kwargs):
+    def plot_all_gsea(self, **kwargs: Any) -> None:
+        """
+        Generate all plots suitable for Gene Set Enrichment Analysis (GSEA).
+
+        Creates common plots, gene-concept network, heatplot, ridgeplot, and gseaplot.
+
+        Args:
+            **kwargs: Additional arguments passed to individual plotting functions.
+        """
         self.plot_all_common(**kwargs)
         self.gene_concept_net(**kwargs, foldChange=self.background_genes)
         self.heatplot(**kwargs, foldChange=self.background_genes)

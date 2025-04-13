@@ -5,7 +5,7 @@ from collections import defaultdict
 from datetime import datetime as dt
 from itertools import product
 from pathlib import Path
-from typing import Callable
+from typing import Any, Callable, Dict
 
 import pandas as pd
 import rpy2.robjects as ro
@@ -34,7 +34,27 @@ def generate_gene_lists(
     lfc_th: float = 2.0,
     numeric_col: str = "log2FoldChange",
     from_type: str = "ENSEMBL",
-):
+) -> Dict[str, Dict[str, ro.FloatVector]]:
+    """
+    Generate gene lists for functional analysis from differential expression results.
+
+    Converts differential expression results to R vectors of gene IDs suitable for
+    functional analysis, including a full background list and a filtered list of
+    differentially expressed genes.
+
+    Args:
+        degs_df: DataFrame containing differential expression results.
+        p_col: Column name for p-values. Default is "padj".
+        p_th: P-value threshold for filtering. Default is 0.05.
+        lfc_col: Column name for log fold change values. Default is "log2FoldChange".
+        lfc_th: Log fold change threshold for filtering. Default is 2.0.
+        numeric_col: Column name for numeric values to include in the vectors. Default is "log2FoldChange".
+        from_type: Source gene ID type in the input data. Default is "ENSEMBL".
+
+    Returns:
+        A dictionary with keys "ENTREZID" and "SYMBOL", each containing another dictionary
+        with keys "filtered_genes" (all genes) and "degs_filtered" (differentially expressed genes).
+    """
     gene_lists = defaultdict(dict)
 
     for gene_id in ("ENTREZID", "SYMBOL"):
@@ -58,15 +78,29 @@ def generate_gene_lists(
     return gene_lists
 
 
-def run_all_ora(exp_name: str, get_func_input: Callable, cspa_surfaceome_file: Path):
+def run_all_ora(
+    exp_name: str,
+    get_func_input: Callable[[str, str], Dict[str, Any]],
+    cspa_surfaceome_file: Path,
+) -> None:
     """
-    Run all functional analysis functions.
+    Run all over-representation analysis (ORA) functions across multiple databases.
+
+    This function executes ORA on KEGG pathways, KEGG modules, Gene Ontology (GO),
+    Disease Ontology (DO), Network of Cancer Genes (NCG), MSigDB, Reactome,
+    g:Profiler, and CSPA surface proteins.
 
     Args:
-        exp_name: String name of the experiment, example format:
+        exp_name: String name of the experiment, e.g.:
             {exp_prefix}_{test}_vs_{control}_{p_col}_{p_thr_str}_{lfc_level}_{lfc_thr_str}
         get_func_input: Callable function that returns formatted inputs for functional
-            enrichment analysis.
+            enrichment analysis. Should accept parameters db_type and analysis_type
+            and return a dictionary with keys:
+            - background_genes: All genes considered for the experiment.
+            - org_db: Organism database object for annotation.
+            - filtered_genes: Genes of interest (e.g., differentially expressed genes).
+            - files_prefix: Path prefix for output files.
+            - plots_prefix: Path prefix for output plots.
         cspa_surfaceome_file: File containing CSPA surface proteins annotation.
     """
 
@@ -243,12 +277,25 @@ def run_all_ora_simple(
     func_path: Path,
     plots_path: Path,
     cspa_surfaceome_file: Path,
-):
+) -> None:
     """
-    Wrapper for `run_all_ora` when the `get_func_input` argument cannot be pickled.
+    Simplified wrapper for `run_all_ora` when the `get_func_input` argument cannot be pickled.
+
+    Provides a direct interface to run over-representation analysis (ORA) across multiple
+    databases without requiring a complex input function. This is useful when running
+    from environments where function pickling is problematic, such as in parallel processing.
+
+    Args:
+        exp_name: String name of the experiment.
+        background_genes: All genes considered for the experiment.
+        org_db: Organism database object for annotation.
+        filtered_genes: Genes of interest (e.g., differentially expressed genes).
+        func_path: Base directory for output files.
+        plots_path: Base directory for output plots.
+        cspa_surfaceome_file: File containing CSPA surface proteins annotation.
     """
 
-    def get_func_input(db_type: str, analysis_type: str):
+    def get_func_input(db_type: str, analysis_type: str) -> Dict[str, Any]:
         return dict(
             background_genes=background_genes,
             org_db=org_db,
@@ -264,15 +311,27 @@ def run_all_ora_simple(
     run_all_ora(exp_name, get_func_input, cspa_surfaceome_file)
 
 
-def run_all_gsea(exp_name: str, get_func_input: Callable):
+def run_all_gsea(
+    exp_name: str, get_func_input: Callable[[str, str], Dict[str, Any]]
+) -> None:
     """
-    Run all functional analysis functions.
+    Run all gene set enrichment analysis (GSEA) functions across multiple databases.
+
+    This function executes GSEA on KEGG pathways, KEGG modules, Gene Ontology (GO),
+    Disease Ontology (DO), Network of Cancer Genes (NCG), MSigDB, Reactome,
+    and g:Profiler.
 
     Args:
-        exp_name: String name of the experiment, example format:
+        exp_name: String name of the experiment, e.g.:
             {exp_prefix}_{test}_vs_{control}_{p_col}_{p_thr_str}_{lfc_level}_{lfc_thr_str}
         get_func_input: Callable function that returns formatted inputs for functional
-            enrichment analysis.
+            enrichment analysis. Should accept parameters db_type and analysis_type
+            and return a dictionary with keys:
+            - background_genes: Ranked gene list with scores (e.g., log fold changes).
+            - org_db: Organism database object for annotation.
+            - filtered_genes: Optional subset of genes of interest.
+            - files_prefix: Path prefix for output files.
+            - plots_prefix: Path prefix for output plots.
     """
     enrich_params = get_func_input("", "")
 
@@ -314,7 +373,7 @@ def run_all_gsea(exp_name: str, get_func_input: Callable):
 
     ####################################################################################
     # 3. Gene Ontology (GO)
-    logging.info("Processing Gene Ontology:")
+    logging.info(f"[{dt.now()}][{exp_name}]: Processing Gene Ontology...")
     onts = ["MF", "BP", "CC", "ALL"]
 
     inputs = [
