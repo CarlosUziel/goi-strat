@@ -43,9 +43,9 @@ def get_node_metrics(
         This function only works with undirected connected graphs. For disconnected
         graphs, consider analyzing each connected component separately.
     """
-    assert not nx.is_directed(graph) and nx.is_connected(
-        graph
-    ), "Input graph must be connected"
+    assert not nx.is_directed(graph) and nx.is_connected(graph), (
+        "Input graph must be connected"
+    )
 
     metrics = pd.concat(
         [

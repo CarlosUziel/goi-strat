@@ -124,9 +124,11 @@ def run_all_ora(
         )
         return
 
-    with enrich_params["files_prefix"].parent.joinpath(
-        f"{exp_name}_ora_params.json"
-    ).open("w") as fp:
+    with (
+        enrich_params["files_prefix"]
+        .parent.joinpath(f"{exp_name}_ora_params.json")
+        .open("w") as fp
+    ):
         json.dump(
             {
                 "background_genes": list(enrich_params["background_genes"].names),
@@ -344,9 +346,11 @@ def run_all_gsea(
         )
         return
 
-    with enrich_params["files_prefix"].parent.joinpath(
-        f"{exp_name}_gsea_params.json"
-    ).open("w") as fp:
+    with (
+        enrich_params["files_prefix"]
+        .parent.joinpath(f"{exp_name}_gsea_params.json")
+        .open("w") as fp
+    ):
         json.dump(
             {
                 "background_genes": list(enrich_params["background_genes"].names),

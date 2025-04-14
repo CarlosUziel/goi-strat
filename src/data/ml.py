@@ -68,9 +68,9 @@ def process_gene_count_data(
     # 1.1. Loading
     counts_df = pd.read_csv(counts_file, index_col=0).transpose()
 
-    assert (
-        not counts_df.empty and not annot_df.empty
-    ), "Counts or annotation dataframes are empty."
+    assert not counts_df.empty and not annot_df.empty, (
+        "Counts or annotation dataframes are empty."
+    )
 
     # 1.2. Only keep common samples between data and sample annotation
     common_idxs = list(set(counts_df.index).intersection(set(annot_df.index)))
@@ -202,9 +202,9 @@ def get_gene_set_expression_data(
     else:
         counts_df = deepcopy(counts)
 
-    assert (
-        not counts_df.empty and not annot_df.empty
-    ), "Counts or annotation dataframes are empty."
+    assert not counts_df.empty and not annot_df.empty, (
+        "Counts or annotation dataframes are empty."
+    )
 
     # 1.2. Only keep common samples between data and sample annotation
     common_idxs = counts_df.columns.intersection(annot_df.index)
@@ -339,9 +339,9 @@ def process_probes_meth_data(
     # 1.1. Loading
     meth_values_df = pd.read_csv(meth_values_file, index_col=0).transpose()
 
-    assert (
-        not meth_values_df.empty and not annot_df.empty
-    ), "Methylation values file or annotation file are empty."
+    assert not meth_values_df.empty and not annot_df.empty, (
+        "Methylation values file or annotation file are empty."
+    )
 
     # 1.2. Only keep common samples between data and sample annotation
     common_idxs = list(set(meth_values_df.index).intersection(set(annot_df.index)))
@@ -446,9 +446,9 @@ def process_gene_sets_data(
     # 1.1. Loading
     data = data.transpose()
 
-    assert (
-        not data.empty and not annot_df.empty
-    ), "Counts or annotation dataframes are empty."
+    assert not data.empty and not annot_df.empty, (
+        "Counts or annotation dataframes are empty."
+    )
 
     # 1.2. Only keep common samples between data and sample annotation
     common_idxs = list(set(data.index).intersection(set(annot_df.index)))

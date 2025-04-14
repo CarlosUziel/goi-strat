@@ -287,9 +287,9 @@ def select_data_classes(
     ]
 
     # 2. Check that the samples of the different classes do not intersect
-    assert (
-        len(set(metadata.index).intersection(*class_samples_ids)) == 0
-    ), "There are overlapping samples among classes, please check the class filters"
+    assert len(set(metadata.index).intersection(*class_samples_ids)) == 0, (
+        "There are overlapping samples among classes, please check the class filters"
+    )
 
     # 3. Return class ids
     return class_samples_ids
