@@ -13,6 +13,7 @@ Example:
 
 import logging
 from multiprocessing import Lock
+from multiprocessing.synchronize import Lock as LockBase
 from pathlib import Path
 from time import sleep
 from typing import Any, Iterable
@@ -31,7 +32,7 @@ r_ggplot = importr("ggplot2")
 def string_map_ids(
     symbol_genes: Iterable[str],
     species: int = 9606,
-    api_lock: Lock = Lock(),
+    api_lock: LockBase = Lock(),
     **kwargs: Any,
 ) -> pd.DataFrame:
     """Calls STRING's API to convert a set of identifiers to STRING identifiers.
@@ -76,7 +77,7 @@ def string_network_image(
     image_format: str,
     save_path: Path,
     species: int = 9606,
-    api_lock: Lock = Lock(),
+    api_lock: LockBase = Lock(),
     **kwargs: Any,
 ) -> None:
     """Produces a static image of the interaction networks among input proteins.
@@ -127,7 +128,7 @@ def string_interactions_network(
     species: int = 9606,
     required_score: int = 500,
     network_type: str = "functional",
-    api_lock: Lock = Lock(),
+    api_lock: LockBase = Lock(),
     **kwargs: Any,
 ) -> pd.DataFrame:
     """Retrieves STRING interaction pairs among input protein IDs.
