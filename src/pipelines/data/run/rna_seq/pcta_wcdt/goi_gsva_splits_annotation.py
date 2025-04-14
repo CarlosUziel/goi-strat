@@ -1,3 +1,33 @@
+"""
+Script to stratify PCTA-WCDT samples based on FOLH1 expression and perform GSVA analysis.
+
+This script processes RNA-seq data from the PCTA-WCDT (Prostate Cancer Transcriptome
+Atlas and West Coast Dream Team) dataset to stratify samples into high, medium, and low
+expression groups based on FOLH1/PSMA (GOI) expression levels. It then performs
+differential enrichment analysis between these groups using Gene Set Variation
+Analysis (GSVA) scores.
+
+The script performs the following steps:
+1. Loads RNA-seq count data and sample annotations
+2. Applies variance-stabilizing transformation (VST) to normalize expression values
+3. Ranks and divides samples into high, medium, and low GOI expression groups
+4. Tests multiple possible groupings by varying the size of each group
+5. Performs differential enrichment analysis between high and low groups
+6. Finds the optimal split that maximizes differences in pathway activity
+7. Saves the results and updated sample annotations for downstream analysis
+
+This stratification approach enables the identification of biological pathways and
+processes associated with varying levels of FOLH1/PSMA expression in primary and
+metastatic prostate cancer samples.
+
+Usage:
+    python goi_gsva_splits_annotation.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import functools
 import logging

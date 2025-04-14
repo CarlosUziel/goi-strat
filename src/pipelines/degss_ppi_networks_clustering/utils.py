@@ -4,7 +4,7 @@ import logging
 from collections import Counter
 from itertools import product
 from pathlib import Path
-from typing import Any, Dict, Iterable, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple
 
 import networkx as nx
 import numpy as np
@@ -32,22 +32,21 @@ def find_optimal_clusters(
     n_models: int = 128,
     n_jobs: int = 8,
     random_seed: int = 8080,
-) -> Tuple[Dict[str, Any], np.array]:
-    """Find best clustering for a given matrix of sample features through the use of
-    an ensemble of clustering algorithm. Multiple weak learners are trained on different
-    `n_clusters` values after an initial estimation of the number of clusters.
-
-    This technique is called "ensemble clustering".
+) -> Tuple[Dict[str, Any], np.ndarray]:
+    """
+    Find the optimal clustering for a given matrix of sample features using ensemble clustering.
 
     Args:
-        data: Data to cluster.
-        sample_frac: Percentage of samples to sample to fit weak clustering algorithms.
-        n_models: Number of weak learners to train per `n_clusters` value.
-        n_jobs: Number of threads to use for clustering.
+        data (pd.DataFrame): Data to cluster.
+        sample_frac (float): Fraction of samples to use for fitting weak clustering algorithms.
+        n_models (int): Number of weak learners to train per `n_clusters` value.
+        n_jobs (int): Number of threads to use for clustering.
+        random_seed (int): Random seed for reproducibility.
 
     Returns:
-        The clustering statistics
-        The clusters labels
+        Tuple[Dict[str, Any], np.ndarray]:
+            - Clustering statistics.
+            - Cluster labels.
     """
     # 0. Estimate initial number of clusters
     n_clusters = max(
@@ -131,25 +130,23 @@ def train_node2vec_clustering(
     node2vec_threads: int = 8,
     sample_frac: float = 0.8,
     random_seed: int = 8080,
-) -> Tuple[Dict[str, Union[int, str]], pd.DataFrame, Iterable[int], float]:
+) -> Dict[str, Any]:
     """
-    Train a Node2Vec model with the given hyper-parameters. Evaluate the
-        hyper-parameters by clustering the samples.
+    Train a Node2Vec model and evaluate hyper-parameters by clustering the samples.
 
     Args:
-        ppi_graph: PPI network, where nodes are proteins and edges represent
-            protein-protein interactions.
-        hparams: Node2Vec hyper-parameter dictionary.
-        node2vec_threads: Number of threads to use to train Node2Vec. This is also used
-            as reference for clustering threads.
-        sample_frac: Percentage of samples to sample to fit weak clustering algorithms.
-        random_seed: Random state seed.
+        ppi_graph (nx.Graph): PPI network where nodes are proteins and edges represent interactions.
+        hparams (Dict[str, Any]): Node2Vec hyper-parameter dictionary.
+        node2vec_threads (int): Number of threads for training Node2Vec.
+        sample_frac (float): Fraction of samples for fitting weak clustering algorithms.
+        random_seed (int): Random seed for reproducibility.
 
     Returns:
-        A dictionary of the best hyper-parameters found.
-        A dataframe with node embeddings.
-        A list of the best labels found.
-        The best ranking statistic achieved.
+        Dict[str, Any]:
+            - Best hyper-parameters found.
+            - Node embeddings.
+            - Best labels found.
+            - Best ranking statistic achieved.
     """
     # 1. Fit Node2Vec model
     logger.info("Fitting Node2Vec model...")
@@ -206,27 +203,20 @@ def tune_ppi_clustering(
     random_seed: int = 8080,
 ) -> Dict[str, Any]:
     """
-    Find the best clustering of proteins using Node2Vec embeddings as features. For each
-        Node2Vec combination of hyper-parameters, consensus clustering is calculated and
-        the labels returned. The best combination of hyper-parameters is chosen based on
-        the silhouette score.
+    Find the best clustering of proteins using Node2Vec embeddings as features.
 
     Args:
-        ppi_graph: PPI network, where nodes are proteins and edges represent
-            protein-protein interactions.
-        save_path: Path to save results to.
-        p: Return hyper-parameter.
-        q: In-out hyper-parameter.
-        gs_threads: Number of threads to use for grid-search hyper-parameter search.
-        node2vec_threads: Number of threads to use to train Node2Vec.
-        sample_frac: Percentage of samples to sample to fit weak clustering algorithms.
-        random_seed: Random state seed.
+        ppi_graph (nx.Graph): PPI network where nodes are proteins and edges represent interactions.
+        save_path (Optional[Path]): Path to save results.
+        p (float): Return hyper-parameter for Node2Vec.
+        q (float): In-out hyper-parameter for Node2Vec.
+        gs_threads (int): Number of threads for grid search.
+        node2vec_threads (int): Number of threads for training Node2Vec.
+        sample_frac (float): Fraction of samples for fitting weak clustering algorithms.
+        random_seed (int): Random seed for reproducibility.
 
     Returns:
-        A dictionary of the best hyper-parameters found
-        A dataframe with node embeddings
-        A list of the best labels found
-        The best ranking statistic achieved
+        Dict[str, Any]: Best hyper-parameters and clustering results.
     """
     # 1. Define hyper-parameter grid to tune Node2Vec
     hparams_grid = {
@@ -306,27 +296,22 @@ def cluster_ppi_proteins(
     sample_frac: float = 0.8,
     random_seed: int = 8080,
 ) -> None:
-    """Given a PPI network, use the Node2Vec graph embedding algorithm to generate
-        node features that can be used to cluster the network proteins.
+    """
+    Cluster proteins in a PPI network using Node2Vec embeddings.
 
     Args:
-        network_edges_file: File containing a dataframe with the list of edges of the
-            PPI network and their attributes.
-        nodes_metadata_df: Network genes nodes metadata, index is SYMBOL ID.
-        save_path: Path to save results to.
-        p: Return hyper-parameter. You can encourage more structural equivalence
-            similarity by setting a higher value of q. Structural equivalence refers to
-            the extent to which two nodes are connected to the same nodes, i.e., they
-            share the same neighborhood while not requiring the two nodes to be directly
-            connected.
-        q: In-out hyper-parameter. Homophily can be achieved by setting a smaller value
-            of q. homophily is defined as nodes that belong to the same network
-            community (i.e., are closer to one another in the network). A smaller value
-            of q approximates depth-first search.
-        gs_threads: Number of threads to use for grid search.
-        node2vec_threads: Number of threads to use to train Node2Vec model.
-        sample_frac: Percentage of samples to sample to fit weak clustering algorithms.
-        random_seed: Random state seed.
+        network_edges_file (Path): File containing the list of edges in the PPI network.
+        nodes_metadata_df (pd.DataFrame): Metadata for network nodes, indexed by SYMBOL ID.
+        save_path (Path): Path to save clustering results.
+        p (float): Return hyper-parameter for Node2Vec.
+        q (float): In-out hyper-parameter for Node2Vec.
+        gs_threads (int): Number of threads for grid search.
+        node2vec_threads (int): Number of threads for training Node2Vec.
+        sample_frac (float): Fraction of samples for fitting weak clustering algorithms.
+        random_seed (int): Random seed for reproducibility.
+
+    Returns:
+        None
     """
     # 0. Setup
     ppi_graph = nx.from_pandas_edgelist(pd.read_csv(network_edges_file, index_col=0))

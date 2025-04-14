@@ -1,3 +1,29 @@
+"""
+Script to perform differential gene expression analysis on the PCTA-WCDT dataset.
+
+This script analyzes gene expression data from the PCTA-WCDT prostate cancer dataset
+to identify differentially expressed genes (DEGs) between sample groups stratified by
+FOLH1 (PSMA) expression levels. It uses DESeq2 for statistical analysis through
+Python wrappers.
+
+The script performs the following steps:
+1. Loads sample annotations and raw count data
+2. Filters samples based on specified contrasts (e.g., high vs low GOI expression)
+3. Performs differential expression analysis using DESeq2
+4. Generates visualizations including PCA plots, heatmaps, and volcano plots
+5. Saves the results to disk for downstream analysis
+
+The analysis is performed on both primary and metastatic samples, comparing high vs low
+FOLH1 expression within each sample type.
+
+Usage:
+    python goi.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import functools
 import json

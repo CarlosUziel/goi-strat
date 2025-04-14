@@ -1,3 +1,25 @@
+"""
+GOI percentile-based annotation module for RNA-seq multi-dataset analysis.
+
+This script processes multiple dataset annotations based on gene of interest (GOI) percentile
+splits. It performs the following operations:
+
+1. Loads RNA-seq data for multiple datasets defined in DATASETS_MARKERS
+2. For each dataset, processes sample annotations based on GOI expression levels
+3. Applies percentile-based stratification to classify samples into high/mid/low GOI expression groups
+4. Generates plots and visualizations for sample distribution
+5. Saves updated annotation files with GOI expression level classifications
+
+The script supports parallel processing across multiple datasets for efficient execution.
+
+Usage:
+    python goi_perc_splits_annotation.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import datetime
 import functools

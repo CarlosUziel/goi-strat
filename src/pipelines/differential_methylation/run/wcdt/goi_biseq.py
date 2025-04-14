@@ -1,3 +1,34 @@
+"""
+Script to perform region-based differential DNA methylation analysis on WCDT dataset using BiSeq.
+
+This script analyzes reduced representation bisulfite sequencing (RRBS) data from West
+Coast Dream Team (WCDT) metastatic castration-resistant prostate cancer (mCRPC) samples
+to identify differentially methylated regions (DMRs) between sample groups stratified by
+FOLH1/PSMA expression levels. It uses the BiSeq R package through Python wrappers.
+
+The script performs the following steps:
+1. Loads methylation data from Bismark output files and sample annotations
+2. Preprocesses and filters cytosine methylation data
+3. Identifies methylation clusters (regions with sufficient CpG coverage)
+4. Models methylation levels in these regions
+5. Performs differential methylation analysis between high vs low FOLH1 expression groups
+6. Identifies differentially methylated regions (DMRs)
+7. Annotates DMRs with genomic context (promoters, gene bodies, etc.)
+8. Generates visualizations including region plots and heatmaps
+9. Saves the results to disk for downstream analysis
+
+This analysis provides insights into epigenetic alterations associated with varying
+FOLH1/PSMA expression in metastatic prostate cancer, focusing on regions rather than
+individual CpG sites for statistical robustness.
+
+Usage:
+    python goi_biseq.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import functools
 import json

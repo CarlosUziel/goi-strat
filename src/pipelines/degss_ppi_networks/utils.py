@@ -20,17 +20,16 @@ def get_ppi_network(
     interaction_score: int = 500,
     network_type: str = "functional",
 ) -> nx.Graph:
-    """Given a list of genes, get their PPI network by querying STRINGDB.add()
+    """Given a list of genes, get their PPI network by querying STRINGDB.
 
     Args:
-        genes_symbol: Iterable of gene SYMBOL IDs.
-        api_lock: Multiprocessing lock to access STRINGDB API.
-        interaction_score: A minimum of interaction score for an interaction to be
-            included.
-        network_type: Either "functional" or "physical".
+        genes_symbol (Iterable[str]): Iterable of gene SYMBOL IDs.
+        api_lock (Lock): Multiprocessing lock to access STRINGDB API.
+        interaction_score (int): A minimum interaction score for an interaction to be included. Default is 500.
+        network_type (str): Either "functional" or "physical". Default is "functional".
 
     Returns:
-        A networkx graph object representing the PPI network.
+        nx.Graph: A networkx graph object representing the PPI network.
     """
     # 1. Extract STRINGDB protein IDs of each gene symbol ID
     query_limit = 2000
@@ -98,21 +97,22 @@ def process_degss_ppi_network(
     network_type: str = "functional",
     api_lock: Lock = Lock(),  # type: ignore
 ) -> None:
-    """Given multiple sets of differentially enriched gene sets (DEGSs), compute the PPI
-    network of all involved genes.
+    """Given multiple sets of differentially enriched gene sets (DEGSs), compute the PPI network of all involved genes.
 
     Additionally, return centrality metrics for the k-hop neighbourhood of a given gene.
 
     Args:
-        genes_symbol: List of genes to include in the PPI network.
-        metadata_df: Genes metadata, index is SYMBOL ID.
-        save_path: Directory to save results to.
-        goi_symbol: Gene of interest (GOI) symbol ID.
-        k: Number of hops to produce the GOI neighbourhood.
-        interaction_score: A minimum of interaction score for an interaction to be
-            included.
-        network_type: Either "functional" or "physical".
-        api_lock: Multiprocessing lock to access STRINGDB API.
+        genes_symbol (Iterable[str]): List of genes to include in the PPI network.
+        metadata_df (pd.DataFrame): Genes metadata, index is SYMBOL ID.
+        save_path (Path): Directory to save results to.
+        goi_symbol (str): Gene of interest (GOI) symbol ID.
+        k (int): Number of hops to produce the GOI neighbourhood. Default is 2.
+        interaction_score (int): A minimum interaction score for an interaction to be included. Default is 500.
+        network_type (str): Either "functional" or "physical". Default is "functional".
+        api_lock (Lock): Multiprocessing lock to access STRINGDB API.
+
+    Returns:
+        None
     """
     # 0. Setup
     logging.info(f"Number of unique genes extracted: {len(genes_symbol)}")

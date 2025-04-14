@@ -1,3 +1,32 @@
+"""
+Gene Set Variation Analysis (GSVA) matrix generation for RNA-seq multi-dataset analysis.
+
+This script generates GSVA matrices for multiple RNA-seq datasets across different MSigDB gene set
+collections. GSVA transforms a gene expression matrix into a gene set expression matrix, allowing
+for pathway-centric analysis rather than individual gene analysis.
+
+The script performs the following operations:
+1. Loads raw RNA-seq gene count data from multiple datasets
+2. Filters samples based on specified contrast levels
+3. For each dataset and MSigDB collection combination:
+   - Computes GSVA scores for all gene sets in the collection
+   - Saves results as CSV matrices for downstream analyses
+   - Stores gene set metadata (descriptions and gene members)
+
+The generated GSVA matrices serve as input for various downstream analyses including
+sample stratification, differential enrichment analysis, and functional annotation.
+
+The script supports parallel processing to efficiently handle multiple datasets and
+gene set collections simultaneously.
+
+Usage:
+    python generate_gsva.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import functools
 import logging

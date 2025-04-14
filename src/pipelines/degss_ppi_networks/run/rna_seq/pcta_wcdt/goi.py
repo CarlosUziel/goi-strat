@@ -1,3 +1,30 @@
+"""
+Script to generate protein-protein interaction networks from differential gene set results.
+
+This script constructs and analyzes protein-protein interaction (PPI) networks using
+genes from differentially enriched gene sets (DEGSs) stratified by FOLH1 (PSMA) expression
+levels in the PCTA-WCDT prostate cancer dataset. It integrates both physical and functional
+interaction data from the STRING database.
+
+The script performs the following steps:
+1. Loads gene statistics from previously identified DEGSs
+2. Filters genes based on statistical significance (p-value threshold)
+3. Queries the STRING database to retrieve interaction data
+4. Constructs PPI networks with varying interaction score thresholds
+5. Saves the networks and their visualizations to disk
+
+The networks are built for both primary and metastatic samples, comparing high vs low
+FOLH1 expression within each sample type, and can be constructed with different
+interaction types (physical or functional) and score thresholds.
+
+Usage:
+    python goi.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import functools
 import logging

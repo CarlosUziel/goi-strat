@@ -40,11 +40,15 @@ from r_wrappers.utils import (
 
 def tcga_rna_seq(project_name: str, data_path: Path, counts_path: Path) -> None:
     """
-    Download and process RNASeq data of the a TCGA dataset.
+    Download and process RNASeq data of a TCGA dataset.
 
     Args:
-        data_path: Root data directory to store a TCGA dataset.
-        counts_path: Directory to store count files.
+        project_name (str): Name of the TCGA project to query.
+        data_path (Path): Root directory to store the TCGA dataset.
+        counts_path (Path): Directory to store count files.
+
+    Returns:
+        None
     """
 
     # 1. GDC Query
@@ -158,8 +162,11 @@ def tcga_prad_meth_array(data_path: Path, idat_path: Path) -> None:
     Download and process methylation array data of the TCGA-PRAD dataset.
 
     Args:
-        data_path: Root data directory to store TCGA-PRAD dataset.
-        idat_path: Directory to store .idat files.
+        data_path (Path): Root directory to store the TCGA-PRAD dataset.
+        idat_path (Path): Directory to store .idat files.
+
+    Returns:
+        None
     """
 
     # 1. GDC Query
@@ -273,9 +280,12 @@ def su2c_pcf_annotation(
     Annotations for all data types, RNASeq and WES, are processed.
 
     Args:
-        data_path: Root data directory containing all relevant annotation files.
-        rna_fastq_path: Path to SU2C-PCF RNA FASTQ files.
-        dna_fastq_path: Path to SU2C-PCF DNA FASTQ files.
+        data_path (Path): Root data directory containing all relevant annotation files.
+        rna_fastq_path (Optional[Path]): Path to SU2C-PCF RNA FASTQ files. Defaults to None.
+        dna_fastq_path (Optional[Path]): Path to SU2C-PCF DNA FASTQ files. Defaults to None.
+
+    Returns:
+        None
     """
 
     # 1. Setup
@@ -424,13 +434,16 @@ def tcga_prad_su2c_pcf_rna_seq(
         number: phs000915.v2.p2) datasets.
 
     Args:
-        data_path: Root data directory containing TCGA-PRAD and SU2C-PCF datasets.
-        deseq2_path: Directory to store preliminary DESeq2 results.
-        plots_path: Directory to store intermediate plots.
-        tcga_prad_annot_file: TCGA-PRAD annotation file.
-        su2c_pcf_annot_file: SU2C-PCF annotation file.
-        sample_colors. Color palette used for plotting.
-        sample_type_col: ID column name used to differentiate sample types.
+        data_path (Path): Root directory containing TCGA-PRAD and SU2C-PCF datasets.
+        deseq2_path (Path): Directory to store preliminary DESeq2 results.
+        plots_path (Path): Directory to store intermediate plots.
+        tcga_prad_annot_file (Path): TCGA-PRAD annotation file.
+        su2c_pcf_annot_file (Path): SU2C-PCF annotation file.
+        sample_colors (Dict[str, str]): Color palette used for plotting.
+        sample_type_col (str): ID column name used to differentiate sample types. Defaults to "sample_type".
+
+    Returns:
+        None
     """
 
     # 0. Setup
@@ -545,14 +558,17 @@ def su2c_pcf_clusters(
     sample_cluster_field: str,
 ) -> None:
     """
-    Identify and annoate SU2C-PCF clusters.
+    Identify and annotate SU2C-PCF clusters.
 
     Args:
-        root_path: Project root directory.
-        annot_file: Annotation file.
-        sample_colors. Color palette used for plotting.
-        sample_type_col: ID column name used to differentiate sample types.
-        sample_cluster_field: Column name of final clustering results.
+        root_path (Path): Project root directory.
+        annot_file (Path): Annotation file.
+        sample_colors (Dict[str, str]): Color palette used for plotting.
+        sample_type_col (str): ID column name used to differentiate sample types.
+        sample_cluster_field (str): Column name of final clustering results.
+
+    Returns:
+        None
     """
     # 0. Setup
     data_path = root_path.joinpath("data")
@@ -815,21 +831,23 @@ def goi_perc_annotation_rna_seq(
     Gene of interest (GOI) percentile annotation (per sample type) of RNASeq samples.
 
     Args:
-        annot_df: Dataframe of sample annotations.
-        vst_df: Dataframe of VST transformed gene counts.
-        plots_path: Directory to store intermediate plots.
-        data_path: Root data directory.
-        new_annot_file: New annotation file with GOI expression levels.
-        goi_ensembl: GOI gene ENSEMBL ID.
-        goi_symbol: GOI gene SYMBOL ID.
-        sample_contrast_factor: Annotated field used for group splits (contrast).
-        contrast_levels: Contrast levels to be split.
-        contrast_levels_colors: Color palette used for plotting.
-        percentiles: Percentiles used to divide ranked list of samples. A value of 10
+        annot_df (pd.DataFrame): Dataframe of sample annotations.
+        vst_df (pd.DataFrame): Dataframe of VST transformed gene counts.
+        plots_path (Path): Directory to store intermediate plots.
+        data_path (Path): Root data directory.
+        new_annot_file (Path): New annotation file with GOI expression levels.
+        goi_symbol (str): GOI gene SYMBOL ID.
+        sample_contrast_factor (str): Annotated field used for group splits (contrast).
+        contrast_levels (Iterable[str]): Contrast levels to be split.
+        contrast_levels_colors (Dict[str, str]): Color palette used for plotting.
+        percentiles (Tuple): Percentiles used to divide ranked list of samples. A value of 10
             means that 10% of the bottom and top samples (ranked by GOI expression) will
             be assigned to low and high groups, respectively. The rest will be assigned
             to the mid group.
-        pca_top_n: How many features to use when calculating PCA before plotting.
+        pca_top_n (int): How many features to use when calculating PCA before plotting.
+
+    Returns:
+        None
     """
     # 1. Use GOI counts to determine expression levels (i.e., high, mid and low)
     for contrast_level, percentile in product(contrast_levels, percentiles):
@@ -949,15 +967,18 @@ def goi_annotation_meth_array(
     strategy.
 
     Args:
-        annot_file_rna: Annotation file of RNA (RNA-Seq) samples.
-        anno_file_meth: Annotation file of DNA Methylation samples.
-        idat_path: Directory containing .idat files.
-        data_path: Root data directory.
-        goi_symbol: GOI gene SYMBOL ID.
-        percentiles: Percentiles used to divide ranked list of samples. A 0.1 value
+        annot_file_rna (Path): Annotation file of RNA (RNA-Seq) samples.
+        anno_file_meth (Path): Annotation file of DNA Methylation samples.
+        idat_path (Path): Directory containing .idat files.
+        data_path (Path): Root data directory.
+        goi_symbol (str): GOI gene SYMBOL ID.
+        percentiles (Tuple): Percentiles used to divide ranked list of samples. A 0.1 value
             means that 10% of the bottom and top samples (ranked by GOI expression) will
             be assigned to low and high groups, respectively. The rest will be assigned
             to the mid group.
+
+    Returns:
+        None
     """
     # 0. Setup
     annot_df_rna = pd.read_csv(annot_file_rna, dtype=str)
@@ -1013,13 +1034,16 @@ def generate_gsva_matrix(
     Additionally, save the gene elements of each gene set.
 
     Args:
-        counts_df: Counts gene matrix.
-        annot_df: Samples annotation dataframe.
-        org_db: Organism annotation database.
-        msigdb_cat: Category of MSigDB to extract the gene sets from.
-        save_path: .csv file path to save results GSVA matrix to.
-        contrast_factor: Column name determining sample groups.
-        gsva_threads: Number of threads to use while running GSVA. Defaults to 8.
+        counts_df (pd.DataFrame): Counts gene matrix.
+        annot_df (pd.DataFrame): Samples annotation dataframe.
+        org_db (OrgDB): Organism annotation database.
+        msigdb_cat (str): Category of MSigDB to extract the gene sets from.
+        save_path (str): .csv file path to save results GSVA matrix to.
+        contrast_factor (Optional[str]): Column name determining sample groups.
+        gsva_threads (int): Number of threads to use while running GSVA. Defaults to 8.
+
+    Returns:
+        None
     """
 
     assert save_path.suffix == ".csv", "Save path is not a .csv file"
@@ -1078,22 +1102,25 @@ def get_optimal_gsva_splits(
         between low and high groups.
 
     Args:
-        results_path: Directory to store final results to.
-        msigdb_cats_meta_paths: Collection of paths to each MSigDB category metadata
+        results_path (Path): Directory to store final results to.
+        msigdb_cats_meta_paths (Iterable[Path]): Collection of paths to each MSigDB category metadata
             file.
-        group_counts: Low, mid and high group counts for each sliding window iteration.
-        goi_level_prefix: Annotation field name to identify GOI splits.
-        msigdb_cats: MSigDB categories to be considered when computing the functional
+        group_counts (Iterable[Tuple[str, int, int, int]]): Low, mid and high group counts for each sliding window iteration.
+        goi_level_prefix (str): Annotation field name to identify GOI splits.
+        msigdb_cats (Iterable[str]): MSigDB categories to be considered when computing the functional
             difference score.
-        sample_contrast_factor: Annotated field used for group splittings (contrast).
-        contrasts_levels: Contrast levels to be split.
-        annot_df: Samples annotation dataframe.
-        goi_symbol: GOI gene SYMBOL ID.
-        annot_path_new: New annotation file to be generated.
-        p_col: P-value column name to be used.
-        p_th: P-value threshold.
-        lfc_level: Log2 Fold Chance level (up, down or all de-regulated genes).
-        lfc_th: Log2 Fold Chance threshold.
+        sample_contrast_factor (str): Annotated field used for group splittings (contrast).
+        contrasts_levels (Iterable[str]): Contrast levels to be split.
+        annot_df (pd.DataFrame): Samples annotation dataframe.
+        goi_symbol (str): GOI gene SYMBOL ID.
+        annot_path_new (Path): New annotation file to be generated.
+        p_col (str): P-value column name to be used.
+        p_th (float): P-value threshold.
+        lfc_level (str): Log2 Fold Chance level (up, down or all de-regulated genes).
+        lfc_th (float): Log2 Fold Chance threshold.
+
+    Returns:
+        None
     """
     # 0. Setup
     sample_groups_summary = defaultdict(lambda: defaultdict(dict))

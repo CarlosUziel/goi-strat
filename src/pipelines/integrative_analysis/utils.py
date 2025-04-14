@@ -1,3 +1,30 @@
+"""
+Utilities for integrative analysis of differential expression and enrichment results.
+
+This module provides functions to integrate and analyze results from multiple
+differential analyses (gene-level and gene set-level) to identify common patterns
+and connections across different data types. Key functionalities include:
+
+1. Intersection analysis between:
+   - Differentially expressed gene sets (DEGSs) from differential enrichment analysis
+   - Differentially expressed genes (DEGs) from differential expression analysis
+   - ML-derived important features (genes and gene sets with high SHAP values)
+
+2. Summary and visualization of intersection results:
+   - Creating intersection matrices and summary tables
+   - Generating integrated visualizations of overlapping genes and gene sets
+   - Computing statistics on intersection sizes and significance
+
+3. Support for various intersection types:
+   - Direct intersection of DEGSs and DEGs
+   - SHAP value-filtered intersections of ML-important features
+   - Multi-dataset and multi-comparison intersections
+
+These functions help identify molecular signatures and functional pathways that
+are consistently identified by different analytical approaches, strengthening
+confidence in biological findings and revealing integrated mechanisms.
+"""
+
 import json
 import logging
 from collections import defaultdict
@@ -35,6 +62,20 @@ def intersect_degss(
         p_th: P-value threshold.
         lfc_level: Log2 Fold Chance level (up, down or all de-regulated genes).
         lfc_th: Log2 Fold Chance threshold.
+
+    Returns:
+        None
+
+    Raises:
+        FileNotFoundError: If the differential enrichment results files are not found.
+        KeyError: If the intersection of DEGSs is not found.
+
+    Notes:
+        - The function generates an UpSet plot to visualize the intersections of DEGSs
+            across the specified contrasts.
+        - The results are saved to a CSV file in the specified directory structure.
+        - The function handles cases where no DEGSs are found for a given contrast.
+
     """
     # 0. Setup
     diff_path = root_path.joinpath("diff_gsva").joinpath(msigdb_cat)
@@ -149,6 +190,18 @@ def intersect_degss_degs(
             (DEGs).
         degss_lfc_th: Log2 Fold Chance threshold (DEGSs).
         degs_lfc_th: Log2 Fold Chance threshold (DEGs).
+
+    Returns:
+        None
+
+    Raises:
+        FileNotFoundError: If the differential enrichment results files are not found.
+
+    Notes:
+        - The function generates a CSV file with the intersection results, including
+            DEGs for each contrast.
+        - The function handles cases where no DEGSs are found for a given contrast.
+
     """
     # 0. Setup
     diff_path = root_path.joinpath("diff_gsva").joinpath(msigdb_cat)
@@ -273,6 +326,18 @@ def intersect_degss_degs_summary_helper(
         results_key: String ID to uniquely identify summary results.
         degs_count: Minimum count of DEGs to consider the gene sets.
         msigdb_cats_summary: MSigDB categories to include for the summary.
+
+    Returns:
+        None
+
+    Raises:
+        FileNotFoundError: If the results files are not found.
+
+    Notes:
+        - The function generates a JSON file summarizing the intersections of DEGSs
+            across the specified contrasts.
+        - The function handles cases where no DEGSs are found for a given contrast.
+
     """
     results_dict = defaultdict(lambda: defaultdict(dict))
     for file_path in results_root.glob(f"*/{results_key}/*.csv"):
@@ -363,6 +428,18 @@ def intersect_degss_degs_summary(
         degs_count: Minimum number of DEGs inside a gene set to be included in the
             summary.
         msigdb_cats_summary: Which MSigDB categories to summarize.
+
+    Returns:
+        None
+
+    Raises:
+        FileNotFoundError: If the results files are not found.
+
+    Notes:
+        - The function generates a JSON file summarizing the intersections of DEGSs
+            across the specified contrasts.
+        - The function handles cases where no DEGSs are found for a given contrast.
+
     """
     degss_p_th_str = str(degss_p_th).replace(".", "_")
     degs_p_th_str = str(degs_p_th).replace(".", "_")
@@ -425,6 +502,17 @@ def intersect_degss_degs_shap(
         extra_genes: Extra genes to add to the intersection with the gene set genes,
             independent of SHAP values. An iterable of tuples, where the first item of
             each tuple is the ENTREZID and the second the SYMBOL ID.
+
+    Returns:
+        None
+
+    Raises:
+        FileNotFoundError: If the differential enrichment results files are not found.
+
+    Notes:
+        - The function generates a CSV file with the intersection results, including
+            DEGs for each contrast.
+        - The function handles cases where no DEGSs are found for a given contrast.
     """
     # 0. Setup
     diff_path = root_path.joinpath("diff_gsva").joinpath(msigdb_cat)
@@ -587,6 +675,17 @@ def intersect_degss_degs_shap_summary(
         degs_count: Minimum number of DEGs inside a gene set to be included in the
             summary.
         msigdb_cats_summary: Which MSigDB categories to summarize.
+
+    Returns:
+        None
+
+    Raises:
+        FileNotFoundError: If the results files are not found.
+
+    Notes:
+        - The function generates a JSON file summarizing the intersections of DEGSs
+            across the specified contrasts.
+        - The function handles cases where no DEGSs are found for a given contrast.
     """
     degss_p_th_str = str(degss_p_th).replace(".", "_")
     degs_p_th_str = str(degs_p_th).replace(".", "_")
@@ -635,6 +734,22 @@ def intersect_degss_shap(
         p_th: P-value threshold.
         lfc_level: Log2 Fold Chance level (up, down or all de-regulated genes).
         lfc_th: Log2 Fold Chance threshold.
+        classifier_name: Name of classifier model used to obtain SHAP values.
+        bootstrap_iterations: Number of bootstrap iterations used to obtain SHAP values.
+        shap_th: SHAP value threshold used to determine the most significant genes.
+
+    Returns:
+        None
+
+    Raises:
+        FileNotFoundError: If the differential enrichment results files are not found.
+        KeyError: If the intersection of DEGSs is not found.
+
+    Notes:
+        - The function generates an UpSet plot to visualize the intersections of DEGSs
+            across the specified contrasts.
+        - The results are saved to a CSV file in the specified directory structure.
+        - The function handles cases where no DEGSs are found for a given contrast.
     """
     # 0. Setup
     ml_path = root_path.joinpath("ml_classifiers")
@@ -759,6 +874,21 @@ def intersect_degss_shap_degs(
             (DEGs).
         degss_lfc_th: Log2 Fold Chance threshold (DEGSs).
         degs_lfc_th: Log2 Fold Chance threshold (DEGs).
+        classifier_name: Name of classifier model used to obtain SHAP values.
+        bootstrap_iterations: Number of bootstrap iterations used to obtain SHAP values.
+        shap_th: SHAP value threshold used to determine the most significant genes.
+
+    Returns:
+        None
+
+    Raises:
+        FileNotFoundError: If the differential enrichment results files are not found.
+        KeyError: If the intersection of DEGSs is not found.
+
+    Notes:
+        - The function generates a CSV file with the intersection results, including
+            DEGs for each contrast.
+        - The function handles cases where no DEGSs are found for a given contrast.
     """
     # 0. Setup
     ml_path = root_path.joinpath("ml_classifiers")
@@ -914,6 +1044,9 @@ def intersect_degss_shap_degs_summary(
         degs_count: Minimum number of DEGs inside a gene set to be included in the
             summary.
         msigdb_cats_summary: Which MSigDB categories to summarize.
+
+    Returns:
+        None
     """
     degss_p_th_str = str(degss_p_th).replace(".", "_")
     degs_p_th_str = str(degs_p_th).replace(".", "_")
@@ -991,6 +1124,17 @@ def intersect_degss_shap_degs_shap(
         extra_genes: Extra genes to add to the intersection with the gene set genes,
             independent of SHAP values. An iterable of tuples, where the first item of
             each tuple is the ENTREZID and the second the SYMBOL ID.
+
+    Returns:
+        None
+
+    Raises:
+        FileNotFoundError: If the differential enrichment results files are not found.
+
+    Notes:
+        - The function generates a CSV file with the intersection results, including
+            DEGs for each contrast.
+        - The function handles cases where no DEGSs are found for a given contrast.
     """
     # 0. Setup
     ml_path = root_path.joinpath("ml_classifiers")
@@ -1181,6 +1325,12 @@ def intersect_degss_shap_degs_shap_summary(
         degs_count: Minimum number of DEGs inside a gene set to be included in the
             summary.
         msigdb_cats_summary: Which MSigDB categories to summarize.
+
+    Returns:
+        None
+
+    Raises:
+        FileNotFoundError: If the differential enrichment results files are not found.
     """
     degss_p_th_str = str(degss_p_th).replace(".", "_")
     degs_p_th_str = str(degs_p_th).replace(".", "_")
@@ -1233,6 +1383,13 @@ def intersect_degss_gsea(
         p_th: P-value threshold.
         lfc_level: Log2 Fold Chance level (up, down or all de-regulated genes).
         lfc_th: Log2 Fold Chance threshold.
+
+    Returns:
+        None
+
+    Raises:
+        FileNotFoundError: If the differential enrichment results files are not found.
+        KeyError: If the intersection of DEGSs is not found.
     """
     # 0. Setup
     diff_path = root_path.joinpath("diff_gsva").joinpath(msigdb_cat)

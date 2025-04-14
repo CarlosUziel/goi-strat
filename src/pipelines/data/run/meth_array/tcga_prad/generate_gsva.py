@@ -1,3 +1,29 @@
+"""
+Gene Set Variation Analysis (GSVA) generation for TCGA-PRAD methylation array RNA-seq data.
+
+This script generates GSVA matrices for matched samples from the TCGA-PRAD (The Cancer
+Genome Atlas Prostate Adenocarcinoma) dataset that have both RNA-seq and methylation
+array data available. It focuses on identifying pathway activity scores that can be
+correlated with DNA methylation patterns in the same samples.
+
+The script performs the following operations:
+1. Loads RNA-seq count data from the PCTA-WCDT dataset
+2. Loads sample annotations from both RNA-seq and methylation array datasets
+3. Identifies samples that have both RNA-seq and methylation data available
+4. For each MSigDB collection (Hallmarks, C1-C8), calculates GSVA scores
+5. Saves the resulting GSVA matrices for downstream integrative analyses
+
+This integration enables multi-omics analysis connecting transcriptomic pathway
+activity with epigenetic regulation through DNA methylation in prostate cancer.
+
+Usage:
+    python generate_gsva.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import functools
 import logging

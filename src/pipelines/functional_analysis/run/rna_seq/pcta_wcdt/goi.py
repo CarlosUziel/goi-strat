@@ -1,3 +1,25 @@
+"""
+Functional enrichment analysis pipeline for RNA-seq data from PCTA-WCDT dataset.
+
+This script performs Gene Set Enrichment Analysis (GSEA) and Over-Representation Analysis (ORA)
+on differential gene expression results from PCTA-WCDT RNA-seq data. It is specifically focused
+on analyzing genes associated with the gene of interest (GOI), FOLH1/PSMA,
+across different sample types and expression levels.
+
+The script:
+1. Reads differential expression results from DESeq2 output
+2. Performs GSEA using gene ranking by log2FoldChange
+3. Performs ORA on filtered gene lists with various p-value and fold change thresholds
+4. Runs analyses across multiple contrasts (e.g., high vs low GOI expression)
+5. Saves results and generates visualization plots
+
+The functional enrichment is performed across multiple gene set databases,
+including GO, KEGG, MSigDB, and more, through the run_all_gsea and run_all_ora functions.
+
+Usage:
+    python goi.py [--root-dir DIRECTORY] [--threads NUM_THREADS]
+"""
+
 import argparse
 import functools
 import logging
@@ -29,7 +51,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--root-dir",
     type=str,
-    help="Root directory",
+    help="Root directory for data storage",
     nargs="?",
     default="/mnt/d/phd_data",
 )
@@ -54,6 +76,8 @@ PLOTS_PATH: Path = FUNC_PATH.joinpath("plots")
 PLOTS_PATH.mkdir(exist_ok=True, parents=True)
 DATA_PATH: Path = DATA_ROOT.joinpath("data")
 ANNOT_PATH: Path = DATA_PATH.joinpath(f"samples_annotation_{GOI_SYMBOL}.csv")
+
+# Configuration parameters
 SAMPLE_CONTRAST_FACTOR: str = "sample_type"
 GOI_LEVEL_PREFIX: str = f"{GOI_SYMBOL}_level"
 GOI_CLASS_PREFIX: str = f"{GOI_SYMBOL}_class"
@@ -78,6 +102,7 @@ LFC_LEVELS: Iterable[str] = ("all", "up", "down")
 LFC_THS: Iterable[float] = (1.0,)
 PARALLEL: bool = True
 
+# Main execution code
 annot_df = pd.read_csv(ANNOT_PATH, index_col=0)
 sample_types_str = "+".join(sorted(set(annot_df[SAMPLE_CONTRAST_FACTOR])))
 

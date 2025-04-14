@@ -1,3 +1,30 @@
+"""
+Script to perform integrative analysis by intersecting differential gene set enrichment results.
+
+This script integrates results from multiple analyses to identify overlaps between
+differentially enriched gene sets from RNA-seq, DNA methylation, and other data sources.
+It focuses on the FOLH1 (PSMA) gene of interest across the PCTA-WCDT dataset, combining
+results from both primary and metastatic samples.
+
+The script:
+1. Loads enrichment results from RNA-seq GSEA analysis
+2. Loads enrichment results from DNA methylation analysis (for promoters and exons)
+3. Identifies gene sets that are enriched across multiple analysis methods
+4. Generates intersection plots and summary statistics
+5. Saves the integrated results for downstream analysis
+
+The analysis allows for comparisons of metastatic vs primary samples, as well as
+high vs low gene expression samples within each group. Various statistical thresholds
+and filtering criteria can be applied to customize the analysis.
+
+Usage:
+    python goi_intersect_degss_gsea.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import functools
 import logging

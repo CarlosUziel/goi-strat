@@ -1,3 +1,38 @@
+"""
+Cutadapt adapter trimming script for WCDT datasets.
+
+This script processes FASTQ files from the WCDT-MCRPC_MethArray dataset to trim adapter
+sequences using Cutadapt. It is configured to run on a SLURM cluster with specific
+resource allocations.
+
+Cutadapt is a tool that finds and removes adapter sequences, primers, poly-A tails and
+other types of unwanted sequence from high-throughput sequencing reads. This script
+processes FASTQ files, trimming adapters according to the sequences specified in the
+adapter files.
+
+The script sets up logging configuration, defines paths and parameters for Cutadapt
+execution, and then calls the run_cutadapt utility function to process the files.
+
+Usage:
+    python cutadapt.py
+
+Configuration:
+    STORAGE: Base storage path for the WCDT-MCRPC_MethArray dataset
+    FASTQ_PATH: Path to raw FASTQ files to be trimmed
+    FWD_ADAPTER_FILE: File containing forward adapter sequences
+    RV_ADAPTER_FILE: File containing reverse adapter sequences
+    CUTADAPT_PATH: Path where trimmed FASTQ files will be stored
+    CUTADAPT_KWARGS: Cutadapt command line parameters
+        --minimum-length: Minimum length of reads to keep after trimming
+    SLURM_KWARGS: SLURM job submission parameters
+    PATTERN: Pattern to match FASTQ files
+
+Notes:
+    This script is specifically configured for the WCDT dataset and the Skylake
+    partition of a specific SLURM cluster. Parameters may need adjustment for
+    different environments or datasets.
+"""
+
 import logging
 import warnings
 from pathlib import Path

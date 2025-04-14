@@ -1,3 +1,28 @@
+"""
+Script to perform differential enrichment analysis on GSVA scores for multiple datasets.
+
+This script analyzes gene set variation analysis (GSVA) scores across multiple datasets
+to identify differentially enriched gene sets between sample groups stratified by gene
+of interest (GOI) expression levels. It uses the limma package for statistical analysis
+and generates both statistical results and visualizations.
+
+For each dataset and MSigDB category combination, the script:
+1. Loads sample annotations and GSVA matrices
+2. Filters samples based on specified contrasts (e.g., high vs low GOI expression)
+3. Runs differential enrichment analysis
+4. Generates heatmaps and other visualizations
+5. Saves the results to disk
+
+The script can process multiple datasets in parallel if specified.
+
+Usage:
+    python goi_gsva.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import datetime
 import functools

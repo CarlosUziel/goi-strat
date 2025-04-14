@@ -1,3 +1,31 @@
+"""
+Script to annotate genes from differentially enriched gene sets with additional metadata.
+
+This script enhances the statistical analysis of genes in differentially enriched gene
+sets (DEGSs) from the PCTA-WCDT prostate cancer dataset by integrating multiple data types.
+It adds valuable biological context to the ranked genes identified in previous steps.
+
+The script performs the following steps:
+1. Loads gene statistics from previous DEGSS analysis results
+2. For each contrast (high vs low FOLH1 in primary and metastatic samples):
+   a. Integrates differential gene expression data (log2FC, p-values)
+   b. Integrates differential DNA methylation data (when available)
+      - Promoter methylation differences
+      - Exon methylation differences
+3. Saves annotated gene statistics tables for downstream analysis and visualization
+
+This multi-omics integration enables a more comprehensive understanding of the molecular
+mechanisms associated with FOLH1 expression in prostate cancer by connecting gene set
+enrichment patterns with direct expression and epigenetic regulation.
+
+Usage:
+    python goi_metadata.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import logging
 import multiprocessing

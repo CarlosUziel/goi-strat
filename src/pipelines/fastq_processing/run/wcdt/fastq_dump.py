@@ -1,3 +1,43 @@
+"""
+SRA to FASTQ conversion script for WCDT datasets.
+
+This script converts SRA (Sequence Read Archive) files from the WCDT-MCRPC_MethArray
+dataset to FASTQ format using fasterq-dump. It is configured to run on a SLURM cluster
+with specific resource allocations.
+
+fasterq-dump is an optimized version of the fastq-dump tool from the SRA Toolkit that
+extracts sequence data from SRA-formatted files and converts them into FASTQ format.
+This script processes the SRA files and compresses the resulting FASTQ files using pigz.
+
+The script sets up logging configuration, defines paths and parameters for fasterq-dump
+execution, and then calls the run_fasterq_dump utility function to process the files.
+
+Usage:
+    python fastq_dump.py
+
+Configuration:
+    STORAGE: Base storage path for the WCDT-MCRPC_MethArray dataset
+    SRA_PATH: Path to SRA files to be converted
+    NGC_FILEPATH: Path to the NGC file containing authentication credentials
+                  for accessing protected data
+    FASTQ_PATH: Path where extracted FASTQ files will be stored
+    FASTERQ_DUMP_KWARGS: fasterq-dump command line parameters
+        --split-files: Generate separate files for paired-end reads
+        --include-technical: Include technical reads
+    PIGZ_KWARGS: pigz compression command line parameters
+        -p: Number of threads to use for compression
+    SLURM_KWARGS: SLURM job submission parameters
+    PATTERN: Pattern to match SRA files
+
+Notes:
+    This script is specifically configured for the WCDT dataset and the Skylake
+    partition of a specific SLURM cluster. Parameters may need adjustment for
+    different environments or datasets.
+
+    The NGC file is required for accessing controlled-access data from repositories
+    like dbGaP.
+"""
+
 import logging
 import warnings
 from pathlib import Path

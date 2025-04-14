@@ -1,3 +1,29 @@
+"""
+Gene Set Variation Analysis (GSVA) generation for WCDT-MCRPC RNA-seq data.
+
+This script generates GSVA matrices for the WCDT-MCRPC (West Coast Dream Team Metastatic
+Castration-Resistant Prostate Cancer) dataset. It transforms RNA-seq gene expression
+data into pathway-level enrichment scores using the GSVA method.
+
+The script performs the following tasks:
+1. Loads RNA-seq count data from the WCDT-MCRPC dataset
+2. Processes sample annotations, focusing on metastatic samples
+3. For each MSigDB collection (Hallmarks, C1-C8), calculates GSVA scores
+4. Saves the resulting GSVA matrices for downstream analyses
+
+GSVA provides a non-parametric, unsupervised method for estimating variation of gene set
+enrichment across samples, enabling pathway-centric analysis of the transcriptome data.
+The generated matrices serve as input for other analyses including sample stratification
+and differential pathway activity analysis.
+
+Usage:
+    python generate_gsva.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import functools
 import logging

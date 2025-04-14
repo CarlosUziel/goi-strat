@@ -1,5 +1,33 @@
+"""
+Utilities for functional enrichment analysis of genomic data.
+
+This module provides functions to perform gene set enrichment analysis (GSEA)
+and over-representation analysis (ORA) on different types of genomic data,
+including differential expression and methylation results. Key features include:
+
+1. Gene list preparation for enrichment analysis:
+   - Processing differential expression results (DEGs)
+   - Processing differential methylation results (DMRs)
+   - Handling machine learning feature importance scores (e.g., SHAP values)
+   - Supporting WGCNA module connectivity analysis
+
+2. Function execution for different enrichment approaches:
+   - Gene Set Enrichment Analysis (GSEA) for ranked gene lists
+   - Over-Representation Analysis (ORA) for filtered gene sets
+   - Integration with various biological databases (MSigDB, GO, KEGG, etc.)
+
+3. Support for different genomic data types:
+   - RNA-seq differential expression data
+   - Methylation differential analysis data
+   - Network analysis results
+   - Machine learning feature importance scores
+
+The module integrates with R libraries through rpy2 for specialized enrichment
+analysis while maintaining a consistent Python interface for workflow orchestration.
+"""
+
 from pathlib import Path
-from typing import Tuple
+from typing import Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -14,34 +42,54 @@ def prepare_gene_lists(
     data_type: str,
     results_file: Path,
     org_db: OrgDB,
-    filtered_results_file: Path = None,
-    p_col: str = None,
-    p_th: float = None,
+    filtered_results_file: Optional[Path] = None,
+    p_col: Optional[str] = None,
+    p_th: Optional[float] = None,
     lfc_col: str = "log2FoldChange",
-    lfc_level: str = None,
-    lfc_th: float = None,
+    lfc_level: Optional[str] = None,
+    lfc_th: Optional[float] = None,
     numeric_col: str = "log2FoldChange",
-    shap_th: float = None,
+    shap_th: Optional[float] = None,
     analysis_type: str = "gsea",
-) -> Tuple[ro.FloatVector, ro.FloatVector]:
+) -> Tuple[ro.FloatVector, Optional[ro.FloatVector]]:
     """
-    Prepare gene lists for functional enrichment analysis. One gene list containing
-        background genes, and another containing genes filtered by some criteria, such
-        as log 2 fold change.
+    Prepare gene lists for functional enrichment analysis from different data sources.
+
+    This function processes various types of genomic data (differential expression,
+    methylation, etc.) to generate gene lists appropriate for functional enrichment
+    analysis. It creates both a background gene list and, for ORA, a filtered gene list
+    of interest.
 
     Args:
-        data_type: Keyword representing source of the data.
-        results_file: Results file containing genes to analyse.
-        org_db: Organism annotation database.
-        filtered_results_file: A file containing already-filtered genes.
-        p_col: P-value column to be used as filter (e.g., pvalue, padj)
-        p_th: P-value filter threshold.
-        lfc_level: Keep only genes of that log2FoldChange level (all, up-regulated,
-            down-regulated)
-        lfc_th: Log2FoldChange threshold.
-        numeric_col: Which column name used to rank genes.
-        shap_th: SHAP value threshold, only for ML results.
-        analysis_type: Either "ora" (for ORA) or "gsea" (for GSEA).
+        data_type: Source data type. Options include: "diff_expr", "diff_meth",
+            "diff_expr_ml", "diff_meth_ml", "diff_expr_wgcna", "diff_meth_wgcna".
+        results_file: Path to the file containing analysis results.
+        org_db: Organism database with gene annotation information.
+        filtered_results_file: Path to a file with pre-filtered genes. Used when
+            the filtered gene set is not derived from the main results_file.
+        p_col: Column name for p-values to use for filtering (e.g., "pvalue", "padj").
+        p_th: P-value threshold for filtering significant genes.
+        lfc_col: Column name for log fold change values.
+        lfc_level: Direction for fold change filtering ("up", "down", or "all").
+        lfc_th: Log fold change threshold for filtering genes.
+        numeric_col: Column name for values used to rank genes (for GSEA).
+        shap_th: SHAP value threshold for machine learning results.
+        analysis_type: Type of analysis to prepare for, either "ora" or "gsea".
+
+    Returns:
+        A tuple containing:
+            - background_genes: All genes as a named R FloatVector with values for ranking
+            - filtered_genes: Filtered genes as a named R FloatVector, or None for GSEA
+
+    Raises:
+        AssertionError: If an invalid analysis_type is provided.
+
+    Notes:
+        Different data types require different processing approaches:
+        - diff_expr: Standard differential expression results (e.g., DESeq2 output)
+        - diff_meth: Differential methylation results from various tools
+        - diff_expr_ml/diff_meth_ml: Machine learning outputs with SHAP values
+        - diff_expr_wgcna/diff_meth_wgcna: Network analysis results with connectivity
     """
     filtered_genes = None
     if data_type == "diff_expr":
@@ -212,6 +260,26 @@ def functional_enrichment(
         shap_th: SHAP value threshold, only for ML results.
         analysis_type: Either "ora" (for ORA) or "gsea" (for GSEA)
         cspa_surfaceome_file: File containing CSPA surface proteins annotation.
+
+    Returns:
+        None: The results are saved to disk.
+
+    Raises:
+        AssertionError: If an invalid analysis_type is provided.
+
+    Notes:
+        - The function prepares gene lists and runs functional enrichment analysis
+          (ORA or GSEA) based on the provided data type and parameters.
+        - The results are saved to the specified directories for further analysis.
+        - The function integrates with R libraries for specialized enrichment analysis.
+        - The function supports various data types, including differential expression,
+          methylation, and machine learning outputs.
+        - The function handles both background gene lists and filtered gene sets
+          for enrichment analysis.
+        - The function supports WGCNA module connectivity analysis for network-based
+          enrichment analysis.
+        - The function can be extended to include additional enrichment analysis
+          methods or databases as needed.
     """
     assert analysis_type in ["ora", "gsea"], "analysis_type can only be 'ora' or 'gsea'"
 

@@ -1,3 +1,31 @@
+"""
+Script to perform differential gene expression analysis across multiple TCGA datasets.
+
+This script analyzes gene expression data from multiple TCGA cancer datasets to identify
+differentially expressed genes (DEGs) between sample groups stratified by gene of
+interest (GOI) expression levels. For each cancer type, it uses a different tissue-specific
+marker gene as the GOI.
+
+The script performs the following steps:
+1. Iterates through multiple TCGA datasets (BRCA, LUAD, THCA, UCEC, LUSC, KIRC, HNSC, LGG)
+   and the PCTA-WCDT prostate cancer dataset
+2. For each dataset, loads sample annotations and raw count data
+3. Filters samples based on high vs low expression of the corresponding tissue-specific GOI
+4. Performs differential expression analysis using DESeq2
+5. Generates visualizations including PCA plots, heatmaps, and volcano plots
+6. Saves the results to disk for downstream analysis
+
+This allows for cross-cancer comparative analysis of pathway alterations associated
+with tissue-specific marker genes.
+
+Usage:
+    python goi_gsva.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import datetime
 import functools

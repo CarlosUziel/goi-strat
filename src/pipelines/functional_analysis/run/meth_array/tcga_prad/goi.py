@@ -1,3 +1,26 @@
+"""
+Functional enrichment analysis pipeline for methylation array data from TCGA-PRAD dataset.
+
+This script performs Gene Set Enrichment Analysis (GSEA) and Over-Representation Analysis (ORA)
+on differentially methylated regions/probes from TCGA-PRAD methylation array data. It focuses
+on analyzing the functional implications of DNA methylation patterns associated with
+different FOLH1/PSMA expression levels in prostate cancer samples.
+
+The script:
+1. Reads differential methylation results from minfi analysis
+2. Performs GSEA using gene ranking by methylation differences (logFC)
+3. Performs ORA on filtered gene lists with various p-value and methylation difference thresholds
+4. Analyzes different genomic contexts (promoters, exons, introns, etc.)
+5. Saves results and generates visualization plots
+6. Processes multiple contrasts (e.g., high vs low GOI expression)
+
+The analysis helps understand the biological processes and pathways affected by
+differential methylation patterns associated with FOLH1 expression levels.
+
+Usage:
+    python goi.py [--root-dir DIRECTORY] [--threads NUM_THREADS]
+"""
+
 import argparse
 import functools
 import json
@@ -30,7 +53,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--root-dir",
     type=str,
-    help="Root directory",
+    help="Root directory for data storage",
     nargs="?",
     default="/mnt/d/phd_data",
 )
@@ -56,6 +79,8 @@ PLOTS_PATH.mkdir(exist_ok=True, parents=True)
 DATA_PATH: Path = DATA_ROOT.joinpath("data")
 ANNOT_PATH: Path = DATA_PATH.joinpath(f"samples_annotation_{GOI_SYMBOL}.csv")
 GENOME: str = "hg38"
+
+# Configuration parameters
 SAMPLE_CONTRAST_FACTOR: str = "sample_type"
 GOI_LEVEL_PREFIX: str = f"{GOI_SYMBOL}_level"
 GOI_CLASS_PREFIX: str = f"{GOI_SYMBOL}_class"
@@ -67,15 +92,15 @@ SAMPLE_CLUSTER_CONTRAST_LEVELS: Iterable[
             {SAMPLE_CONTRAST_FACTOR: (test[0],), GOI_LEVEL_PREFIX: (test[1],)},
             {SAMPLE_CONTRAST_FACTOR: (control[0],), GOI_LEVEL_PREFIX: (control[1],)},
         )
-        for test, control in [(("prim", "high"), ("prim", "low"))]
+        for test, control in [
+            (("prim", "high"), ("prim", "low")),
+        ]
     ]
 )
 CONTRASTS_LEVELS_COLORS: Dict[str, str] = {
-    "prim": "#4A708B",
-    # same colors but for GOI levels
-    "low": "#9ACD32",
-    "high": "#8B3A3A",
-    # dummy contrast level
+    "prim": "#44BB99",
+    "high": "#AA4488",
+    "low": "#117733",
     "X": "#808080",
 }
 GOI_LEVELS_COLORS: Dict[str, str] = {
@@ -105,6 +130,7 @@ MEAN_METH_DIFF_THS: Iterable[float] = (0.0, 0.1, 0.2)
 SPECIES: str = "Homo sapiens"
 PARALLEL: bool = True
 
+# Main execution code
 annot_df = (
     pd.read_csv(ANNOT_PATH, index_col=0, dtype=str).rename_axis(ID_COL).reset_index()
 )

@@ -1,3 +1,31 @@
+"""
+Script to perform percentile-based differential gene expression analysis across datasets.
+
+This script analyzes gene expression data from multiple TCGA cancer datasets to identify
+differentially expressed genes (DEGs) between sample groups stratified by percentile-based
+gene of interest (GOI) expression levels. For each cancer type, it uses a different
+tissue-specific marker gene as the GOI, and tests multiple percentile thresholds.
+
+The script performs the following steps:
+1. Iterates through multiple TCGA datasets and the PCTA-WCDT prostate cancer dataset
+2. For each dataset and percentile threshold combination (10%, 15%, 20%, 25%, 30%):
+   a. Loads sample annotations with percentile-based GOI expression levels
+   b. Filters samples to compare high vs low expression groups
+   c. Performs differential expression analysis using DESeq2
+   d. Generates visualizations and saves results to disk
+
+This percentile-based approach allows for standardized comparison across datasets
+with different expression distributions, and sensitivity analysis to determine the
+optimal threshold for stratifying samples.
+
+Usage:
+    python goi_perc.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import datetime
 import functools

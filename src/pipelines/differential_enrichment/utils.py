@@ -1,7 +1,33 @@
+"""
+Utilities for differential enrichment analysis using GSVA scores.
+
+This module provides functions for differential enrichment analysis of gene set
+variation analysis (GSVA) scores, which quantify pathway activity in individual
+samples. The main functionalities include:
+
+1. Differential enrichment analysis:
+   - Apply limma-based statistical testing on GSVA scores
+   - Generate differential enrichment results for various contrasts
+   - Filter results based on significance thresholds and fold change criteria
+
+2. Visualization of results:
+   - Generate heatmaps of differentially enriched gene sets
+   - Create PCA plots to visualize sample clustering by pathway activity
+   - Produce volcano plots highlighting significant gene sets
+
+3. Support for multi-condition analysis:
+   - Compare expression across different sample types or experimental conditions
+   - Handle complex experimental designs with multiple factors
+   - Generate consistent output formats across different contrasts
+
+The module integrates with R libraries through rpy2 for specialized statistics
+and visualization while maintaining a consistent Python interface.
+"""
+
 import re
 from itertools import chain, product
 from pathlib import Path
-from typing import Dict, Iterable, Tuple
+from typing import Dict, Iterable, Optional, Tuple
 
 import pandas as pd
 import rpy2.robjects as ro
@@ -30,25 +56,27 @@ def diff_enrich_gsva_limma(
     p_ths: Iterable[float],
     lfc_levels: Iterable[str],
     lfc_ths: Iterable[float],
-    design_factors: Iterable[str] = None,
+    design_factors: Optional[Iterable[str]] = None,
 ) -> None:
     """
-    Run differential enrichment analysis of a GSVA matrix using limma.
+    Perform differential enrichment analysis on a GSVA matrix using the limma package.
 
     Args:
-        gsva_matrix_path: GSVA matrix file.
-        msigdb_cat_meta_path: MSigDB category metadata file.
-        annot_df_contrasts: Samples annotation dataframe.
-        contrast_factor: Annotation field used for differential analysis.
-        contrasts_levels: Contrast levels to be split.
-        results_path: Directory to store final results to.
-        exp_prefix: A string prefixing generated files.
-        p_cols: P-value column names used for filtering.
-        p_ths: P-value thresholds to determine significance.
-        lfc_levels: logFC levels to subset results by.
-        lfc_ths: logFC thresholds to subset results by.
-        design_factors: Factors to include in the design formula for differential
-            analysis.
+        gsva_matrix_path (Path): Path to the GSVA matrix file.
+        msigdb_cat_meta_path (Path): Path to the MSigDB category metadata file.
+        annot_df_contrasts (pd.DataFrame): DataFrame containing sample annotations.
+        contrast_factor (str): Column name in `annot_df_contrasts` used for contrasts.
+        contrasts_levels (Iterable[Tuple[str, str]]): Pairs of contrast levels (test, control).
+        results_path (Path): Directory to save the analysis results.
+        exp_prefix (str): Prefix for naming output files.
+        p_cols (Iterable[str]): Names of p-value columns for filtering.
+        p_ths (Iterable[float]): Thresholds for p-value significance.
+        lfc_levels (Iterable[str]): Levels of log fold change (e.g., "up", "down").
+        lfc_ths (Iterable[float]): Thresholds for log fold change.
+        design_factors (Optional[Iterable[str]]): Additional factors for the design matrix.
+
+    Returns:
+        None
     """
     # 0. Setup
     design_factors = design_factors or [contrast_factor]
@@ -166,22 +194,25 @@ def diff_enrich_gsva_heatmaps(
     heatmap_top_n: int = 1000,
 ) -> None:
     """
-    Plot heatmaps for differential enrichment results on a GSVA gene-set matrix.
+    Generate heatmaps for differential enrichment results from a GSVA matrix.
 
     Args:
-        gsva_matrix_path: GSVA matrix file.
-        annot_df_contrasts: Samples annotation dataframe.
-        contrast_factor: Annotation field used for differential analysis.
-        contrasts_levels: Contrast levels to be split.
-        contrast_levels_colors: Colors used to plot contrast factor levels.
-        results_path: Directory to store final results to.
-        plots_path: Directory to store plots to.
-        exp_prefix: A string prefixing generated files.
-        p_cols: P-value column names used for filtering.
-        p_ths: P-value thresholds to determine significance.
-        lfc_levels: logFC levels to subset results by.
-        lfc_ths: logFC thresholds to subset results by.
-        heatmap_top_n: Top number of rows to show in the heatmap.
+        gsva_matrix_path (Path): Path to the GSVA matrix file.
+        annot_df_contrasts (pd.DataFrame): DataFrame containing sample annotations.
+        contrast_factor (str): Column name in `annot_df_contrasts` used for contrasts.
+        contrasts_levels (Iterable[Tuple[str, str]]): Pairs of contrast levels (test, control).
+        contrast_levels_colors (Dict[str, str]): Mapping of contrast levels to colors.
+        results_path (Path): Directory to save the analysis results.
+        plots_path (Path): Directory to save the generated plots.
+        exp_prefix (str): Prefix for naming output files.
+        p_cols (Iterable[str]): Names of p-value columns for filtering.
+        p_ths (Iterable[float]): Thresholds for p-value significance.
+        lfc_levels (Iterable[str]): Levels of log fold change (e.g., "up", "down").
+        lfc_ths (Iterable[float]): Thresholds for log fold change.
+        heatmap_top_n (int): Number of top rows to include in the heatmap. Defaults to 1000.
+
+    Returns:
+        None
     """
     # 0. Setup
     gsva_matrix = pd.read_csv(gsva_matrix_path, index_col=0)
@@ -319,8 +350,8 @@ def diff_enrich_gsva_heatmaps(
 
 
 def diff_enrich_gsva(
-    gsva_matrix_path: pd.DataFrame,
-    msigdb_cat_meta_path: pd.DataFrame,
+    gsva_matrix_path: Path,
+    msigdb_cat_meta_path: Path,
     annot_df_contrasts: pd.DataFrame,
     contrast_factor: str,
     contrasts_levels: Iterable[Tuple[str, str]],
@@ -332,29 +363,31 @@ def diff_enrich_gsva(
     p_ths: Iterable[float],
     lfc_levels: Iterable[str],
     lfc_ths: Iterable[float],
-    design_factors: Iterable[str] = None,
+    design_factors: Optional[Iterable[str]] = None,
     heatmap_top_n: int = 1000,
 ) -> None:
     """
-    Run a differential analysis experiment on a GSVA gene-set matrix.
+    Perform differential enrichment analysis and generate heatmaps for a GSVA matrix.
 
     Args:
-        gsva_matrix_path: GSVA matrix file.
-        msigdb_cat_meta_path: MSigDB category metadata file.
-        annot_df_contrasts: Samples annotation dataframe.
-        contrast_factor: Annotation field used for differential analysis.
-        contrasts_levels: Contrast levels to be split.
-        contrast_levels_colors: Colors used to plot contrast factor levels.
-        results_path: Directory to store final results to.
-        plots_path: Directory to store plots to.
-        exp_prefix: A string prefixing generated files.
-        p_cols: P-value column names used for filtering.
-        p_ths: P-value thresholds to determine significance.
-        lfc_levels: logFC levels to subset results by.
-        lfc_ths: logFC thresholds to subset results by.
-        design_factors: Factors to include in the design formula for differential
-            analysis.
-        heatmap_top_n: Top number of rows to show in the heatmap.
+        gsva_matrix_path (Path): Path to the GSVA matrix file.
+        msigdb_cat_meta_path (Path): Path to the MSigDB category metadata file.
+        annot_df_contrasts (pd.DataFrame): DataFrame containing sample annotations.
+        contrast_factor (str): Column name in `annot_df_contrasts` used for contrasts.
+        contrasts_levels (Iterable[Tuple[str, str]]): Pairs of contrast levels (test, control).
+        contrast_levels_colors (Dict[str, str]): Mapping of contrast levels to colors.
+        results_path (Path): Directory to save the analysis results.
+        plots_path (Path): Directory to save the generated plots.
+        exp_prefix (str): Prefix for naming output files.
+        p_cols (Iterable[str]): Names of p-value columns for filtering.
+        p_ths (Iterable[float]): Thresholds for p-value significance.
+        lfc_levels (Iterable[str]): Levels of log fold change (e.g., "up", "down").
+        lfc_ths (Iterable[float]): Thresholds for log fold change.
+        design_factors (Optional[Iterable[str]]): Additional factors for the design matrix.
+        heatmap_top_n (int): Number of top rows to include in the heatmap. Defaults to 1000.
+
+    Returns:
+        None
     """
     # 1. Run differential analysis
     diff_enrich_gsva_limma(

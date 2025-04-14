@@ -1,3 +1,32 @@
+"""
+Gene Set Variation Analysis (GSVA) based sample stratification module for RNA-seq multi-dataset analysis.
+
+This script implements an advanced sample stratification approach using Gene Set Variation Analysis
+to find optimal sample groupings based on gene of interest (GOI) expression levels.
+The process consists of two main steps:
+
+1. Differential Enrichment Analysis:
+   - Iterates through different sample grouping strategies (varying the number of samples in high/mid/low groups)
+   - For each strategy, runs differential GSVA enrichment analysis between high and low GOI expression groups
+   - Processes multiple datasets and MSigDB gene set collections in parallel
+
+2. Optimal Split Determination:
+   - Analyzes differential enrichment results to find the grouping strategy that maximizes
+     functional differences between high and low GOI expression groups
+   - Calculates a functional difference score based on the number and magnitude of significantly
+     enriched gene sets
+   - Generates updated annotation files with optimal GOI expression level classifications
+
+The script supports parallel processing to handle multiple datasets and gene set collections efficiently.
+
+Usage:
+    python goi_gsva_splits_annotation.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import datetime
 import functools

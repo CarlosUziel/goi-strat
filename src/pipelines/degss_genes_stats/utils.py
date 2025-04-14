@@ -18,11 +18,14 @@ def get_gene_occurrence_stats(
     """Compute gene occurrence statistics for a collection of gene sets.
 
     Args:
-        gene_sets_df: A collection of gene sets with metadata.
-        mode: Whether to compute absolute or relative gene occurrence.
+        gene_sets_df (pd.DataFrame): A collection of gene sets with metadata.
+        mode (str): Whether to compute absolute or relative gene occurrence. Options are 'absolute' or 'relative'.
 
     Returns:
-        A pandas Series with the requested statistic per gene.
+        pd.Series: A pandas Series with the requested statistic per gene.
+
+    Raises:
+        ValueError: If the mode is not 'absolute' or 'relative'.
     """
     genes_occurrence = gene_sets_df["gene_symbol"].str.get_dummies(sep="/")
 
@@ -43,9 +46,8 @@ def compute_degss_genes_stats(
     bootstrap_iterations: int = 100,
     threads: int = 32,
 ) -> None:
-    """
-    Given multiple collections of gene sets, one per MSigDB category, compute gene
-        occurrence statistics corrected by Z-Score normalization using bootstrapping.
+    """Given multiple collections of gene sets, one per MSigDB category, compute gene
+    occurrence statistics corrected by Z-Score normalization using bootstrapping.
 
     More concretely, for each MSigDB category, we randomly sample N gene sets from all
         gene sets in that category, where N is the current number of DEGSs. We do this
@@ -56,15 +58,14 @@ def compute_degss_genes_stats(
         of the occurence stats of the original DEGSs.
 
     Args:
-        degss_cats_dfs: A mapping of MSigDB categories and the current DEGSs detected in
-            that category.
-        msigdb_dfs: A mapping of MSigDB categories and the metadata of all gene sets in
-            that category.
-        diff_expr_df: Dataframe with differential expression statistics and metrics.
-        diff_meth_df: Dataframe with differential methylation statistics and metrics.
-        save_dir: Directory to save results to.
-        bootstrap_iterations: Number of bootstrap random resamplings to perform.
-        threads: Number of threads used to compute statistics in parallel.
+        degss_cats_dfs (Dict[str, pd.DataFrame]): A mapping of MSigDB categories and the current DEGSs detected in that category.
+        msigdb_dfs (Dict[str, pd.DataFrame]): A mapping of MSigDB categories and the metadata of all gene sets in that category.
+        save_dir (Path): Directory to save results to.
+        bootstrap_iterations (int): Number of bootstrap random resamplings to perform. Default is 100.
+        threads (int): Number of threads used to compute statistics in parallel. Default is 32.
+
+    Returns:
+        None
     """
     # 1. Process each MSigDB category
     z_scores_dfs = {}
@@ -152,10 +153,13 @@ def add_degss_genes_stats_metadata(
     Add differential expression and/or methylation metadata to DEGSs genes.
 
     Args:
-        save_dir: Directory to save results to.
-        gene_stats_path: Path to gene stats file.
-        diff_expr_df: Dataframe with differential expression statistics and metrics.
-        diff_meth_df: Dataframe with differential methylation statistics and metrics.
+        save_dir (Path): Directory to save results to.
+        gene_stats_path (Path): Path to gene stats file.
+        diff_expr_df (Optional[pd.DataFrame]): Dataframe with differential expression statistics and metrics. Default is None.
+        diff_meth_df (Optional[pd.DataFrame]): Dataframe with differential methylation statistics and metrics. Default is None.
+
+    Returns:
+        None
     """
     # 0. Setup
     gene_stats_summary = pd.read_csv(gene_stats_path, index_col=0)

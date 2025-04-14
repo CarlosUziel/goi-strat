@@ -1,3 +1,32 @@
+"""
+Utilities for differential methylation analysis using minfi.
+
+This module provides functions for analyzing DNA methylation array data
+(Illumina 450K/EPIC BeadChip) using the minfi R package. Key features include:
+
+1. Data processing and quality control:
+   - Reading and preprocessing raw methylation array data (.idat files)
+   - Multiple normalization methods (Illumina, Functional normalization, Quantile, etc.)
+   - Quality control metrics and visualization
+   - Filtering problematic probes (SNPs, cross-reactive, sex chromosomes)
+
+2. Differential methylation analysis:
+   - Identifying differentially methylated positions (DMPs) between conditions
+   - Identifying differentially methylated regions (DMRs) using DMRcate
+   - Multiple filtering approaches based on statistical significance and effect size
+   - Integration with limma for robust statistical analysis
+
+3. Visualization and annotation:
+   - Heatmaps of methylation patterns across samples and groups
+   - PCA and MDS plots for sample clustering analysis
+   - Genomic annotation of differentially methylated positions and regions
+   - Comprehensive plotting of individual methylation loci
+
+The module integrates with multiple R libraries through rpy2 for specialized
+methylation analysis while maintaining a consistent Python interface for workflow
+orchestration.
+"""
+
 # Reference workflow:
 #   https://dockflow.org/workflow/methylation-array-analysis/#content
 
@@ -79,21 +108,23 @@ def quality_control(
     """
     Perform quality control on an RG Set.
 
+    This function performs quality control on raw methylation data, including
+    detection p-value calculation, sample-specific QC, and generating QC reports
+    and plots. Poor quality samples are removed based on detection p-values.
+
     Args:
-        rg_set: A user-provided RG set.
-        plots_path: Path to store all generated plots.
-        exp_prefix: Prefix string for all generated files.
-        targets: Samples annotation file.
-        contrast_factor: Contrast factor (column of targets) for differential
-            methylation.
-        contrasts_levels: List of contrasts to test for differential methylation.
-        contrasts_levels_colors: A dictionary where each contrast level
-            has a color assigned.
-        id_col: Column name to uniquely identify samples.
+        rg_set (Any): Raw RGChannelSet object containing methylation data.
+        plots_path (Path): Directory to save generated plots.
+        exp_prefix (str): Prefix for naming output files.
+        targets (pd.DataFrame): Dataframe containing sample annotations.
+        contrast_factor (str): Column name in `targets` used to group samples.
+        id_col (str): Column name in `targets` uniquely identifying samples.
 
     Returns:
-        RG set and targets dataframe with poor quality samples removed plus detection
-            p values.
+        Tuple[Any, pd.DataFrame, Any]:
+            - Filtered RGChannelSet object.
+            - Updated targets dataframe with poor quality samples removed.
+            - Detection p-values for the remaining samples.
     """
     # 0. Setup
     sample_groups = targets[contrast_factor].tolist()
@@ -549,12 +580,12 @@ def diff_meth_probes(
     # 0. Setup
     m_values = ro.r("getM")(mset)
     b_values = ro.r("getBeta")(mset)
-    assert all(
-        [lfc_level in ("hyper", "hypo", "all") for lfc_level in lfc_levels]
-    ), 'only "hyper", "hypo" and "all" are allowed lfc_level values'
-    assert all(
-        [p_col in ("P.Value", "adj.P.Val") for p_col in p_cols]
-    ), 'only "P.Value" and "adj.P.Val" are allowed p_col values'
+    assert all([lfc_level in ("hyper", "hypo", "all") for lfc_level in lfc_levels]), (
+        'only "hyper", "hypo" and "all" are allowed lfc_level values'
+    )
+    assert all([p_col in ("P.Value", "adj.P.Val") for p_col in p_cols]), (
+        'only "P.Value" and "adj.P.Val" are allowed p_col values'
+    )
     annots = {
         "cpg": build_annotations(genome=genome, annotations=f"{genome}_cpgs"),
         "gene": build_annotations(genome=genome, annotations=f"{genome}_basicgenes"),
@@ -1284,9 +1315,9 @@ def diff_meth_regions(
         ]
     )
 
-    assert all(
-        [lfc_level in ("hyper", "hypo", "all") for lfc_level in lfc_levels]
-    ), 'only "hyper", "hypo" and "all" are allowed lfc_level values'
+    assert all([lfc_level in ("hyper", "hypo", "all") for lfc_level in lfc_levels]), (
+        'only "hyper", "hypo" and "all" are allowed lfc_level values'
+    )
 
     # 1. Get differentially methylated regions and annotate cpgs and genes.
     for (test, control), p_th, mean_diff_level, mean_meth_diff_th in product(

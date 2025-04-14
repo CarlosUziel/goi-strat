@@ -1,3 +1,30 @@
+"""
+Utilities for differential gene expression analysis using RNA-seq data.
+
+This module provides functions to analyze differential gene expression between sample
+groups using DESeq2 and associated visualizations. It supports:
+
+1. Running full differential expression analysis pipelines, including:
+   - Creating DESeq2 datasets from raw count data
+   - Performing variance stabilizing transformations
+   - Running differential expression tests between sample groups
+   - Filtering and annotating significant differentially expressed genes (DEGs)
+
+2. Generating visualizations for expression data:
+   - PCA plots to visualize sample clustering
+   - Heatmaps of differentially expressed genes
+   - Sample distance matrices
+   - Gene expression distribution plots
+
+3. Processing and managing differential expression results:
+   - Filtering results by significance thresholds and fold change
+   - Annotating genes with additional identifiers
+   - Saving results and intermediate data for downstream analyses
+
+The module integrates with R libraries (through rpy2) to leverage established
+bioinformatics tools while providing a Python interface for workflow management.
+"""
+
 import logging
 import re
 from collections import defaultdict
@@ -55,18 +82,49 @@ def proc_diff_expr_dataset_plots(
     contrast_levels_colors: Dict[str, str],
     heatmap_top_n: int = 1000,
 ) -> None:
-    """Process differential expression dataset plots.
+    """
+    Generate multiple visualization plots for differential expression datasets.
+
+    This function creates a comprehensive set of visualizations for exploring differential
+    expression data. It produces sample clustering heatmaps, gene expression heatmaps,
+    mean-SD plots, PCA plots, and MDS plots to help visualize relationships between samples
+    and identify patterns of gene expression.
 
     Args:
-        dataset: Dataset object.
-        dataset_label: Dataset label.
-        annot_df_contrasts: Samples annotation dataframe.
-        plots_path: Path to store all generated plots.
-        exp_prefix: A string prefixing generated files.
-        org_db: Organism annotation database.
-        contrast_factor: Annotation field used for differential analysis.
-        contrast_levels_colors: Colors used to plot contrast factor levels.
-        heatmap_top_n: Top number of rows to show in the heatmap.
+        dataset: A DESeq2 dataset object (or transformed version like VST or rlog).
+        dataset_label: String identifier for the dataset type (e.g., "dds", "VST", "RLD")
+            that will be used in output file names.
+        annot_df_contrasts: Sample annotation dataframe with metadata for each sample,
+            indexed by sample ID. Must contain the contrast_factor column.
+        plots_path: Path to directory where generated plots will be stored.
+        exp_prefix: String prefix to be used for all output filenames.
+        org_db: Organism annotation database object for gene ID conversion.
+        contrast_factor: Column name in annot_df_contrasts used to group samples for
+            differential analysis and visualization (e.g., "sample_type").
+        contrast_levels_colors: Dictionary mapping factor levels to colors for plots
+            (e.g., {"tumor": "red", "normal": "blue"}).
+        heatmap_top_n: Maximum number of top variable genes to include in heatmaps.
+            Default is 1000.
+
+    Returns:
+        None. Multiple plot files are written to the specified plots_path directory:
+        - Sample clustering heatmaps (PDF)
+        - Unsupervised gene clustering heatmaps (PDF)
+        - Mean-SD plots (PDF)
+        - PCA plots (PDF and HTML)
+        - MDS plots (PDF)
+
+    Examples:
+        >>> proc_diff_expr_dataset_plots(
+        ...     dataset=vst,
+        ...     dataset_label="VST",
+        ...     annot_df_contrasts=sample_annotations,
+        ...     plots_path=Path("/results/plots"),
+        ...     exp_prefix="experiment1",
+        ...     org_db=org_db_object,
+        ...     contrast_factor="treatment",
+        ...     contrast_levels_colors={"control": "blue", "treated": "red"},
+        ... )
     """
     # 1. Samples clustering
     sample_dist = sample_distance(dataset)
@@ -209,32 +267,78 @@ def proc_diff_expr_dataset(
     compute_rlog: bool = False,
 ) -> Tuple[Any, Any, Any]:
     """
-    Generate DESeq2 dataset plus multiple plots. Optionally, compute normalized datasets
-    and their corresponding plots.
+    Generate DESeq2 dataset and normalized counts with visualizations.
+
+    This function creates a DESeq2 dataset from either count files or a pre-computed matrix,
+    optionally computes variance-stabilizing transformations (VST) and regularized
+    log transformations (rlog), and generates visualization plots for each dataset.
+    Results are saved to disk and comprehensive quality control plots are generated.
 
     Args:
-        annot_df_contrasts: Annotation file of samples to be analysed.
-        results_path: Path to store intermediate and final results to.
-        plots_path: Path to store intermediate and final plots to.
-        exp_prefix: A string prefixing generated files.
-        org_db: Organism annotation database object.
-        factors: Columns to be added to the deseq dataset.
-        contrast_factor: Annotation field used for differential analysis.
-        contrast_levels_colors: Colors used to plot contrast factor levels.
-        design_factors: Factors to include in the design formula for differential
-            analysis.
-        heatmap_top_n: Top number of genes to include in heatmaps.
-        counts_matrix: Optionally, include an already-computed counts matrix.
-        counts_path: Optionally, include path to load gene raw counts from.
-        counts_files_pattern: Optionally, include pattern of gene raw counts files.
-        compute_vst: Whether to compute VST-normalized gene counts.
-        compute_rlog: Whether to compute RLOG-normalized gene counts.
+        annot_df_contrasts: Annotation dataframe of samples to be analyzed, indexed by
+            sample IDs that match either column names in counts_matrix or file names
+            in counts_path.
+        results_path: Directory path where intermediate and final results will be saved.
+        plots_path: Directory path where plots will be saved.
+        exp_prefix: A string prefix for all generated file names.
+        org_db: Organism annotation database object for gene ID mapping.
+        factors: Columns from annot_df_contrasts to be included in the DESeq2 dataset.
+        contrast_factor: Column name in annot_df_contrasts used for grouping samples and
+            performing differential expression analysis.
+        contrast_levels_colors: Dictionary mapping factor levels to colors for plots
+            (e.g., {"tumor": "red", "normal": "blue"}).
+        design_factors: Columns to include in the design formula for differential analysis.
+            If None, defaults to [contrast_factor].
+        heatmap_top_n: Maximum number of top variable genes to include in heatmaps.
+        counts_matrix: Optional pre-computed counts matrix with genes in rows and
+            samples in columns. If provided, counts_path is ignored.
+        counts_path: Optional directory path containing count files (one per sample).
+            Used only if counts_matrix is None.
+        counts_files_pattern: File pattern for count files. Used only with counts_path.
+        compute_vst: Whether to compute variance-stabilizing transformation. Default is True.
+        compute_rlog: Whether to compute regularized log transformation. More accurate
+            than VST for small sample sizes but slower to compute. Default is False.
 
     Raises:
-        ValueError: _description_
+        ValueError: If neither counts_matrix nor counts_path with counts_files_pattern
+            is provided.
 
     Returns:
-        Tuple[Any, Any, Any]: _description_
+        Tuple[Any, Any, Any]: A tuple containing:
+            - dds: DESeq2 dataset object
+            - vst: Variance stabilized transformed dataset (or None if compute_vst=False)
+            - rld: Regularized log transformed dataset (or None if compute_rlog=False)
+
+    Examples:
+        >>> # Using count files
+        >>> dds, vst, rld = proc_diff_expr_dataset(
+        ...     annot_df_contrasts=sample_annotations,
+        ...     results_path=Path("/results/deseq2"),
+        ...     plots_path=Path("/results/plots"),
+        ...     exp_prefix="experiment1",
+        ...     org_db=org_db_object,
+        ...     factors=["sample_type", "batch"],
+        ...     contrast_factor="sample_type",
+        ...     contrast_levels_colors={"tumor": "red", "normal": "blue"},
+        ...     counts_path=Path("/data/counts"),
+        ...     compute_vst=True,
+        ...     compute_rlog=False
+        ... )
+        >>>
+        >>> # Using a pre-computed counts matrix
+        >>> dds, vst, _ = proc_diff_expr_dataset(
+        ...     annot_df_contrasts=sample_annotations,
+        ...     results_path=Path("/results/deseq2"),
+        ...     plots_path=Path("/results/plots"),
+        ...     exp_prefix="experiment1",
+        ...     org_db=org_db_object,
+        ...     factors=["sample_type"],
+        ...     contrast_factor="sample_type",
+        ...     contrast_levels_colors={"tumor": "red", "normal": "blue"},
+        ...     counts_matrix=raw_counts_df,
+        ...     compute_vst=True,
+        ...     compute_rlog=False
+        ... )
     """
     # 1. DESeq2 dataset
     design_factors = design_factors if design_factors is not None else [contrast_factor]
@@ -366,27 +470,73 @@ def proc_diff_expr_results(
     heatmap_top_n: int = 1000,
 ) -> None:
     """
-    Get differentially expressed genes, filter by different criteria, save results to
-    disk and do some plots.
+    Process differential expression results and generate visualizations.
+
+    This function performs differential expression testing on a DESeq2 dataset across multiple
+    contrasts, filters the results using various significance thresholds, generates visualizations
+    (MA plots, volcano plots, heatmaps), and saves the results to disk. The function handles:
+
+    1. Running DESeq2 differential expression testing
+    2. Computing log fold-change shrinkage for better estimates
+    3. Annotating genes with identifiers (ENTREZ, SYMBOL)
+    4. Creating MA plots and volcano plots to visualize differential expression
+    5. Filtering results based on p-values and log fold-change thresholds
+    6. Generating heatmaps of differentially expressed genes
+    7. Creating Venn diagrams for comparing gene lists across contrasts
+    8. Summarizing results for all contrasts and threshold combinations
 
     Args:
-        dds: DDS dataset.
-        annot_df_contrasts: Annotation file of samples to be analysed.
-        results_path: Path to store intermediate and final results to.
-        plots_path: Path to store intermediate and final plots to.
-        exp_prefix: A string prefixing generated files.
-        org_db: Organism annotation database object.
-        contrast_factor: Annotation field used for differential analysis.
-        contrasts_levels: Contrast factor levels to compare in differential analysis.
-        contrast_levels_colors: Colors used to plot contrast factor levels.
-        p_cols: P-value field columns to filter by.
-        p_ths: P-value thresholds to filter by.
-        lfc_levels: LFC levels (up, down, all) to filter by.
-        lfc_ths: LFC thresholds to filter by.
-        vst: VST dataset, optional.
-        heatmap_top_n: Top number of genes to include in heatmaps.
-    """
+        dds: DESeq2 dataset object created from proc_diff_expr_dataset.
+        annot_df_contrasts: Sample annotation dataframe with metadata for each sample,
+            indexed by sample ID. Must contain the contrast_factor column.
+        results_path: Directory path where differential expression results will be saved.
+        plots_path: Directory path where plots will be saved.
+        exp_prefix: String prefix for all output files.
+        org_db: Organism annotation database object for gene ID mapping.
+        contrast_factor: Column name in annot_df_contrasts used to group samples for
+            differential expression comparisons (e.g., "sample_type").
+        contrasts_levels: List of tuples (test, control) specifying the contrast factor
+            levels to compare. Each tuple represents one contrast with test group vs.
+            control group.
+        contrast_levels_colors: Dictionary mapping contrast factor levels to colors for plots
+            (e.g., {"tumor": "red", "normal": "blue"}).
+        p_cols: List of p-value columns to use for filtering (e.g., ["pvalue", "padj"]).
+        p_ths: List of p-value thresholds to apply for filtering (e.g., [0.05, 0.01]).
+        lfc_levels: List of log fold-change filtering criteria to apply ("up", "down", "all").
+        lfc_ths: List of log fold-change threshold values to apply (e.g., [0, 1, 2]).
+        vst: Optional variance-stabilized transformed dataset for visualization.
+            If None, the raw dds will be used.
+        heatmap_top_n: Maximum number of top DEGs to include in each heatmap.
 
+    Returns:
+        None. All results are written to disk as CSV files and visualizations as PDF/HTML:
+        - Unfiltered DESeq2 results for each contrast
+        - Filtered results for each combination of p-value column, threshold, and LFC criteria
+        - MA plots showing log fold-change vs. mean expression
+        - Volcano plots showing significance vs. log fold-change
+        - Venn diagrams comparing DEGs across contrasts (when multiple contrasts provided)
+        - Heatmaps of top differentially expressed genes
+        - Summary statistics of DEG counts
+
+    Examples:
+        >>> proc_diff_expr_results(
+        ...     dds=dds_object,
+        ...     annot_df_contrasts=sample_annotations,
+        ...     results_path=Path("/results/deseq2"),
+        ...     plots_path=Path("/results/plots"),
+        ...     exp_prefix="experiment1",
+        ...     org_db=org_db_object,
+        ...     contrast_factor="sample_type",
+        ...     contrasts_levels=[("tumor", "normal"), ("metastasis", "tumor")],
+        ...     contrast_levels_colors={"normal": "blue", "tumor": "red", "metastasis": "purple"},
+        ...     p_cols=["padj"],
+        ...     p_ths=[0.05],
+        ...     lfc_levels=["all"],
+        ...     lfc_ths=[1.0],
+        ...     vst=vst_object,
+        ...     heatmap_top_n=100
+        ... )
+    """
     # 1. Run DESeq2
     with localconverter(ro.default_converter):
         deseq = run_dseq2(dds)
@@ -683,52 +833,113 @@ def differential_expression(
     lfc_ths: Iterable[float],
     design_factors: Iterable[str] = None,
     heatmap_top_n: int = 1000,
-    counts_matrix: Optional[Path] = None,
+    counts_matrix: Optional[pd.DataFrame] = None,
     counts_path: Optional[Path] = None,
-    counts_files_pattern: str = ".tsv",
+    counts_files_pattern: str = "*.tsv",
     compute_vst: bool = True,
     compute_rlog: bool = False,
 ) -> None:
     """
-    Run a differential expression experiment.
+    Run a complete differential expression analysis workflow.
+
+    This is a high-level function that orchestrates the entire differential expression
+    analysis workflow, from dataset creation to result generation. It combines the
+    functionality of proc_diff_expr_dataset and proc_diff_expr_results to create a
+    streamlined pipeline for analyzing RNA-seq data with DESeq2.
 
     In a DESeq2 differential expression analysis, there are mainly two steps:
         1. Generate the DESeq2 datasets and its transformations (e.g., VST, RLD) and
-            plot various visualizations. Here we only need to know which samples (with
-            existing counts files) need to be taken into account. For example, only
-            samples for the intended comparisons should be included.
-            Only has to be run once per experiment (for the same samples).
+           plot various visualizations. Here we only need to know which samples (with
+           existing counts files) need to be taken into account. For example, only
+           samples for the intended comparisons should be included.
+           Only has to be run once per experiment (for the same samples).
 
         2. Calculate differentially expressed genes (DESeq2 results) for interesting
-            contrasts and generate multiple gene lists according to different criteria.
-            Has to be run once per contrast comparison, hence can be parallelized.
+           contrasts and generate multiple gene lists according to different criteria.
+           Has to be run once per contrast comparison, hence can be parallelized.
 
-    A full differential expression run considers only one contrast (e.g. comparisons
-        between levels of a single annotation field, such as sample type). Each GOI run
-        is essentially a full independent run.
+    A full differential expression run considers only one contrast factor (e.g., comparisons
+    between levels of a single annotation field, such as sample type) but can include
+    multiple pairwise comparisons within that factor.
 
     Args:
-        annot_df_contrasts: Annotation file of samples to be analysed.
-        results_path: Path to store intermediate and final results to.
-        plots_path: Path to store intermediate and final plots to.
-        exp_prefix: A string prefixing generated files.
-        org_db: Organism annotation database object.
-        factors: Columns to be added to the deseq dataset.
-        contrast_factor: Annotation field used for differential analysis.
-        contrasts_levels: Contrast factor levels to compare in differential analysis.
-        contrast_levels_colors: Colors used to plot contrast factor levels.
-        p_cols: P-value field columns to filter by.
-        p_ths: P-value thresholds to filter by.
-        lfc_levels: LFC levels (up, down, all) to filter by.
-        lfc_ths: LFC thresholds to filter by.
-        design_factors: Factors to include in the design formula for differential
-            analysis.
-        heatmap_top_n: Top number of genes to include in heatmaps.
-        counts_matrix: Optionally, include an already-computed counts matrix.
-        counts_path: Optionally, include path to load gene raw counts from.
-        counts_files_pattern: Optionally, include pattern of gene raw counts files.
-        compute_vst: Whether to compute VST-normalized gene counts.
-        compute_rlog: Whether to compute RLOG-normalized gene counts.
+        annot_df_contrasts: Sample annotation dataframe indexed by sample IDs, containing
+            metadata columns including the contrast_factor column for grouping samples.
+        results_path: Directory path where all analysis results will be saved.
+        plots_path: Directory path where all visualization plots will be saved.
+        exp_prefix: String prefix for all generated files and plot titles.
+        org_db: Organism annotation database object for gene ID conversion.
+        factors: List of columns from annot_df_contrasts to be included in the DESeq2 dataset.
+        contrast_factor: Column name in annot_df_contrasts used for grouping samples and
+            defining contrasts for differential expression analysis.
+        contrasts_levels: List of tuples (test_group, reference_group) specifying the
+            contrasts to analyze, where each group is a level of the contrast_factor.
+            Example: [("tumor", "normal"), ("metastasis", "tumor")]
+        contrast_levels_colors: Dictionary mapping factor levels to colors for visualization.
+            Example: {"tumor": "red", "normal": "blue", "metastasis": "purple"}
+        p_cols: List of p-value columns to use for filtering results (e.g., ["pvalue", "padj"]).
+        p_ths: List of p-value thresholds to apply when filtering (e.g., [0.05, 0.01]).
+        lfc_levels: List of log fold-change filtering categories ("up", "down", "all").
+        lfc_ths: List of log fold-change threshold values (e.g., [0, 1, 2]).
+        design_factors: Optional list of factors to include in the design formula for
+            differential analysis. If None, defaults to [contrast_factor].
+        heatmap_top_n: Maximum number of top differentially expressed genes to include
+            in heatmaps. Default is 1000.
+        counts_matrix: Optional pre-computed counts matrix with genes in rows and
+            samples in columns. If provided, counts_path is ignored.
+        counts_path: Optional path to directory containing count files (one per sample).
+            Used only if counts_matrix is None.
+        counts_files_pattern: File pattern for count files. Used only with counts_path.
+            Default is "*.tsv".
+        compute_vst: Whether to compute variance-stabilizing transformation. Default is True.
+        compute_rlog: Whether to compute regularized log transformation. More accurate
+            than VST for small sample sizes but slower to compute. Default is False.
+
+    Returns:
+        None. All results are written to the specified output directories as CSV files,
+        and visualizations are saved as PDF/HTML files.
+
+    Examples:
+        >>> # Basic differential expression analysis
+        >>> differential_expression(
+        ...     annot_df_contrasts=sample_annotations,
+        ...     results_path=Path("/results/deseq2"),
+        ...     plots_path=Path("/results/plots"),
+        ...     exp_prefix="experiment1",
+        ...     org_db=org_db_object,
+        ...     factors=["sample_type", "batch"],
+        ...     contrast_factor="sample_type",
+        ...     contrasts_levels=[("tumor", "normal")],
+        ...     contrast_levels_colors={"tumor": "red", "normal": "blue"},
+        ...     p_cols=["padj"],
+        ...     p_ths=[0.05],
+        ...     lfc_levels=["all", "up", "down"],
+        ...     lfc_ths=[1.0],
+        ...     counts_path=Path("/data/counts")
+        ... )
+        >>>
+        >>> # More complex analysis with multiple contrasts and thresholds
+        >>> differential_expression(
+        ...     annot_df_contrasts=sample_annotations,
+        ...     results_path=Path("/results/deseq2"),
+        ...     plots_path=Path("/results/plots"),
+        ...     exp_prefix="experiment2",
+        ...     org_db=org_db_object,
+        ...     factors=["sample_type", "patient_id", "batch"],
+        ...     contrast_factor="sample_type",
+        ...     contrasts_levels=[("tumor", "normal"), ("metastasis", "tumor")],
+        ...     contrast_levels_colors={
+        ...         "normal": "blue", "tumor": "red", "metastasis": "purple"
+        ...     },
+        ...     p_cols=["pvalue", "padj"],
+        ...     p_ths=[0.05, 0.01],
+        ...     lfc_levels=["all", "up", "down"],
+        ...     lfc_ths=[0, 1, 2],
+        ...     design_factors=["sample_type", "batch"],
+        ...     counts_matrix=counts_df,
+        ...     compute_vst=True,
+        ...     compute_rlog=True
+        ... )
     """
     # 1. Process DESeq2 dataset
     dds, vst, _ = proc_diff_expr_dataset(

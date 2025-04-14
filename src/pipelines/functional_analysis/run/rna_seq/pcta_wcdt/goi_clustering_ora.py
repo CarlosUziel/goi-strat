@@ -1,3 +1,35 @@
+"""
+Script to perform functional enrichment analysis on protein-protein interaction network clusters.
+
+This script runs over-representation analysis (ORA) on gene clusters identified from
+protein-protein interaction (PPI) networks derived from differentially enriched gene sets
+(DEGSs) in the PCTA-WCDT prostate cancer dataset. It analyzes each cluster to identify
+enriched biological functions, pathways, and processes.
+
+The script performs the following steps:
+1. Loads cluster information from previously generated PPI network clustering results
+2. Determines the background gene set from differential expression analysis
+3. For each cluster, performs ORA across multiple databases including:
+   - MSigDB collections (Hallmarks, C1-C8)
+   - GO terms (BP, CC, MF)
+   - KEGG pathways
+   - Reactome pathways
+   - Disease Ontology
+   - Network of Cancer Genes
+4. Generates visualizations for each enrichment result
+5. Saves the results to disk for further analysis
+
+The analysis is performed on clusters from both primary and metastatic samples,
+comparing high vs low FOLH1 expression within each sample type.
+
+Usage:
+    python goi_clustering_ora.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import functools
 import logging

@@ -1,3 +1,30 @@
+"""
+Script to perform differential pathway enrichment analysis on PCTA-WCDT dataset.
+
+This script analyzes gene set variation analysis (GSVA) enrichment scores from the
+PCTA-WCDT prostate cancer dataset to identify differentially enriched pathways between
+sample groups stratified by FOLH1 (PSMA) expression levels. It uses the limma package
+for differential enrichment testing.
+
+The script performs the following steps:
+1. Loads sample annotations with FOLH1 expression-based stratification
+2. Loads pre-computed GSVA enrichment scores for different MSigDB collections
+3. Filters samples based on specified contrasts (e.g., high vs low GOI expression)
+4. Performs differential enrichment analysis using limma
+5. Generates visualizations including heatmaps and volcano plots
+6. Saves the results to disk for downstream analysis
+
+The analysis is performed on both primary and metastatic samples, comparing high vs low
+FOLH1 expression within each sample type, for multiple MSigDB gene set collections.
+
+Usage:
+    python goi.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import functools
 import json

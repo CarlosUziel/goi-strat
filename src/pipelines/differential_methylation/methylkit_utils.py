@@ -1,3 +1,30 @@
+"""
+Utilities for differential methylation analysis using methylKit.
+
+This module provides functions for analyzing DNA methylation data from RRBS
+(Reduced Representation Bisulfite Sequencing) and WGBS (Whole Genome Bisulfite
+Sequencing) experiments using the methylKit R package. Key features include:
+
+1. Data processing and quality control:
+   - Reading and filtering methylation calls from Bismark coverage files
+   - Computing and visualizing methylation and coverage statistics
+   - Sample clustering and principal component analysis
+
+2. Differential methylation analysis:
+   - Identifying differentially methylated cytosines (DMCs) between conditions
+   - Filtering results based on various significance thresholds and difference levels
+   - Handling complex experimental designs with multiple factors
+
+3. Annotation and visualization:
+   - Annotating differential methylation results with genomic features
+   - Creating comprehensive plots for interpretation of methylation patterns
+   - Comparing methylation changes across genomic contexts (CpG islands, genes, etc.)
+   - Randomization tests to assess enrichment of DMCs in specific genomic features
+
+The module integrates with R libraries through rpy2 for specialized methylation
+analysis while maintaining a consistent Python interface for workflow orchestration.
+"""
+
 # Reference workflow:
 #   https://dockflow.org/workflow/methylation-array-analysis/#content
 
@@ -54,13 +81,17 @@ def plot_save_stats(
     results_path: Path,
     exp_prefix: str,
 ) -> None:
-    """Compute, plot and save methylation and coverage statistics.
+    """
+    Compute, plot, and save methylation and coverage statistics.
 
     Args:
-        methyl_obj: Methylation object.
-        results_path: Path to store all generated results.
-        plots_path: Path to store all generated plots.
-        exp_prefix: Prefix string for all generated files.
+        methyl_obj (Any): Methylation object containing sample data.
+        plots_path (Path): Directory to store generated plots.
+        results_path (Path): Directory to store generated results.
+        exp_prefix (str): Prefix for naming output files.
+
+    Returns:
+        None
     """
     # 0. Setup subdirectories
     meth_results_root = results_path.joinpath("methylation_statistics")
@@ -105,16 +136,19 @@ def make_meth_plots(
     results_path: Path,
     exp_prefix: str,
 ) -> None:
-    """Compute various plots from the united methylation object.
+    """
+    Generate various plots from the united methylation object.
 
     Args:
-        methyl_obj: Methylation object.
-        condition_samples: Samples per condition.
-        results_path: Path to store all generated results.
-        plots_path: Path to store all generated plots.
-        exp_prefix: Prefix string for all generated files.
-    """
+        methyl_obj (Any): Methylation object containing sample data.
+        condition_samples (Dict[str, Iterable[str]]): Mapping of conditions to sample IDs.
+        plots_path (Path): Directory to store generated plots.
+        results_path (Path): Directory to store generated results.
+        exp_prefix (str): Prefix for naming output files.
 
+    Returns:
+        None
+    """
     # 1. Methylation correlation
     # save_csv(
     #     get_correlation(
@@ -169,15 +203,19 @@ def make_diff_meth_plots(
     plots_path: Path,
     exp_prefix: str,
 ) -> None:
-    """Compute various plots from differential methylation results objects.
+    """
+    Generate plots from differential methylation results.
 
     Args:
-        methyl_obj: Methylation object.
-        methyl_diffs: Differential methylation objects per contrast.
-        condition_samples: Dictionary of samples per condition.
-        cpgs_ann: Annotated CpGs object.
-        plots_path: Path to store all generated plots.
-        exp_prefix: Prefix string for all generated files.
+        methyl_obj (Any): Methylation object containing sample data.
+        methyl_diffs (Dict[Tuple[str, str], Any]): Differential methylation results per contrast.
+        condition_samples (Dict[str, Iterable[str]]): Mapping of conditions to sample IDs.
+        cpgs_ann (Any): Annotated CpGs object.
+        plots_path (Path): Directory to store generated plots.
+        exp_prefix (str): Prefix for naming output files.
+
+    Returns:
+        None
     """
     # 0. Change format of methyl_diff
     methyl_diffs = {
@@ -248,21 +286,24 @@ def differential_methylation_rrbs_sites(
     mean_diff_ths: Iterable[float] = (10, 20, 30),
 ) -> None:
     """
-    Differential methylation analysis of RRBS samples focusing on sites.
+    Perform differential methylation analysis of RRBS samples focusing on sites.
 
     Args:
-        annot_df: Genome annotation dataframe.
-        bismark_path: Path to bismark directory with coverage files.
-        results_path: Path to store all generated results.
-        plots_path: Path to store all generated plots.
-        exp_prefix: Prefix string for all generated files.
-        contrast_factor: Field name defining contrast levels.
-        contrast_levels: Contrast to test for differential methylation.
-        genome: Genome version.
-        n_threads: Number of threads to use to calculate differential methylation.
-        q_ths: FDR thresholds to use to filter the results.
-        mean_diff_levels: Mean methylation difference levels to filter the results by.
-        mean_diff_ths: Mean methylation difference thresholds to filter the results by.
+        annot_df (pd.DataFrame): DataFrame containing genome annotations.
+        bismark_path (Path): Path to the directory with Bismark coverage files.
+        results_path (Path): Directory to store generated results.
+        plots_path (Path): Directory to store generated plots.
+        exp_prefix (str): Prefix for naming output files.
+        contrast_factor (str): Column name defining contrast levels.
+        contrast_levels (Tuple[str, str]): Pair of contrast levels (test, control).
+        genome (str): Genome version. Defaults to "hg38".
+        n_threads (int): Number of threads for computation. Defaults to 16.
+        q_ths (Iterable[float]): FDR thresholds for filtering results. Defaults to (0.05, 0.01).
+        mean_diff_levels (Iterable[str]): Levels of mean methylation difference. Defaults to ("hyper", "hypo", "all").
+        mean_diff_ths (Iterable[float]): Thresholds for mean methylation difference. Defaults to (10, 20, 30).
+
+    Returns:
+        None
     """
     # 0. Setup
     annots = {

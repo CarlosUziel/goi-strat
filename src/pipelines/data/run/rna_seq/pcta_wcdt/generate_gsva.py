@@ -1,3 +1,27 @@
+"""
+Script to generate Gene Set Variation Analysis (GSVA) matrices for the PCTA-WCDT dataset.
+
+This script preprocesses RNA-seq data from the PCTA-WCDT (Prostate Cancer Transcriptome
+Atlas and West Coast Dream Team) project and performs Gene Set Variation Analysis (GSVA)
+to compute enrichment scores for collections of gene sets across samples.
+
+The script performs the following steps:
+1. Loads RNA-seq count data and sample annotations
+2. Filters samples to include only those with matching annotations and data
+3. For each MSigDB collection (Hallmarks, C1-C8), calculates GSVA enrichment scores
+4. Saves the resulting matrices to disk for downstream analysis
+
+The analysis focuses on comparing primary tumor (prim) and metastatic (met) samples,
+providing a comprehensive view of pathway activity differences between these groups.
+
+Usage:
+    python generate_gsva.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import functools
 import logging

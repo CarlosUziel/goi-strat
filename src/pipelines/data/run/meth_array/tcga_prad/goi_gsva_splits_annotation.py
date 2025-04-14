@@ -1,3 +1,39 @@
+"""
+GSVA-based sample stratification for FOLH1 gene expression in TCGA-PRAD methylation array dataset.
+
+This script performs Gene Set Variation Analysis (GSVA) based sample grouping for the
+TCGA-PRAD (Prostate Adenocarcinoma) methylation array dataset. It specifically focuses on
+creating optimal sample groups based on FOLH1 (PSMA) gene expression levels for
+integrative methylation and transcriptome analysis.
+
+The script implements the following workflow:
+1. Data preparation and preprocessing:
+   - Loads matched RNA-seq and methylation array data from TCGA-PRAD
+   - Identifies samples that have both methylation array and RNA-seq data
+   - Applies variance-stabilizing transformation to RNA expression values
+   - Ranks samples based on FOLH1 expression levels
+
+2. Group optimization through iterative differential enrichment:
+   - Tests various sample grouping configurations by varying the number of samples in high/mid/low groups
+   - For each configuration, performs differential GSVA enrichment analysis between high and low groups
+   - Evaluates multiple MSigDB gene set collections for comprehensive pathway coverage
+
+3. Optimal split determination:
+   - Calculates functional difference scores for each grouping configuration
+   - Identifies the optimal split that maximizes biological differences between groups
+   - Generates updated annotation files with optimal FOLH1 expression level classifications
+
+The resulting annotations enable integrative analysis of DNA methylation patterns in the context
+of FOLH1 expression levels in prostate cancer.
+
+Usage:
+    python goi_gsva_splits_annotation.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import functools
 import logging

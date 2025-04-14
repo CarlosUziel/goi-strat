@@ -1,3 +1,27 @@
+"""
+Functional enrichment analysis pipeline for RRBS methylation data using methylKit results.
+
+This script performs Gene Set Enrichment Analysis (GSEA) and Over-Representation Analysis (ORA)
+on differentially methylated regions/loci identified by methylKit from WCDT-MCRPC RRBS data.
+The analysis focuses on understanding biological processes and pathways affected by methylation
+changes associated with different FOLH1/PSMA expression levels.
+
+The script:
+1. Processes methylKit differential methylation results from multiple genomic contexts
+   (promoters, exons, introns, etc.)
+2. Performs GSEA using methylation differences (meth.diff) for gene ranking
+3. Performs ORA on filtered methylation sites using various q-value and difference thresholds
+4. Supports hyper- and hypo-methylation analysis separately or combined
+5. Saves enrichment results and generates visualization plots for each condition
+
+This analysis connects methylation patterns to biological function, providing insights
+into epigenetic regulation associated with FOLH1/PSMA expression in metastatic
+castration-resistant prostate cancer.
+
+Usage:
+    python goi_methylkit.py [--root-dir DIRECTORY] [--threads NUM_THREADS]
+"""
+
 import argparse
 import functools
 import json
@@ -30,7 +54,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--root-dir",
     type=str,
-    help="Root directory",
+    help="Root directory for data storage",
     nargs="?",
     default="/mnt/d/phd_data",
 )
@@ -74,22 +98,21 @@ SAMPLE_CLUSTER_CONTRAST_LEVELS: Iterable[
 CONTRASTS_LEVELS_COLORS: Dict[str, str] = {
     "met": "#8B3A3A",
     # same colors but for GOI levels
-    "low": "#9ACD32",
-    "mid": "#4A708B",
-    "high": "#8B3A3A",
-    # dummy contrast level
+    "high": "#EE3B3B",
+    "low": "#8B2323",
     "X": "#808080",
 }
 GOI_LEVELS_COLORS: Dict[str, str] = {
     f"{sample_type}_{goi_level}": CONTRASTS_LEVELS_COLORS[goi_level]
     for sample_type, goi_level in product(
-        CONTRASTS_LEVELS_COLORS.keys(), ("low", "mid", "high")
+        CONTRASTS_LEVELS_COLORS.keys(), ("low", "high")
     )
 }
 CONTRASTS_LEVELS_COLORS.update(GOI_LEVELS_COLORS)
 with DATA_ROOT.joinpath("CONTRASTS_LEVELS_COLORS.json").open("w") as fp:
     json.dump(CONTRASTS_LEVELS_COLORS, fp, indent=True)
 
+ID_COL: str = "sample_id"
 GENE_ANNOTS: Iterable[str] = (
     f"{GENOME}_genes_1to5kb",
     f"{GENOME}_genes_exons",

@@ -1,3 +1,29 @@
+"""
+Functional enrichment analysis pipeline for percentile-stratified gene expression across multiple datasets.
+
+This script performs Gene Set Enrichment Analysis (GSEA) and Over-Representation Analysis (ORA)
+on differential gene expression results from multiple datasets, where samples are stratified
+by percentile-based expression levels of tissue-specific marker genes. The analysis focuses
+on understanding biological processes and pathways associated with different expression levels
+of these marker genes across diverse cancer types.
+
+The script:
+1. Processes multiple cancer datasets (TCGA and PCTA-WCDT) with their respective marker genes
+2. For each dataset and percentile threshold combination (10%, 15%, 20%, 25%, 30%):
+   a. Loads differential expression results from DESeq2 output
+   b. Performs GSEA using gene ranking by log2FoldChange
+   c. Performs ORA on filtered gene lists with various significance thresholds
+3. Generates comprehensive functional annotations and visualizations
+4. Enables comparative analysis across different cancer types and percentile thresholds
+
+The percentile thresholds provide sensitivity analysis to determine the optimal threshold
+for detecting pathway differences across diverse cancer types. This multi-dataset approach
+supports identification of both cancer-specific and conserved biological mechanisms.
+
+Usage:
+    python goi_perc.py [--root-dir DIRECTORY] [--threads NUM_THREADS]
+"""
+
 import argparse
 import datetime
 import functools
@@ -48,6 +74,7 @@ STORAGE: Path = Path(user_args["root_dir"])
 SPECIES: str = "Homo sapiens"
 org_db = OrgDB(SPECIES)
 
+# Configuration parameters for functional enrichment analysis
 P_COLS: Iterable[str] = ["padj"]
 P_THS: Iterable[float] = (0.05,)
 LFC_LEVELS: Iterable[str] = ("all", "up", "down")
@@ -56,6 +83,8 @@ HEATMAP_TOP_N: int = 1000
 COMPUTE_VST: bool = True
 COMPUTE_RLOG: bool = False
 PARALLEL: bool = True
+
+# Color scheme for visualization
 CONTRASTS_LEVELS_COLORS: Dict[str, str] = {
     "prim": "#4A708B",
     # same colors but for GOI levels
@@ -71,6 +100,8 @@ GOI_LEVELS_COLORS: Dict[str, str] = {
     )
 }
 CONTRASTS_LEVELS_COLORS.update(GOI_LEVELS_COLORS)
+
+# Dictionary mapping datasets to their respective marker genes
 DATASETS_MARKERS: Dict[str, str] = {
     "TCGA-BRCA": "BRCA1",  # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8998777/
     "TCGA-LUAD": "NKX2-1",  # https://www.nature.com/articles/nature09881
@@ -82,9 +113,12 @@ DATASETS_MARKERS: Dict[str, str] = {
     "TCGA-LGG": "IDH1",  # https://www.neurology.org/doi/abs/10.1212/wnl.0b013e3181f96282
     "PCTA-WCDT": "FOLH1",  # https://www.nature.com/articles/nrurol.2016.26
 }
+
+# Percentile thresholds for sensitivity analysis
 PERCENTILES: Iterable[int] = (10, 15, 20, 25, 30)
 
-# 1. Collect all function inputs for each tcga project
+# Main execution code
+# 1. Collect all function inputs for each dataset and percentile combination
 input_collection = []
 input_collection_optimal = []
 

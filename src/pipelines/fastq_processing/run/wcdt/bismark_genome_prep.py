@@ -1,3 +1,39 @@
+"""
+Bismark genome preparation script for WCDT datasets.
+
+This script prepares a reference genome for Bismark alignment of bisulfite-treated
+sequencing reads. It creates the bisulfite-converted reference genomes and indexes
+needed for the alignment process. This is a prerequisite step that must be completed
+before running the bismark_mapping.py script.
+
+Bismark genome preparation converts the reference genome to both C→T and G→A versions
+to allow alignment of bisulfite-converted reads. The process generates index files
+that are later used by Bismark during the mapping step.
+
+The script sets up logging configuration, defines paths and parameters for the Bismark
+genome preparation, and then calls the run_bismark_genome utility function to process
+the reference genome.
+
+Usage:
+    python bismark_genome_prep.py
+
+Configuration:
+    STORAGE: Base storage path for the WCDT-MCRPC_MethArray dataset
+    GENOME_PATH: Path to the reference genome directory for Homo sapiens (GRCh38)
+    BISMARK_GENOME_KWARGS: Bismark genome preparation command line parameters
+        --parallel: Number of instances to run in parallel
+    SLURM_KWARGS: SLURM job submission parameters
+
+Notes:
+    This script is specifically configured for the WCDT dataset and the Skylake
+    partition of a specific SLURM cluster. Parameters may need adjustment for
+    different environments or datasets.
+
+    Genome preparation can be computationally intensive and memory-demanding,
+    especially for large genomes like human. Ensure adequate resources are
+    allocated for this process.
+"""
+
 import logging
 import warnings
 from pathlib import Path

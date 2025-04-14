@@ -1,3 +1,32 @@
+"""
+Script to perform differential DNA methylation analysis on TCGA-PRAD dataset.
+
+This script analyzes DNA methylation array data (Illumina 450K) from TCGA Prostate
+Adenocarcinoma (TCGA-PRAD) samples to identify differentially methylated positions (DMPs)
+and regions (DMRs) between sample groups stratified by FOLH1/PSMA expression levels.
+It uses the minfi R package through Python wrappers.
+
+The script performs the following steps:
+1. Loads methylation array data (IDAT files) and sample annotations
+2. Performs preprocessing and normalization of methylation data
+3. Conducts quality control and filtering steps
+4. Performs differential methylation analysis between high vs low FOLH1 expression groups
+5. Identifies differentially methylated positions (DMPs) and regions (DMRs)
+6. Annotates DMPs/DMRs with genomic context (promoters, gene bodies, etc.)
+7. Generates visualizations including volcano plots, heatmaps, and genomic tracks
+8. Saves the results to disk for downstream analysis
+
+This analysis provides insights into epigenetic alterations associated with varying
+FOLH1/PSMA expression in prostate cancer primary tumors.
+
+Usage:
+    python goi.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import functools
 import json

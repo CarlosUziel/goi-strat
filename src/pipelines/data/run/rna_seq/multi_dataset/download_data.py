@@ -1,3 +1,34 @@
+"""
+Script to download RNA-seq data from multiple TCGA datasets.
+
+This script automates the process of downloading RNA-seq data from The Cancer
+Genome Atlas (TCGA) for multiple cancer types. It focuses on the largest
+datasets by sample size for comprehensive analysis.
+
+The script:
+1. Sets up the necessary directories for each TCGA dataset
+2. Downloads gene expression count data from TCGA using the GDC API
+3. Processes the downloaded files to extract and organize the STAR counts
+4. Saves the processed data in a structured format for downstream analysis
+
+The downloaded datasets include:
+- TCGA-BRCA: Breast Cancer (>1000 RNA-seq samples)
+- TCGA-LUAD: Lung Adenocarcinoma (517 RNA-seq samples)
+- TCGA-THCA: Thyroid Cancer (505 RNA-seq samples)
+- TCGA-UCEC: Uterine Corpus Endometrial Carcinoma (557 RNA-seq samples)
+- TCGA-LUSC: Lung Squamous Cell Carcinoma (501 RNA-seq samples)
+- TCGA-KIRC: Kidney Renal Clear Cell Carcinoma (533 RNA-seq samples)
+- TCGA-HNSC: Head and Neck Squamous Cell Carcinoma (512 RNA-seq samples)
+- TCGA-LGG: Lower Grade Glioma (516 RNA-seq samples)
+
+Usage:
+    python download_data.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import datetime
 import logging

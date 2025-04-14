@@ -1,3 +1,31 @@
+"""
+Utilities for differential methylation analysis using BiSeq.
+
+This module provides functions for analyzing DNA methylation data specifically
+focusing on identifying differentially methylated regions (DMRs) rather than
+individual CpG sites. BiSeq is particularly suited for RRBS (Reduced Representation
+Bisulfite Sequencing) data. Key features include:
+
+1. Data processing and clustering:
+   - Reading and processing methylation data from Bismark coverage files
+   - Clustering CpG sites into regions for more robust statistical analysis
+   - Computing and visualizing coverage statistics across samples
+
+2. Differential methylation analysis:
+   - Identifying differentially methylated loci (DMLs) between conditions
+   - Identifying differentially methylated regions (DMRs) between conditions
+   - Filtering results based on FDR thresholds and methylation difference levels
+
+3. Annotation and visualization:
+   - Annotating DMRs with genomic features (CpG islands, genes, enhancers, etc.)
+   - Creating summary statistics and plots for interpretation
+   - Comparing methylation changes to randomly selected regions for significance assessment
+
+The module integrates with multiple R libraries (BiSeq, bsseq, DSS) through rpy2
+for specialized methylation analysis while maintaining a consistent Python interface
+for workflow orchestration.
+"""
+
 # Reference workflow:
 #   https://dockflow.org/workflow/methylation-array-analysis/#content
 
@@ -51,21 +79,68 @@ def differential_methylation_rrbs_regions(
     mean_diff_levels: Iterable[str] = ("hyper", "hypo", "all"),
     mean_diff_ths: Iterable[float] = (10, 20, 30),
 ) -> None:
-    """Differential methylation analysis of RRBS samples focusing on regions.
+    """
+    Perform differential methylation analysis focusing on regions in RRBS data.
+
+    This function processes Reduced Representation Bisulfite Sequencing (RRBS) data
+    to identify differentially methylated regions (DMRs) and differentially
+    methylated loci (DMLs) between two sample groups. The workflow includes:
+
+    1. Loading and processing Bismark coverage files
+    2. Clustering CpG sites into regions
+    3. Testing for differential methylation
+    4. Filtering results by FDR and methylation difference thresholds
+    5. Annotating results with genomic features
+    6. Generating summary statistics and visualization plots
 
     Args:
-        exp_prefix: Prefix string for all generated files.
-        annot_df: Genome annotation dataframe.
-        bismark_path: Path to bismark directory with coverage files.
-        contrast_factor: Field name defining contrast levels.
-        results_path: Path to store all generated results.
-        plots_path: Path to store all generated plots.
-        contrast_levels: Contrast to test for differential methylation.
-        genome: Genome version.
-        n_threads: Number of threads to use to calculate differential methylation.
-        fdr_ths: FDR thresholds to use to filter the results.
-        mean_diff_levels: Mean methylation difference levels to filter the results by.
-        mean_diff_ths: Mean methylation difference thresholds to filter the results by.
+        exp_prefix (str): Prefix string for all generated files and plots.
+        annot_df (pd.DataFrame): Sample annotation dataframe containing sample metadata indexed by
+            sample ID. Must contain the contrast_factor column for grouping samples.
+        bismark_path (Path): Path to directory containing Bismark coverage files (*.bismark.cov.gz).
+            Files should be named with the sample ID as prefix.
+        contrast_factor (str): Column name in annot_df used to define sample groups for
+            differential methylation analysis (e.g., "condition", "treatment").
+        results_path (Path): Directory path where all analysis results files will be saved.
+        plots_path (Path): Directory path where all visualization plots will be saved.
+        contrast_levels (Tuple[str, str]): Tuple of (test, control) specifying the two levels of the
+            contrast_factor to compare. The first element is the test condition,
+            the second is the reference/control condition.
+        genome (str): Genome assembly version used for annotations (e.g., "hg38", "mm10").
+            Default is "hg38".
+        n_threads (int): Number of CPU threads to use for parallel processing in the
+            differential methylation testing step. Default is 16.
+        fdr_ths (Iterable[float]): Iterable of FDR threshold values for filtering significant results.
+            Default is (0.05, 0.01).
+        mean_diff_levels (Iterable[str]): Iterable of methylation difference types to filter results.
+            "hyper" selects hypermethylated regions, "hypo" selects hypomethylated regions,
+            and "all" selects both. Default is ("hyper", "hypo", "all").
+        mean_diff_ths (Iterable[float]): Iterable of mean methylation difference threshold values (percentage points)
+            for filtering significant results. Default is (10, 20, 30).
+
+    Returns:
+        None. Results are written to disk in the specified output directories:
+        - Clustering results and coverage statistics
+        - Differentially methylated loci (DML) and regions (DMR)
+        - Filtered results for various significance thresholds and methylation differences
+        - Annotation files with genomic context for differential methylation
+        - Visualization plots for methylation patterns and annotations
+
+    Examples:
+        >>> differential_methylation_rrbs_regions(
+        ...     exp_prefix="experiment1",
+        ...     annot_df=sample_annotations,
+        ...     bismark_path=Path("/data/bismark_coverage"),
+        ...     contrast_factor="treatment",
+        ...     results_path=Path("/results/methylation"),
+        ...     plots_path=Path("/results/plots"),
+        ...     contrast_levels=("treated", "control"),
+        ...     genome="hg38",
+        ...     n_threads=8,
+        ...     fdr_ths=[0.05],
+        ...     mean_diff_levels=["hyper", "hypo", "all"],
+        ...     mean_diff_ths=[10, 20]
+        ... )
     """
     # 0. Setup
     annotations = build_annotations(

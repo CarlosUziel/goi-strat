@@ -1,3 +1,27 @@
+"""
+Script to download RNA-seq data from the TCGA-PRAD (Prostate Adenocarcinoma) dataset.
+
+This script automates the process of downloading RNA-seq data from The Cancer
+Genome Atlas Prostate Adenocarcinoma (TCGA-PRAD) project using the GDC API.
+It focuses on primary tumor and normal tissue samples.
+
+The script performs the following steps:
+1. Sets up the necessary directories for data storage
+2. Downloads gene expression count data from TCGA using the GDC API
+3. Processes the downloaded files to extract and organize the STAR counts
+4. Saves the processed data in a structured format for downstream analysis
+
+The downloaded data includes both primary tumor and normal tissue samples,
+which are essential for differential expression analysis in prostate cancer studies.
+
+Usage:
+    python download_data.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import logging
 import multiprocessing

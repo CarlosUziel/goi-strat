@@ -1,3 +1,30 @@
+"""
+Script to cluster proteins in PPI networks using Node2Vec embeddings and ensemble clustering.
+
+This script analyzes protein-protein interaction (PPI) networks constructed from
+differentially enriched gene sets (DEGSs) in the PCTA-WCDT prostate cancer dataset.
+It generates protein clusters that represent functional modules within the network.
+
+The script performs the following steps:
+1. Loads PPI network data previously generated for high vs low FOLH1 expression
+2. Applies Node2Vec algorithm to generate vector embeddings for each protein in the network
+3. Uses ensemble clustering to identify protein communities based on the embeddings
+4. Generates visualizations of the clustered networks
+5. Saves the clustering results and embeddings to disk for downstream analysis
+
+The clustering is performed with different parameter settings (p,q) that control
+the exploration-exploitation tradeoff in the Node2Vec random walks. Lower p values
+prioritize local exploration (BFS-like behavior) while lower q values prioritize
+outward exploration (DFS-like behavior).
+
+Usage:
+    python goi.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import functools
 import logging

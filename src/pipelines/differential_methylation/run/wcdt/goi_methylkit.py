@@ -1,3 +1,31 @@
+"""
+Script to perform differential DNA methylation analysis on WCDT dataset using methylKit.
+
+This script analyzes reduced representation bisulfite sequencing (RRBS) data from West
+Coast Dream Team (WCDT) metastatic castration-resistant prostate cancer (mCRPC) samples
+to identify differentially methylated positions (DMPs) between sample groups stratified by
+FOLH1/PSMA expression levels. It uses the methylKit R package through Python wrappers.
+
+The script performs the following steps:
+1. Loads methylation data from Bismark output files and sample annotations
+2. Performs quality control and filtering on the methylation data
+3. Identifies differentially methylated positions (DMPs) between high vs low FOLH1 expression
+4. Annotates DMPs with genomic context (promoters, gene bodies, etc.)
+5. Generates visualizations including methylation profiles and heatmaps
+6. Saves the results to disk for downstream analysis
+
+This analysis complements the BiSeq-based analysis by focusing on individual methylation
+positions rather than regions, providing a more detailed view of epigenetic alterations
+associated with FOLH1/PSMA expression in metastatic prostate cancer.
+
+Usage:
+    python goi_methylkit.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import json
 import logging

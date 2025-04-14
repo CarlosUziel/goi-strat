@@ -1,3 +1,33 @@
+"""
+Script to perform standard contrast differential methylation analysis on TCGA-PRAD dataset.
+
+This script analyzes DNA methylation array data (Illumina 450K) from TCGA Prostate
+Adenocarcinoma (TCGA-PRAD) samples to identify differentially methylated positions (DMPs)
+and regions (DMRs) between primary tumors and normal tissue samples. Unlike the goi.py
+script which stratifies samples by gene expression, this script focuses on fundamental
+tissue type differences.
+
+The script performs the following steps:
+1. Loads methylation array data (IDAT files) and sample annotations
+2. Performs preprocessing and normalization of methylation data
+3. Conducts quality control and filtering steps
+4. Performs differential methylation analysis comparing primary tumors to normal tissue
+5. Identifies differentially methylated positions (DMPs) and regions (DMRs)
+6. Annotates DMPs/DMRs with genomic context (promoters, gene bodies, etc.)
+7. Generates visualizations including volcano plots, heatmaps, and genomic tracks
+8. Saves the results to disk for downstream analysis
+
+This analysis serves as a baseline comparison to identify prostate cancer-specific
+methylation changes independent of FOLH1/PSMA expression levels.
+
+Usage:
+    python contrasts.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import logging
 import multiprocessing

@@ -1,3 +1,30 @@
+"""
+Script to calculate statistical significance of genes in differentially enriched gene sets.
+
+This script analyses differentially enriched gene sets (DEGSs) from the PCTA-WCDT
+prostate cancer dataset to identify and rank individual genes that are frequently found
+across significant gene sets. It computes statistics to measure the importance of each
+gene within the enriched pathways.
+
+The script performs the following steps:
+1. Loads DEGSs identified from previous differential enrichment analyses
+2. For each contrast (high vs low FOLH1 in primary and metastatic samples):
+   a. Computes gene occurrence frequencies across all gene sets
+   b. Performs bootstrap sampling to determine statistical significance
+   c. Calculates z-scores and p-values to rank genes by importance
+3. Saves the results as gene statistics tables for downstream analysis
+
+This analysis helps identify key genes driving pathway enrichment differences between
+high and low FOLH1 expression groups, providing potential targets for further investigation.
+
+Usage:
+    python goi.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import logging
 import multiprocessing

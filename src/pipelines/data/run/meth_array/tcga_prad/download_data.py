@@ -1,3 +1,29 @@
+"""
+Download and process methylation array data from TCGA-PRAD dataset.
+
+This script automates the retrieval and initial processing of DNA methylation microarray data
+from The Cancer Genome Atlas Prostate Adenocarcinoma (TCGA-PRAD) project. It focuses on
+Illumina Human Methylation 450K array data, which provides genome-wide methylation profiling
+at single-nucleotide resolution.
+
+The script performs the following operations:
+1. Sets up the necessary directory structure for storing the methylation array data
+2. Downloads .idat files (raw intensity data) from TCGA using GDC API queries
+3. Organizes the methylation data files for downstream processing
+4. Creates annotation files that match samples with their clinical information
+5. Filters samples to retain only those that also have RNA-seq data for integrative analyses
+
+The resulting organized dataset serves as input for various methylation analysis pipelines
+including differential methylation analysis and epigenetic feature annotation.
+
+Usage:
+    python download_data.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import logging
 import multiprocessing

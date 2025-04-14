@@ -1,3 +1,38 @@
+"""
+GSVA-based sample stratification for FOLH1 gene expression in WCDT-MCRPC dataset.
+
+This script performs Gene Set Variation Analysis (GSVA) based sample grouping for the
+Reduced Representation Bisulfite Sequencing (RRBS) data from the WCDT-MCRPC dataset.
+It specifically focuses on creating optimal sample groups based on FOLH1 (PSMA) gene
+expression levels for methylation analysis.
+
+The script implements the following workflow:
+1. Data preparation and preprocessing:
+   - Loads RNA-seq expression data from the WCDT-MCRPC dataset
+   - Applies variance-stabilizing transformation to expression values
+   - Ranks samples based on FOLH1 expression levels
+
+2. Group optimization through iterative differential enrichment:
+   - Tests various sample grouping configurations by varying the number of samples in high/mid/low groups
+   - For each configuration, performs differential GSVA enrichment analysis between high and low groups
+   - Evaluates multiple MSigDB gene set collections for comprehensive pathway coverage
+
+3. Optimal split determination:
+   - Calculates functional difference scores for each grouping configuration
+   - Identifies the optimal split that maximizes biological differences between groups
+   - Generates updated sample annotation with optimal FOLH1 expression level stratification
+
+The resulting annotations serve as a foundation for downstream DNA methylation analyses
+targeting FOLH1-stratified sample groups.
+
+Usage:
+    python goi_gsva_splits_annotation.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import functools
 import logging

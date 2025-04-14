@@ -1,3 +1,30 @@
+"""
+Script to perform percentile-based differential enrichment analysis across datasets.
+
+This script analyzes gene set variation analysis (GSVA) scores across multiple datasets
+to identify differentially enriched gene sets between sample groups stratified by
+percentile-based gene of interest (GOI) expression levels. It tests different percentile
+thresholds to determine optimal stratification parameters.
+
+For each dataset, percentile threshold, and MSigDB category combination, the script:
+1. Loads sample annotations with percentile-based GOI expression levels
+2. Filters samples based on specified contrasts (e.g., high vs low GOI expression)
+3. Runs differential enrichment analysis using limma
+4. Generates heatmaps and other visualizations
+5. Saves the results to disk
+
+The percentile thresholds tested (10%, 15%, 20%, 25%, 30%) provide sensitivity analysis
+to determine the optimal threshold for detecting pathway differences across diverse
+cancer datasets.
+
+Usage:
+    python goi_perc.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+
+Arguments:
+    --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
+    --threads: Number of threads for parallel processing (default: CPU count - 2)
+"""
+
 import argparse
 import datetime
 import functools
