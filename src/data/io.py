@@ -179,7 +179,7 @@ def intersect_raw_counts(counts_path: Path, pattern: str = "*.tsv") -> None:
         }
     )
 
-    # 2. Remove any genes with missing values (meaning that are not share among all
+    # 2. Remove any genes with missing values (meaning that are not shared among all
     # files)
     counts_data.dropna(inplace=True)
 

@@ -50,7 +50,7 @@ STORAGE: Path = Path("/gpfs/data/fs71358/cperez/storage/WCDT-MCRPC_MethArray")
 FASTQ_PATH: Path = STORAGE.joinpath("trim_galore")
 FASTQC_PATH: Path = STORAGE.joinpath("fastqc_clean")
 FASTQC_KWARGS: Dict[str, Any] = {
-    "--threads": 96,
+    "--processes": 96,
 }
 SLURM_KWARGS: Dict[str, Any] = {
     "--job-name": "FASTQC",

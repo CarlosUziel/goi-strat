@@ -22,11 +22,11 @@ FOLH1/PSMA expression in metastatic prostate cancer, focusing on regions rather 
 individual CpG sites for statistical robustness.
 
 Usage:
-    python goi_biseq.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+    python goi_biseq.py [--root-dir ROOT_DIR] [--processes NUM_PROCESSES]
 
 Arguments:
     --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
-    --threads: Number of threads for parallel processing (default: CPU count - 2)
+    --processes: Number of processes for parallel processing (default: CPU count - 2)
 """
 
 import argparse
@@ -69,9 +69,9 @@ parser.add_argument(
     default="/mnt/d/phd_data",
 )
 parser.add_argument(
-    "--threads",
+    "--processes",
     type=int,
-    help="Number of threads for parallel processing",
+    help="Number of processes for parallel processing",
     nargs="?",
     default=multiprocessing.cpu_count() - 2,
 )
@@ -125,7 +125,7 @@ CONTRASTS_LEVELS_COLORS.update(GOI_LEVELS_COLORS)
 with DATA_ROOT.joinpath("CONTRASTS_LEVELS_COLORS.json").open("w") as fp:
     json.dump(CONTRASTS_LEVELS_COLORS, fp, indent=True)
 
-N_THREADS: int = 16
+N_PROCESSES: int = 16
 FDR_THS: Iterable[float] = (0.05, 0.01)
 MEAN_DIFF_LEVELS: Iterable[str] = ("hyper", "hypo", "all")
 MEAN_DIFF_THS: Iterable[float] = (10, 20, 30)
@@ -187,7 +187,7 @@ for sample_cluster_contrast in SAMPLE_CLUSTER_CONTRAST_LEVELS:
             plots_path=PLOTS_PATH,
             contrast_levels=contrasts_levels,
             genome=GENOME,
-            n_threads=N_THREADS,
+            n_processes=N_PROCESSES,
             fdr_ths=FDR_THS,
             mean_diff_levels=MEAN_DIFF_LEVELS,
             mean_diff_ths=MEAN_DIFF_THS,
@@ -203,7 +203,7 @@ if __name__ == "__main__":
                 run_func_dict, func=differential_methylation_rrbs_regions
             ),
             input_collection,
-            threads=user_args["threads"] // 4,
+            processes=user_args["processes"] // 4,
         )
     else:
         for ins in tqdm(input_collection):

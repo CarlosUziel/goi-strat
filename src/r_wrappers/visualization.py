@@ -250,29 +250,28 @@ def volcano_plot(
     height: int = 10,
     **kwargs,
 ) -> None:
-    """
-     Creates an enhanced volcano plot of differential expression results.
+    """Creates an enhanced volcano plot of differential expression results.
 
-     A volcano plot displays statistical significance versus magnitude of change.
-     The EnhancedVolcano package provides publication-ready volcano plots with
-     customizable features.
+    A volcano plot displays statistical significance versus magnitude of change.
+    The EnhancedVolcano package provides publication-ready volcano plots with
+    customizable features.
 
-     Args:
-         data: A data frame of test statistics. Requires at least:
-             - A column for variable names (can be rownames)
-             - A column for log2 fold changes
-             - A column for nominal or adjusted p-values
-         lab: Column name in data containing variable names (can be "rownames").
-         x: Column name in data containing log2 fold changes.
-         y: Column name in data containing nominal or adjusted p-values.
-         save_path: Path where to save the generated plot.
-         width: Width of saved figure in inches.
-         height: Height of saved figure in inches.
-         **kwargs: Additional arguments to pass to EnhancedVolcano function.
+    Args:
+        data: A data frame of test statistics. Requires at least:
+            - A column for variable names (can be rownames)
+            - A column for log2 fold changes
+            - A column for nominal or adjusted p-values
+        lab: Column name in data containing variable names (can be "rownames").
+        x: Column name in data containing log2 fold changes.
+        y: Column name in data containing nominal or adjusted p-values.
+        save_path: Path where to save the generated plot.
+        width: Width of saved figure in inches.
+        height: Height of saved figure in inches.
+        **kwargs: Additional arguments to pass to EnhancedVolcano function.
 
     References:
-         - http://bioconductor.org/packages/release/bioc/vignettes/EnhancedVolcano/inst/doc/EnhancedVolcano.html
-         - https://rdrr.io/bioc/EnhancedVolcano/man/EnhancedVolcano.html
+        - http://bioconductor.org/packages/release/bioc/vignettes/EnhancedVolcano/inst/doc/EnhancedVolcano.html
+        - https://rdrr.io/bioc/EnhancedVolcano/man/EnhancedVolcano.html
     """
     plot = r_enhanced_volcano.EnhancedVolcano(
         toptable=data, lab=lab, x=x, y=y, **kwargs

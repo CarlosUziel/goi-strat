@@ -147,7 +147,7 @@ def get_gene_set_expression_data(
     contrast_factor: Optional[str] = None,
     custom_genes_file: Optional[Path] = None,
     exclude_genes: Optional[Iterable[str]] = None,
-    gsva_threads: int = 8,
+    gsva_processes: int = 8,
     remove_overlapping: bool = False,
 ) -> Tuple[
     pd.DataFrame,
@@ -170,7 +170,7 @@ def get_gene_set_expression_data(
         contrast_factor: Optional column name in annot_df for class comparison
         custom_genes_file: Optional file with specific genes to include
         exclude_genes: Optional list of gene IDs to exclude
-        gsva_threads: Number of threads to use for parallel GSVA computation
+        gsva_processes: Number of processes to use for parallel GSVA computation
         remove_overlapping: Whether to remove gene sets with overlapping ranges between classes
 
     Returns:
@@ -267,7 +267,7 @@ def get_gene_set_expression_data(
             gene_id_col="entrez_gene",
         ),
         kcdf="Gaussian",
-        **{"parallel.sz": gsva_threads},
+        **{"parallel.sz": gsva_processes},
     ).transpose()
 
     # 4. [Optional] Detect non-overlapping gene sets

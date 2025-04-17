@@ -74,7 +74,7 @@ def differential_methylation_rrbs_regions(
     plots_path: Path,
     contrast_levels: Tuple[str, str],
     genome: str = "hg38",
-    n_threads: int = 16,
+    n_processes: int = 16,
     fdr_ths: Iterable[float] = (0.05, 0.01),
     mean_diff_levels: Iterable[str] = ("hyper", "hypo", "all"),
     mean_diff_ths: Iterable[float] = (10, 20, 30),
@@ -108,7 +108,7 @@ def differential_methylation_rrbs_regions(
             the second is the reference/control condition.
         genome (str): Genome assembly version used for annotations (e.g., "hg38", "mm10").
             Default is "hg38".
-        n_threads (int): Number of CPU threads to use for parallel processing in the
+        n_processes (int): Number of CPU processes to use for parallel processing in the
             differential methylation testing step. Default is 16.
         fdr_ths (Iterable[float]): Iterable of FDR threshold values for filtering significant results.
             Default is (0.05, 0.01).
@@ -136,7 +136,7 @@ def differential_methylation_rrbs_regions(
         ...     plots_path=Path("/results/plots"),
         ...     contrast_levels=("treated", "control"),
         ...     genome="hg38",
-        ...     n_threads=8,
+        ...     n_processes=8,
         ...     fdr_ths=[0.05],
         ...     mean_diff_levels=["hyper", "hypo", "all"],
         ...     mean_diff_ths=[10, 20]
@@ -273,7 +273,7 @@ def differential_methylation_rrbs_regions(
         bsseq_obj,
         group1=ro.StrVector(control_samples),
         group2=ro.StrVector(test_samples),
-        ncores=n_threads,
+        ncores=n_processes,
     )
     logging.info("Finished DML testing.")
 

@@ -44,7 +44,7 @@ def compute_degss_genes_stats(
     msigdb_dfs: Dict[str, pd.DataFrame],
     save_dir: Path,
     bootstrap_iterations: int = 100,
-    threads: int = 32,
+    processes: int = 32,
 ) -> None:
     """Given multiple collections of gene sets, one per MSigDB category, compute gene
     occurrence statistics corrected by Z-Score normalization using bootstrapping.
@@ -62,7 +62,7 @@ def compute_degss_genes_stats(
         msigdb_dfs (Dict[str, pd.DataFrame]): A mapping of MSigDB categories and the metadata of all gene sets in that category.
         save_dir (Path): Directory to save results to.
         bootstrap_iterations (int): Number of bootstrap random resamplings to perform. Default is 100.
-        threads (int): Number of threads used to compute statistics in parallel. Default is 32.
+        processes (int): Number of processes used to compute statistics in parallel. Default is 32.
 
     Returns:
         None
@@ -89,7 +89,7 @@ def compute_degss_genes_stats(
                     }
                     for _ in range(bootstrap_iterations)
                 ],
-                threads=threads,
+                processes=processes,
             ),
             axis=1,
         ).fillna(0)

@@ -18,11 +18,11 @@ This analysis helps identify key genes driving pathway enrichment differences be
 high and low FOLH1 expression groups, providing potential targets for further investigation.
 
 Usage:
-    python goi.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+    python goi.py [--root-dir ROOT_DIR] [--processes NUM_PROCESSES]
 
 Arguments:
     --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
-    --threads: Number of threads for parallel processing (default: CPU count - 2)
+    --processes: Number of processes for parallel processing (default: CPU count - 2)
 """
 
 import argparse
@@ -59,9 +59,9 @@ parser.add_argument(
     default="/mnt/d/phd_data",
 )
 parser.add_argument(
-    "--threads",
+    "--processes",
     type=int,
-    help="Number of threads for parallel processing",
+    help="Number of processes for parallel processing",
     nargs="?",
     default=multiprocessing.cpu_count() - 2,
 )
@@ -178,7 +178,7 @@ for contrast_comparison, contrast_comparison_filters in CONTRAST_COMPARISONS.ite
                     msigdb_dfs=msigdb_dfs,
                     save_dir=save_dir,
                     bootstrap_iterations=BOOTSTRAP_ITERATIONS,
-                    threads=user_args["threads"],
+                    processes=user_args["processes"],
                 )
             )
 

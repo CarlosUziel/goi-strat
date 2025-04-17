@@ -18,11 +18,11 @@ FOLH1 expression within each sample type, and can be constructed with different
 interaction types (physical or functional) and score thresholds.
 
 Usage:
-    python goi.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+    python goi.py [--root-dir ROOT_DIR] [--processes NUM_PROCESSES]
 
 Arguments:
     --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
-    --threads: Number of threads for parallel processing (default: CPU count - 2)
+    --processes: Number of processes for parallel processing (default: CPU count - 2)
 """
 
 import argparse
@@ -62,9 +62,9 @@ parser.add_argument(
     default="/mnt/d/phd_data",
 )
 parser.add_argument(
-    "--threads",
+    "--processes",
     type=int,
-    help="Number of threads for parallel processing",
+    help="Number of processes for parallel processing",
     nargs="?",
     default=multiprocessing.cpu_count() - 2,
 )
@@ -206,7 +206,7 @@ if __name__ == "__main__":
             parallelize_map(
                 functools.partial(run_func_dict, func=process_degss_ppi_network),
                 input_collection,
-                threads=user_args["threads"],
+                processes=user_args["processes"],
                 method="fork",
             )
     else:

@@ -146,17 +146,17 @@ def call_dml(dml_result: Any, **kwargs: Any) -> pd.DataFrame:
     Returns:
         pd.DataFrame: A data frame for DMLs. Each row represents one DML, sorted by
         statistical significance. The columns include:
-            - chr: Chromosome number.
-            - pos: Genomic coordinates.
-            - mu1, mu2: Mean methylations of two groups.
-            - diff: Difference of mean methylations of two groups.
-            - diff.se: Standard error of the methylation difference.
-            - stat: Wald statistics.
-            - phi1, phi2: Estimated dispersions in two groups.
-            - pval: P-values.
-            - fdr: False discovery rate.
-            - postprob.overThreshold: The posterior probability of the methylation
-              difference exceeding delta (only available when delta > 0).
+        - chr: Chromosome number.
+        - pos: Genomic coordinates.
+        - mu1, mu2: Mean methylations of two groups.
+        - diff: Difference of mean methylations of two groups.
+        - diff.se: Standard error of the methylation difference.
+        - stat: Wald statistics.
+        - phi1, phi2: Estimated dispersions in two groups.
+        - pval: P-values.
+        - fdr: False discovery rate.
+        - postprob.overThreshold: The posterior probability of the methylation
+          difference exceeding delta (only available when delta > 0).
 
     References:
         https://rdrr.io/bioc/DSS/man/callDML.html
@@ -188,13 +188,13 @@ def call_dmr(dml_result: Any, **kwargs: Any) -> pd.DataFrame:
     Returns:
         pd.DataFrame: A data frame for DMRs. Each row represents one DMR, sorted by
         "areaStat" (sum of test statistics). The columns include:
-            - chr: Chromosome number.
-            - start, end: Genomic coordinates of the DMR.
-            - length: Length of the DMR in base pairs.
-            - nCG: Number of CpG sites contained in the DMR.
-            - meanMethy1, meanMethy2: Average methylation levels in two conditions.
-            - diff.Methy: Difference in methylation levels between conditions (meanMethy1-meanMethy2).
-            - areaStat: Sum of test statistics of all CpG sites within the DMR.
+        - chr: Chromosome number.
+        - start, end: Genomic coordinates of the DMR.
+        - length: Length of the DMR in base pairs.
+        - nCG: Number of CpG sites contained in the DMR.
+        - meanMethy1, meanMethy2: Average methylation levels in two conditions.
+        - diff.Methy: Difference in methylation levels between conditions (meanMethy1-meanMethy2).
+        - areaStat: Sum of test statistics of all CpG sites within the DMR.
 
     References:
         https://rdrr.io/bioc/DSS/man/callDMR.html

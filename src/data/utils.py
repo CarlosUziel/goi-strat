@@ -124,7 +124,7 @@ R = TypeVar("R")
 def parallelize_star(
     func: Callable[..., R],
     inputs: Iterable[Tuple],
-    threads: int = 8,
+    processes: int = 8,
     method: str = "spawn",
 ) -> List[R]:
     """Execute a function on multiple inputs in parallel using starmap.
@@ -135,7 +135,7 @@ def parallelize_star(
     Args:
         func: Function to execute in parallel
         inputs: Iterable of argument tuples to pass to the function
-        threads: Number of parallel processes to use, defaults to 8
+        processes: Number of parallel processes to use, defaults to 8
         method: Multiprocessing start method ('spawn', 'fork', or 'forkserver')
 
     Returns:
@@ -145,12 +145,15 @@ def parallelize_star(
         Uses starmap which unpacks each input tuple as *args to the function.
         The 'spawn' method is more stable but slower than 'fork'.
     """
-    with get_context(method).Pool(threads, maxtasksperchild=1) as pool:
+    with get_context(method).Pool(processes, maxtasksperchild=1) as pool:
         return pool.starmap(func, tqdm(inputs))
 
 
 def parallelize_map(
-    func: Callable[[T], R], inputs: Iterable[T], threads: int = 8, method: str = "spawn"
+    func: Callable[[T], R],
+    inputs: Iterable[T],
+    processes: int = 8,
+    method: str = "spawn",
 ) -> List[R]:
     """Execute a function on multiple inputs in parallel using imap_unordered.
 
@@ -160,7 +163,7 @@ def parallelize_map(
     Args:
         func: Function to execute in parallel (taking a single argument)
         inputs: Iterable of arguments to pass to the function
-        threads: Number of parallel processes to use, defaults to 8
+        processes: Number of parallel processes to use, defaults to 8
         method: Multiprocessing start method ('spawn', 'fork', or 'forkserver')
 
     Returns:
@@ -170,7 +173,7 @@ def parallelize_map(
         Uses imap_unordered which may return results in a different order than inputs.
         This can be faster than ordered processing when execution times vary.
     """
-    with get_context(method).Pool(threads, maxtasksperchild=1) as pool:
+    with get_context(method).Pool(processes, maxtasksperchild=1) as pool:
         return list(
             tqdm(
                 pool.imap_unordered(func, inputs),

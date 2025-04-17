@@ -20,11 +20,11 @@ This analysis provides insights into epigenetic alterations associated with vary
 FOLH1/PSMA expression in prostate cancer primary tumors.
 
 Usage:
-    python goi.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+    python goi.py [--root-dir ROOT_DIR] [--processes NUM_PROCESSES]
 
 Arguments:
     --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
-    --threads: Number of threads for parallel processing (default: CPU count - 2)
+    --processes: Number of processes for parallel processing (default: CPU count - 2)
 """
 
 import argparse
@@ -67,9 +67,9 @@ parser.add_argument(
     default="/mnt/d/phd_data",
 )
 parser.add_argument(
-    "--threads",
+    "--processes",
     type=int,
-    help="Number of threads for parallel processing",
+    help="Number of processes for parallel processing",
     nargs="?",
     default=multiprocessing.cpu_count() - 2,
 )
@@ -133,7 +133,7 @@ with DATA_ROOT.joinpath("CONTRASTS_LEVELS_COLORS.json").open("w") as fp:
 
 ID_COL: str = "sample_id"
 NORM_TYPES: Iterable[str] = ("noob_quantile",)
-N_THREADS: int = 4
+N_PROCESSES: int = 4
 P_COLS: Iterable[str] = ("P.Value", "adj.P.Val")
 P_THS: Iterable[float] = (0.05,)
 LFC_LEVELS: Iterable[str] = ("hyper", "hypo", "all")
@@ -208,7 +208,7 @@ for sample_cluster_contrast in SAMPLE_CLUSTER_CONTRAST_LEVELS:
             genome=GENOME,
             array_type=ARRAY_TYPE,
             norm_types=NORM_TYPES,
-            n_threads=N_THREADS,
+            n_processes=N_PROCESSES,
             p_cols=P_COLS,
             p_ths=P_THS,
             lfc_levels=LFC_LEVELS,
@@ -226,7 +226,7 @@ if __name__ == "__main__":
         parallelize_map(
             functools.partial(run_func_dict, func=differential_methylation_array),
             input_collection,
-            threads=user_args["threads"] // 4,
+            processes=user_args["processes"] // 4,
         )
     else:
         for ins in tqdm(input_collection):

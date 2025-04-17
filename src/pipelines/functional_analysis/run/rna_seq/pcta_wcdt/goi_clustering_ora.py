@@ -23,11 +23,11 @@ The analysis is performed on clusters from both primary and metastatic samples,
 comparing high vs low FOLH1 expression within each sample type.
 
 Usage:
-    python goi_clustering_ora.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+    python goi_clustering_ora.py [--root-dir ROOT_DIR] [--processes NUM_PROCESSES]
 
 Arguments:
     --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
-    --threads: Number of threads for parallel processing (default: CPU count - 2)
+    --processes: Number of processes for parallel processing (default: CPU count - 2)
 """
 
 import argparse
@@ -67,9 +67,9 @@ parser.add_argument(
     default="/mnt/d/phd_data",
 )
 parser.add_argument(
-    "--threads",
+    "--processes",
     type=int,
-    help="Number of threads for parallel processing",
+    help="Number of processes for parallel processing",
     nargs="?",
     default=multiprocessing.cpu_count() - 2,
 )
@@ -232,7 +232,7 @@ if __name__ == "__main__":
         parallelize_map(
             functools.partial(run_func_dict, func=run_all_ora_simple),
             input_collection,
-            threads=user_args["threads"] // 3,
+            processes=user_args["processes"] // 3,
         )
     else:
         for ins in tqdm(input_collection):

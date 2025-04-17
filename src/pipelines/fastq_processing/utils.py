@@ -60,7 +60,7 @@ def run_fastqc(
         fastqc_path (Path): Path to directory where FastQC results will be stored.
         fastqc_kwargs (Dict[str, Any]): A dictionary of FastQC command-line options. Keys will be
             passed as flags and values as arguments to those flags.
-            Example: {"--threads": 8, "--quiet": ""}
+            Example: {"--processes": 8, "--quiet": ""}
         pattern (str): File name pattern that the FASTQ files to be processed should follow.
             Supports glob syntax relative to fastq_path.
         slurm_kwargs (Optional[Dict[str, Any]]): A dictionary of SLURM cluster batch job options. If None, each
@@ -74,7 +74,7 @@ def run_fastqc(
         >>> run_fastqc(
         ...     fastq_path=Path("/data/raw_fastq"),
         ...     fastqc_path=Path("/data/fastqc_results"),
-        ...     fastqc_kwargs={"--threads": "4"},
+        ...     fastqc_kwargs={"--processes": "4"},
         ...     slurm_kwargs={"--mem": "16G", "--cpus-per-task": "4"}
         ... )
     """
@@ -1064,7 +1064,7 @@ def run_samtools_index_bam(
         bam_path: Path to directory containing BAM files.
         samtools_kwargs: A dictionary of samtools command-line options. Keys will be
             passed as flags and values as arguments to those flags.
-            Example: {"--threads": "4", "--verbosity": "3"}
+            Example: {"--processes": "4", "--verbosity": "3"}
         pattern: File name pattern that the BAM files to be processed should follow.
             Supports glob syntax relative to bam_path.
         slurm_kwargs: A dictionary of SLURM cluster batch job options. If None, each
@@ -1079,7 +1079,7 @@ def run_samtools_index_bam(
     Examples:
         >>> run_samtools_index_bam(
         ...     bam_path=Path("/data/aligned_bam"),
-        ...     samtools_kwargs={"--threads": "4"},
+        ...     samtools_kwargs={"--processes": "4"},
         ...     slurm_kwargs={"--mem": "8G", "--cpus-per-task": "4"}
         ... )
     """
@@ -1156,7 +1156,7 @@ def run_fasterq_dump(
         fastq_path: Path to directory where extracted FASTQ files will be stored.
         fasterq_dump_kwargs: A dictionary of fasterq-dump command-line options. Keys will be
             passed as flags and values as arguments to those flags.
-            Example: {"--split-files": "", "--threads": "4"}
+            Example: {"--split-files": "", "--processes": "4"}
         pigz_kwargs: A dictionary of pigz command-line options for compressing the
             resulting FASTQ files. Example: {"-p": "4", "-9": ""}
         pattern: File name pattern that the SRA files to be processed should follow.
@@ -1174,7 +1174,7 @@ def run_fasterq_dump(
         ...     sra_path=Path("/data/raw_sra"),
         ...     ngc_filepath=Path("/data/credentials/access.ngc"),
         ...     fastq_path=Path("/data/extracted_fastq"),
-        ...     fasterq_dump_kwargs={"--split-files": "", "--threads": "4"},
+        ...     fasterq_dump_kwargs={"--split-files": "", "--processes": "4"},
         ...     pigz_kwargs={"-p": "4", "-9": ""},
         ...     slurm_kwargs={"--mem": "16G", "--cpus-per-task": "4"}
         ... )

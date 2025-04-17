@@ -41,7 +41,7 @@ warnings.filterwarnings("ignore")
 ROOT_PATH: Path = Path("/gpfs/data/fs71358/cperez")
 STORAGE_ROOT: Path = ROOT_PATH.joinpath("storage")
 SRC_ROOT: Path = ROOT_PATH.joinpath("goi-strat").joinpath("src")
-COMMON_KWARGS: Dict[str, str] = {"--root-dir": STORAGE_ROOT, "--threads": 96}
+COMMON_KWARGS: Dict[str, str] = {"--root-dir": STORAGE_ROOT, "--processes": 96}
 SLURM_KWARGS: Dict[str, Union[str, int]] = {
     "--nodes": 2,
     "--partition": "skylake_0384",

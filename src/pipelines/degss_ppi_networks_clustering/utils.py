@@ -40,7 +40,7 @@ def find_optimal_clusters(
         data (pd.DataFrame): Data to cluster.
         sample_frac (float): Fraction of samples to use for fitting weak clustering algorithms.
         n_models (int): Number of weak learners to train per `n_clusters` value.
-        n_jobs (int): Number of threads to use for clustering.
+        n_jobs (int): Number of processes to use for clustering.
         random_seed (int): Random seed for reproducibility.
 
     Returns:
@@ -127,7 +127,7 @@ def find_optimal_clusters(
 def train_node2vec_clustering(
     ppi_graph: nx.Graph,
     hparams: Dict[str, Any],
-    node2vec_threads: int = 8,
+    node2vec_processes: int = 8,
     sample_frac: float = 0.8,
     random_seed: int = 8080,
 ) -> Dict[str, Any]:
@@ -137,7 +137,7 @@ def train_node2vec_clustering(
     Args:
         ppi_graph (nx.Graph): PPI network where nodes are proteins and edges represent interactions.
         hparams (Dict[str, Any]): Node2Vec hyper-parameter dictionary.
-        node2vec_threads (int): Number of threads for training Node2Vec.
+        node2vec_processes (int): Number of processes for training Node2Vec.
         sample_frac (float): Fraction of samples for fitting weak clustering algorithms.
         random_seed (int): Random seed for reproducibility.
 
@@ -153,7 +153,7 @@ def train_node2vec_clustering(
 
     node2vec = Node2Vec(
         ppi_graph,
-        workers=node2vec_threads,
+        workers=node2vec_processes,
         weight_key="weight",
         quiet=True,
         seed=random_seed,
@@ -179,7 +179,7 @@ def train_node2vec_clustering(
     clustering_stats, cluster_labels = find_optimal_clusters(
         node_embeddings,
         sample_frac=sample_frac,
-        n_jobs=node2vec_threads,
+        n_jobs=node2vec_processes,
     )
 
     logger.info("Clustering of DEGSs finished!")
@@ -197,8 +197,8 @@ def tune_ppi_clustering(
     save_path: Optional[Path] = None,
     p: float = 1,
     q: float = 0.01,
-    gs_threads: int = 8,
-    node2vec_threads: int = 8,
+    gs_processes: int = 8,
+    node2vec_processes: int = 8,
     sample_frac: float = 0.8,
     random_seed: int = 8080,
 ) -> Dict[str, Any]:
@@ -210,8 +210,8 @@ def tune_ppi_clustering(
         save_path (Optional[Path]): Path to save results.
         p (float): Return hyper-parameter for Node2Vec.
         q (float): In-out hyper-parameter for Node2Vec.
-        gs_threads (int): Number of threads for grid search.
-        node2vec_threads (int): Number of threads for training Node2Vec.
+        gs_processes (int): Number of processes for grid search.
+        node2vec_processes (int): Number of processes for training Node2Vec.
         sample_frac (float): Fraction of samples for fitting weak clustering algorithms.
         random_seed (int): Random seed for reproducibility.
 
@@ -234,17 +234,17 @@ def tune_ppi_clustering(
         dict(
             ppi_graph=ppi_graph,
             hparams=hparams,
-            node2vec_threads=node2vec_threads,
+            node2vec_processes=node2vec_processes,
             sample_frac=sample_frac,
             random_seed=random_seed,
         )
         for hparams in hparams_permutations
     ]
-    if gs_threads > 1:
+    if gs_processes > 1:
         gs_results = parallelize_map(
             functools.partial(run_func_dict, func=train_node2vec_clustering),
             inputs=inputs,
-            threads=gs_threads,
+            processes=gs_processes,
         )
     else:
         gs_results = [train_node2vec_clustering(**ins) for ins in tqdm(inputs)]
@@ -291,8 +291,8 @@ def cluster_ppi_proteins(
     save_path: Path,
     p: float = 1,
     q: float = 0.01,
-    gs_threads: int = 8,
-    node2vec_threads: int = 8,
+    gs_processes: int = 8,
+    node2vec_processes: int = 8,
     sample_frac: float = 0.8,
     random_seed: int = 8080,
 ) -> None:
@@ -305,8 +305,8 @@ def cluster_ppi_proteins(
         save_path (Path): Path to save clustering results.
         p (float): Return hyper-parameter for Node2Vec.
         q (float): In-out hyper-parameter for Node2Vec.
-        gs_threads (int): Number of threads for grid search.
-        node2vec_threads (int): Number of threads for training Node2Vec.
+        gs_processes (int): Number of processes for grid search.
+        node2vec_processes (int): Number of processes for training Node2Vec.
         sample_frac (float): Fraction of samples for fitting weak clustering algorithms.
         random_seed (int): Random seed for reproducibility.
 
@@ -331,8 +331,8 @@ def cluster_ppi_proteins(
         save_path=save_path,
         p=p,
         q=q,
-        gs_threads=gs_threads,
-        node2vec_threads=node2vec_threads,
+        gs_processes=gs_processes,
+        node2vec_processes=node2vec_processes,
         sample_frac=sample_frac,
         random_seed=random_seed,
     )

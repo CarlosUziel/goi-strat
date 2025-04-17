@@ -1026,7 +1026,7 @@ def generate_gsva_matrix(
     msigdb_cat: str,
     save_path: str,
     contrast_factor: Optional[str] = None,
-    gsva_threads: int = 8,
+    gsva_processes: int = 8,
 ) -> None:
     """Given a raw counts gene matrix, generate its corresponding GSVA matrix for a
     given MSigDB category.
@@ -1040,7 +1040,7 @@ def generate_gsva_matrix(
         msigdb_cat (str): Category of MSigDB to extract the gene sets from.
         save_path (str): .csv file path to save results GSVA matrix to.
         contrast_factor (Optional[str]): Column name determining sample groups.
-        gsva_threads (int): Number of threads to use while running GSVA. Defaults to 8.
+        gsva_processes (int): Number of processes to use while running GSVA. Defaults to 8.
 
     Returns:
         None
@@ -1055,7 +1055,7 @@ def generate_gsva_matrix(
         contrast_factor=contrast_factor,
         org_db=org_db,
         msigdb_cat=msigdb_cat,
-        gsva_threads=gsva_threads,
+        gsva_processes=gsva_processes,
     )[0].transpose()
 
     gsva_matrix.to_csv(save_path)

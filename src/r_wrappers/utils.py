@@ -71,7 +71,7 @@ def rpy2_df_to_pd_df_manual(rpy2_df: Any) -> pd.DataFrame:
             a data.frame if it isn't one.
 
     Returns:
-        A pandas DataFrame containing the converted data with NA_integer_ values
+        A pandas DataFrame containing the converted data with NA values from R
         replaced with numpy's np.nan.
     """
     # 0. Ensure rpy2 object is (or is convertible to) an R dataframe
@@ -448,7 +448,7 @@ def prepare_gene_list(
         p_th: Optionally filter by p_col.
         lfc_col: Name of LFC column.
         lfc_level: Genes to include: "up" for up-regulated, "down" for
-            down-regulated, and "all" for all.
+            down-regulated, and "all".
         lfc_th: Optionally filter by lfc_col.
         numeric_col: Column that should be used to retrieve the numeric vector
             for the gene list. This can be the fold change column, the stat

@@ -280,7 +280,7 @@ def differential_methylation_rrbs_sites(
     contrast_factor: str,
     contrast_levels: Tuple[str, str],
     genome: str = "hg38",
-    n_threads: int = 16,
+    n_processes: int = 16,
     q_ths: Iterable[float] = (0.05, 0.01),
     mean_diff_levels: Iterable[str] = ("hyper", "hypo", "all"),
     mean_diff_ths: Iterable[float] = (10, 20, 30),
@@ -297,7 +297,7 @@ def differential_methylation_rrbs_sites(
         contrast_factor (str): Column name defining contrast levels.
         contrast_levels (Tuple[str, str]): Pair of contrast levels (test, control).
         genome (str): Genome version. Defaults to "hg38".
-        n_threads (int): Number of threads for computation. Defaults to 16.
+        n_processes (int): Number of processes for computation. Defaults to 16.
         q_ths (Iterable[float]): FDR thresholds for filtering results. Defaults to (0.05, 0.01).
         mean_diff_levels (Iterable[str]): Levels of mean methylation difference. Defaults to ("hyper", "hypo", "all").
         mean_diff_ths (Iterable[float]): Thresholds for mean methylation difference. Defaults to (10, 20, 30).
@@ -380,7 +380,7 @@ def differential_methylation_rrbs_sites(
     logging.info("Finished statistics and plots for filtered methylation calls data.")
 
     methyl_obj_filt_united = unite(
-        methyl_obj_filt, destrand=False, **{"mc.cores": n_threads}
+        methyl_obj_filt, destrand=False, **{"mc.cores": n_processes}
     )
     del methyl_obj_filt
     # make_meth_plots(
@@ -413,7 +413,7 @@ def differential_methylation_rrbs_sites(
         f"{test} (n={len(condition_samples[test])}) vs "
         f"{control} (n={len(condition_samples[control])})"
     )
-    diff_res = calculate_diff_meth(methyl_obj_diff, **{"mc.cores": n_threads})
+    diff_res = calculate_diff_meth(methyl_obj_diff, **{"mc.cores": n_processes})
     del methyl_obj_diff
     logging.info("Finished differential methylation call.")
 

@@ -66,7 +66,7 @@ def bs_raw(
         rowRanges=row_ranges,
         colData=pd_df_to_rpy2_df(col_data),
         totalReads=total_reads,
-        methReads=meth_reads,
+        meprocesses=meth_reads,
     )
 
 

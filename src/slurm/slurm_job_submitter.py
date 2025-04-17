@@ -7,7 +7,7 @@ from data.utils import run_cmd
 
 
 class SlurmJobSubmitter(BaseModel):
-    """Submit jobs to a SLURM cluster system.
+    """Submit jobs to a SLURM cluster system. :no-index:
 
     This class provides functionality for submitting jobs to a SLURM cluster system by
     creating temporary script files with appropriate SBATCH directives.

@@ -21,11 +21,11 @@ This analysis serves as a baseline comparison to identify prostate cancer-specif
 methylation changes independent of FOLH1/PSMA expression levels.
 
 Usage:
-    python contrasts.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+    python contrasts.py [--root-dir ROOT_DIR] [--processes NUM_PROCESSES]
 
 Arguments:
     --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
-    --threads: Number of threads for parallel processing (default: CPU count - 2)
+    --processes: Number of processes for parallel processing (default: CPU count - 2)
 """
 
 import argparse
@@ -60,9 +60,9 @@ parser.add_argument(
     default="/mnt/d/phd_data",
 )
 parser.add_argument(
-    "--threads",
+    "--processes",
     type=int,
-    help="Number of threads for parallel processing",
+    help="Number of processes for parallel processing",
     nargs="?",
     default=multiprocessing.cpu_count() - 2,
 )
@@ -95,7 +95,7 @@ CONTRASTS_LEVELS_COLORS: Dict[str, str] = {
     "prim": "#4A708B",
 }
 NORM_TYPES: Iterable[str] = ("noob_quantile",)
-N_THREADS: int = 4
+N_PROCESSES: int = 4
 P_COLS: Iterable[str] = ("P.Value", "adj.P.Val")
 P_THS: Iterable[float] = (0.05, 0.01)
 LFC_LEVELS: Iterable[str] = ("hyper", "hypo", "all")
@@ -131,7 +131,7 @@ input_dict = dict(
     genome=GENOME,
     array_type=ARRAY_TYPE,
     norm_types=NORM_TYPES,
-    n_threads=N_THREADS,
+    n_processes=N_PROCESSES,
     p_cols=P_COLS,
     p_ths=P_THS,
     lfc_levels=LFC_LEVELS,

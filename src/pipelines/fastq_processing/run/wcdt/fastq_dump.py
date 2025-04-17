@@ -25,7 +25,7 @@ Configuration:
         --split-files: Generate separate files for paired-end reads
         --include-technical: Include technical reads
     PIGZ_KWARGS: pigz compression command line parameters
-        -p: Number of threads to use for compression
+        -p: Number of processes to use for compression
     SLURM_KWARGS: SLURM job submission parameters
     PATTERN: Pattern to match SRA files
 
@@ -60,7 +60,7 @@ NGC_FILEPATH: Path = SRA_PATH.joinpath("ncbi").joinpath("prj_22525.ngc")
 FASTQ_PATH: Path = STORAGE.joinpath("fastq_raw")
 
 FASTERQ_DUMP_KWARGS: Dict[str, Any] = {
-    "--threads": 96,
+    "--processes": 96,
     "--mem": "1G",
     "--split-files": "",
 }

@@ -19,11 +19,11 @@ mechanisms associated with FOLH1 expression in prostate cancer by connecting gen
 enrichment patterns with direct expression and epigenetic regulation.
 
 Usage:
-    python goi_metadata.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+    python goi_metadata.py [--root-dir ROOT_DIR] [--processes NUM_PROCESSES]
 
 Arguments:
     --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
-    --threads: Number of threads for parallel processing (default: CPU count - 2)
+    --processes: Number of processes for parallel processing (default: CPU count - 2)
 """
 
 import argparse
@@ -61,9 +61,9 @@ parser.add_argument(
     default="/mnt/d/phd_data",
 )
 parser.add_argument(
-    "--threads",
+    "--processes",
     type=int,
-    help="Number of threads for parallel processing",
+    help="Number of processes for parallel processing",
     nargs="?",
     default=multiprocessing.cpu_count() - 2,
 )

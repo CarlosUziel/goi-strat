@@ -18,7 +18,7 @@ This analysis provides insights into the epigenetic regulatory mechanisms associ
 FOLH1/PSMA expression patterns in metastatic castration-resistant prostate cancer.
 
 Usage:
-    python goi_biseq.py [--root-dir DIRECTORY] [--threads NUM_THREADS]
+    python goi_biseq.py [--root-dir DIRECTORY] [--processes NUM_PROCESSES]
 """
 
 import argparse
@@ -58,9 +58,9 @@ parser.add_argument(
     default="/mnt/d/phd_data",
 )
 parser.add_argument(
-    "--threads",
+    "--processes",
     type=int,
-    help="Number of threads for parallel processing",
+    help="Number of processes for parallel processing",
     nargs="?",
     default=multiprocessing.cpu_count() - 2,
 )
@@ -118,7 +118,7 @@ GENE_ANNOTS: Iterable[str] = (
     f"{GENOME}_genes_introns",
     f"{GENOME}_genes_promoters",
 )
-N_THREADS: int = 4
+N_processes: int = 4
 FDR_THS: Iterable[float] = (0.05, 0.01)
 MEAN_DIFF_LEVELS: Iterable[str] = ("hyper", "hypo", "all")
 MEAN_DIFF_THS: Iterable[float] = (5, 10, 20)
@@ -211,7 +211,7 @@ if __name__ == "__main__":
         parallelize_map(
             functools.partial(run_func_dict, func=functional_enrichment),
             input_collection,
-            threads=user_args["threads"] // 3,
+            processes=user_args["processes"] // 3,
         )
     else:
         for ins in tqdm(input_collection):

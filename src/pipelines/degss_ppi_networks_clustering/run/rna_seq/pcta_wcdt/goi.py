@@ -18,11 +18,11 @@ prioritize local exploration (BFS-like behavior) while lower q values prioritize
 outward exploration (DFS-like behavior).
 
 Usage:
-    python goi.py [--root-dir ROOT_DIR] [--threads NUM_THREADS]
+    python goi.py [--root-dir ROOT_DIR] [--processes NUM_PROCESSES]
 
 Arguments:
     --root-dir: Root directory for data storage (default: /mnt/d/phd_data)
-    --threads: Number of threads for parallel processing (default: CPU count - 2)
+    --processes: Number of processes for parallel processing (default: CPU count - 2)
 """
 
 import argparse
@@ -61,9 +61,9 @@ parser.add_argument(
     default="/mnt/d/phd_data",
 )
 parser.add_argument(
-    "--threads",
+    "--processes",
     type=int,
-    help="Number of threads for parallel processing",
+    help="Number of processes for parallel processing",
     nargs="?",
     default=multiprocessing.cpu_count() - 2,
 )
@@ -181,8 +181,8 @@ for contrast_comparison, contrast_comparison_filters in CONTRAST_COMPARISONS.ite
                     save_path=save_path,
                     p=p,
                     q=q,
-                    gs_threads=1,
-                    node2vec_threads=1,
+                    gs_processes=1,
+                    node2vec_processes=1,
                 )
             )
 
@@ -194,7 +194,7 @@ if __name__ == "__main__":
         parallelize_map(
             functools.partial(run_func_dict, func=cluster_ppi_proteins),
             input_collection,
-            threads=user_args["threads"],
+            processes=user_args["processes"],
         )
     else:
         for ins in tqdm(input_collection):

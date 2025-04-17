@@ -21,7 +21,7 @@ for detecting pathway differences across diverse cancer types. This multi-datase
 supports identification of both cancer-specific and conserved biological mechanisms.
 
 Usage:
-    python goi_perc.py [--root-dir DIRECTORY] [--threads NUM_THREADS]
+    python goi_perc.py [--root-dir DIRECTORY] [--processes NUM_PROCESSES]
 """
 
 import argparse
@@ -62,9 +62,9 @@ parser.add_argument(
     default="/mnt/d/phd_data",
 )
 parser.add_argument(
-    "--threads",
+    "--processes",
     type=int,
-    help="Number of threads for parallel processing",
+    help="Number of processes for parallel processing",
     nargs="?",
     default=multiprocessing.cpu_count() - 2,
 )
@@ -254,7 +254,7 @@ if __name__ == "__main__":
         parallelize_map(
             functools.partial(run_func_dict, func=functional_enrichment),
             input_collection,
-            threads=user_args["threads"] // 3,
+            processes=user_args["processes"] // 3,
             method="fork",
         )
     else:

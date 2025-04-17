@@ -1522,7 +1522,7 @@ def differential_methylation_array(
         "quantile",
         "noob_quantile",
     ),
-    n_threads: int = 8,
+    n_processes: int = 8,
     p_cols: Iterable[str] = ("P.Value", "adj.P.Val"),
     p_ths: Iterable[float] = (0.05, 0.01),
     lfc_levels: Iterable[str] = ("hyper", "hypo", "all"),
@@ -1551,7 +1551,7 @@ def differential_methylation_array(
         genome: Genome version.
         array_type: Methylation array type.
         norm_types: Data normalization tyes to test. Each is run independently.
-        n_threads: Number of threads to use internally.
+        n_processes: Number of processes to use internally.
         p_cols: P-value column names used for filtering.
         p_ths: P-value thresholds to determine significance.
         lfc_levels: logFC levels to subset results by.
@@ -1605,7 +1605,7 @@ def differential_methylation_array(
         normalization_results = parallelize_map(
             functools.partial(run_func_dict, func=func),
             norm_inputs,
-            threads=n_threads,
+            processes=n_processes,
         )
 
     norm_msets = {
@@ -1641,7 +1641,7 @@ def differential_methylation_array(
                 func=func,
             ),
             filtering_inputs,
-            threads=n_threads,
+            processes=n_processes,
         )
 
     norm_msets_filtered = {
@@ -1685,7 +1685,7 @@ def differential_methylation_array(
         contrast_intermediate_results = parallelize_map(
             functools.partial(run_func_dict, func=func),
             diff_meth_probes_inputs,
-            threads=n_threads,
+            processes=n_processes,
         )
 
     contrast_intermediate_results = {
@@ -1730,5 +1730,5 @@ def differential_methylation_array(
         parallelize_map(
             functools.partial(run_func_dict, func=func),
             diff_meth_regions_inputs,
-            threads=n_threads,
+            processes=n_processes,
         )
